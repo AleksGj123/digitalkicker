@@ -1,8 +1,8 @@
-package service;
+package com.bechtle.service;
 
-import model.Matchtype;
-import model.Player;
-import model.Season;
+import com.bechtle.model.Matchtype;
+import com.bechtle.model.Player;
+import com.bechtle.model.Season;
 
 import java.util.List;
 

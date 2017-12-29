@@ -1,6 +1,6 @@
-package service;
+package com.bechtle.service;
 
-import model.Player;
+import com.bechtle.model.Player;
 import spark.ModelAndView;
 
 import java.util.HashMap;

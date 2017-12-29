@@ -1,13 +1,15 @@
-package model;
+package com.bechtle.model;
 
 import net.formio.validation.constraints.Email;
 import net.formio.validation.constraints.NotEmpty;
+
+import javax.persistence.*;
 
 @Entity
 public class Player {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private long id;
     @NotEmpty
     private String forename;
@@ -16,8 +18,10 @@ public class Player {
     @Email
     private String email;
     @NotEmpty
+    @Transient
     private String password;
     @NotEmpty
+    @Transient
     private String passwordRepeat;
     private String passwordHash;
 

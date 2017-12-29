@@ -1,4 +1,4 @@
-package model;
+package com.bechtle.model;
 
 import net.formio.validation.constraints.NotEmpty;
 

@@ -316,7 +316,7 @@
   browser: >
     Safari (iOS)
   summary: >
-    Can't move cursor to start of text after entering long string of text into `<input type="text">`
+    Can't move cursor to com.bechtle.start of text after entering long string of text into `<input type="text">`
   upstream_bug: >
     WebKit#148061, Safari#22299624
   origin: >

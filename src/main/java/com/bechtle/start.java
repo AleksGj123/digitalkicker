@@ -1,4 +1,6 @@
-import model.Player;
+package com.bechtle;
+
+import com.bechtle.model.Player;
 import net.formio.FormData;
 import net.formio.FormMapping;
 import net.formio.Forms;
@@ -13,7 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static spark.Spark.before;
-import static spark.Spark.delete;
 import static spark.Spark.get;
 import static spark.Spark.path;
 import static spark.Spark.port;
