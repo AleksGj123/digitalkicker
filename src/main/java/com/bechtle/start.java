@@ -36,7 +36,7 @@ public class start {
 
         // match
         path("/match", () -> {
-            before("/*", (q, a) -> System.out.println("SOME STUFF"));
+            before("/*", (q, a) -> System.out.println("Matches ..."));
             post("", (req, res) -> {
                 return "create new match";
             });
@@ -52,8 +52,27 @@ public class start {
             });*/
         });
 
+
+        // seasons
+        path("/seasons", () -> {
+            before("/*", (q, a) -> System.out.println("Seasons ..."));
+            post("", (req, res) -> {
+                return "create new season";
+            });
+            get("/:id",  (req, res) -> {
+                return new ModelAndView(new HashMap<>(), "public/bootstrap/docs/examples/starter-template/index.html");
+            }, velocityTemplateEngine);
+            put("/:status", (req, res) -> {
+                final String command = req.params(":status");
+                return command;
+            });
+            /*delete("/remove",  (req, res) -> {
+                return "";
+            });*/
+        });
+
         get("/test", (req, res) -> {
-            return new ModelAndView(new HashMap<>(), "public/bootstrap/docs/examples/starter-template/index.html");
+            return new ModelAndView(new HashMap<>(), "views/player.vm");
         }, velocityTemplateEngine);
         get("/player", (req, res) -> {
 
