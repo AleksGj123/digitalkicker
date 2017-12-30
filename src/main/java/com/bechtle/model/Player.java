@@ -4,29 +4,54 @@ import net.formio.validation.constraints.Email;
 import net.formio.validation.constraints.NotEmpty;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Player {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue
     private long id;
+
     @NotEmpty
     private String forename;
+
     @NotEmpty
     private String surname;
+
     @Email
     private String email;
-    @NotEmpty
+
     @Transient
+    @NotEmpty
     private String password;
-    @NotEmpty
+
     @Transient
+    @NotEmpty
     private String passwordRepeat;
+
     private String passwordHash;
 
     private String biography;
+
     private String nickname;
+
+    @OneToMany(targetEntity = Match.class)
+    private List<Match> matches;
+
+    public Player(String forename, String surname, String email, String password, String passwordRepeat,
+                  String biography, String nickname) {
+        this.forename = forename;
+        this.surname = surname;
+        this.email = email;
+        this.password = password;
+        this.passwordRepeat = passwordRepeat;
+        this.biography = biography;
+        this.nickname = nickname;
+    }
+
+    public Player() {
+    }
 
     public String getNickname() {
         return nickname;
@@ -66,5 +91,21 @@ public class Player {
 
     public void setBiography(String biography) {
         this.biography = biography;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPasswordRepeat() {
+        return passwordRepeat;
+    }
+
+    public void setPasswordRepeat(String passwordRepeat) {
+        this.passwordRepeat = passwordRepeat;
     }
 }

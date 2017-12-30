@@ -4,9 +4,13 @@
              version="2.1">
 
     <!-- Hibernate + Mysql -->
-    <persistence-unit name="Session" transaction-type="RESOURCE_LOCAL">
+    <persistence-unit name="KickerPersistence" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-        <class>com.acme.MyEntity</class>
+        <!--<provider>org.hibernate.javax.persisejpa.HibernatePersistenceProvider</provider>-->
+        <class>com.bechtle.model.Season</class>
+        <class>com.bechtle.model.Player</class>
+        <class>com.bechtle.model.Match</class>
+        <class>com.bechtle.model.Matchtype</class>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
             <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/kickerstats" />

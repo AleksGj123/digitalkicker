@@ -35,6 +35,7 @@
                 <li class="active"><a href="#">Home</a></li>
                 <li><a href="/match">Matches</a></li>
                 <li><a href="/season">Seasons</a></li>
+                <li><a href="/season">Statistics</a></li>
             </ul>
         </div><!--/.nav-collapse -->
     </div>
