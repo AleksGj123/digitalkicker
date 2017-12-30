@@ -10,7 +10,7 @@ import java.util.List;
 public class Player {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
 
     @NotEmpty

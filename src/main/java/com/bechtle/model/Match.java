@@ -2,10 +2,7 @@ package com.bechtle.model;
 
 import net.formio.validation.constraints.NotEmpty;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,15 +18,18 @@ public class Match {
     @NotEmpty
     private int goalsTeam2;
 
-    //@OneToMany(mappedBy = "match")
+    @OneToMany(targetEntity = Player.class)
     @NotEmpty
     private List<Player> team1 = new ArrayList<>();
 
-    //@OneToMany(mappedBy = "match")
+    @OneToMany(targetEntity = Player.class)
     @NotEmpty
     private List<Player> team2 = new ArrayList<>();
 
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
 
 
     public String getStatus() {
@@ -56,16 +56,5 @@ public class Match {
         this.goalsTeam2 = goalsTeam2;
     }
 
-
-    @Id
-    @GeneratedValue
-    private String id;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 }
+

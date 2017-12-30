@@ -1,6 +1,7 @@
 package com.bechtle;
 
 import com.bechtle.model.Player;
+import com.bechtle.service.SeasonService;
 import net.formio.FormData;
 import net.formio.FormMapping;
 import net.formio.Forms;
@@ -11,6 +12,7 @@ import spark.ModelAndView;
 import spark.template.velocity.VelocityTemplateEngine;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,7 +62,12 @@ public class start {
         path("/season", () -> {
             before("/*", (q, a) -> System.out.println("Seasons ..."));
             post("", (req, res) -> {
-                return "create new season";
+
+                String name = "TestSeason";
+                Date start = new Date();
+                Date end = new Date();
+                SeasonService.createSeason(name, start, end);
+                return "created new season";
             });
             get("/:id",  (req, res) -> {
                 return new ModelAndView(new HashMap<>(), "views/season.vm");
@@ -100,7 +107,6 @@ public class start {
         post("/player", (req, res) -> {
 
             final HttpServletRequest raw = req.raw();
-            final Map<String, String[]> parameterMap = raw.getParameterMap();
 
             RequestParams params = new ServletRequestParams(req.raw());
             FormData<Player> formData = playerForm.bind(params);
