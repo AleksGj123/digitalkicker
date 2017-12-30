@@ -32,7 +32,7 @@ public class start {
 
         port(4444);
 
-        staticFileLocation("/public");
+        staticFileLocation("/static");
 
         // match
         path("/match", () -> {
@@ -43,6 +43,9 @@ public class start {
             get("/:id",  (req, res) -> {
                 return req.params();
             });
+            get("",  (req, res) -> {
+                return new ModelAndView(new HashMap<>(), "views/matches.vm");
+            }, velocityTemplateEngine);
             put("/:status", (req, res) -> {
                 final String command = req.params(":status");
                 return command;
@@ -54,13 +57,16 @@ public class start {
 
 
         // seasons
-        path("/seasons", () -> {
+        path("/season", () -> {
             before("/*", (q, a) -> System.out.println("Seasons ..."));
             post("", (req, res) -> {
                 return "create new season";
             });
             get("/:id",  (req, res) -> {
-                return new ModelAndView(new HashMap<>(), "public/bootstrap/docs/examples/starter-template/index.html");
+                return new ModelAndView(new HashMap<>(), "views/season.vm");
+            }, velocityTemplateEngine);
+            get("",  (req, res) -> {
+                return new ModelAndView(new HashMap<>(), "views/season.vm");
             }, velocityTemplateEngine);
             put("/:status", (req, res) -> {
                 final String command = req.params(":status");
@@ -85,7 +91,7 @@ public class start {
             FormMapping<Player> filledForm = playerForm.fill(formData);
 
 
-            final HashMap<String, FormMapping<Player>> stringPlayerHashMap = new HashMap<>();
+            final HashMap<String, Object> stringPlayerHashMap = new HashMap<>();
             stringPlayerHashMap.put("playerForm", filledForm);
 
             return new ModelAndView(stringPlayerHashMap, "views/player.vm");

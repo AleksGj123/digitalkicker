@@ -1,0 +1,68 @@
+<html>
+
+
+<html lang="en">
+    #include("/views/layout.vm")
+
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            Team 1
+        </div>
+        <div class="col-md-6">
+            Team 2
+        </div>
+    </div>
+</div>
+    <div class="container">
+
+        <div class="row">
+            <div class="container">
+                <div class="col-md-6">
+                        <div class="panel panel-success">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Done Match | matchId | status</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Keeper</th>
+                                            <th>Striker</th>
+                                            <th>Result</th>
+                                            <th>Keeper</th>
+                                            <th>Striker</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>Aleks</td>
+                                            <td>Rouven</td>
+                                            <td>5 : 1</td>
+                                            <td>Chris</td>
+                                            <td>Andrej</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Panel title</h3>
+                        </div>
+                        <div class="panel-body">
+                            Panel content
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+</body>
+
+</html>
