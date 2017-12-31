@@ -11,8 +11,9 @@ import java.util.List;
 public class Season {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "id", updatable = false, nullable = false)
+    private Long id;
 
     @NotEmpty
     private String name;
@@ -23,8 +24,8 @@ public class Season {
     @NotEmpty
     private Date endDate;
 
-    @OneToMany(targetEntity = Match.class)
-    private List<Match> matches = new ArrayList<>();
+    /*@OneToMany(targetEntity = Match.class)
+    private List<Match> matches = new ArrayList<>();*/
 
     public Season(String name, Date startDate, Date endDate)
     {
@@ -36,7 +37,23 @@ public class Season {
     public Season() {
     }
 
-    private void addMatch(Match match){
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /*private void addMatch(Match match){
         matches.add(match);
     }
 
@@ -47,7 +64,7 @@ public class Season {
 
     public void setMatches(List<Match> matches) {
         this.matches = matches;
-    }
+    }*/
 
     public Date getStartDate() {
         return startDate;

@@ -6,8 +6,8 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <class>com.bechtle.model.Season</class>
         <class>com.bechtle.model.Player</class>
-        <class>com.bechtle.model.Match</class>
         <class>com.bechtle.model.Matchtype</class>
+        <class>com.bechtle.model.Match</class>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
             <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/kickerstats" />
@@ -16,7 +16,7 @@
 
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>
             <property name="hibernate.show_sql" value="true" />
-            <property name="hibernate.hbm2ddl.auto" value="create" />
+            <property name="hibernate.hbm2ddl.auto" value="update" />
         </properties>
     </persistence-unit>
 

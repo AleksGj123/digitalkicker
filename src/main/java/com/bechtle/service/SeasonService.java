@@ -10,42 +10,42 @@ import java.util.List;
 
 public class SeasonService {
 
-    private static EntityManagerFactory emFactory = Persistence.createEntityManagerFactory("KickerPersistence");
-    private static EntityManager entityManager = emFactory.createEntityManager();
 
-    public static Season createSeason(String name, Date start, Date end) {
+    public void createSeason(Season s) {
+
+        EntityManagerFactory emFactory = Persistence.createEntityManagerFactory("KickerPersistence");
+        EntityManager entityManager= emFactory.createEntityManager();
 
         entityManager.getTransaction().begin();
 
-        Season season = new Season(name, start, end);
-        entityManager.persist(season);
+        entityManager.persist(s);
         entityManager.getTransaction().commit();
 
-        close();
-
-        return season;
+        entityManager.close();
+        emFactory.close();
     }
 
-    public static Season getSeasons(long seasonId){
+    public Season getSeasons(long seasonId){
 
+        EntityManagerFactory emFactory = Persistence.createEntityManagerFactory("KickerPersistence");
+        EntityManager entityManager= emFactory.createEntityManager();
         entityManager.getTransaction().begin();
         Season season = entityManager.find(Season.class, seasonId );
-
+        entityManager.close();
+        emFactory.close();
         return season;
 
     }
 
-    public static List<Season> getAllSeasons(){
+    public List<Season> getAllSeasons(){
 
+        EntityManagerFactory emFactory = Persistence.createEntityManagerFactory("KickerPersistence");
+        EntityManager entityManager= emFactory.createEntityManager();
         entityManager.getTransaction().begin();
         List<Season> allSeasons = entityManager.createQuery("select s from Season as s").getResultList();
 
-        close();
-        return allSeasons;
-    }
-
-    private static void close(){
         entityManager.close();
         emFactory.close();
+        return allSeasons;
     }
 }

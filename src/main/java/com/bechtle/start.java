@@ -1,6 +1,7 @@
 package com.bechtle;
 
 import com.bechtle.model.Player;
+import com.bechtle.model.Season;
 import com.bechtle.service.SeasonService;
 import net.formio.FormData;
 import net.formio.FormMapping;
@@ -30,6 +31,8 @@ public class start {
 
     public static void main(String[] args) {
 
+
+        System.setProperty("hibernate.dialect.storage_engine", "myisam");
         final VelocityTemplateEngine velocityTemplateEngine = new VelocityTemplateEngine();
 
         port(4444);
@@ -38,7 +41,7 @@ public class start {
 
         // match
         path("/match", () -> {
-            before("/*", (q, a) -> System.out.println("Matches ..."));
+            before("/*", (q, a) -> System.out.println("Match ..."));
             post("", (req, res) -> {
                 return "create new match";
             });
@@ -63,10 +66,16 @@ public class start {
             before("/*", (q, a) -> System.out.println("Seasons ..."));
             post("", (req, res) -> {
 
-                String name = "TestSeason";
+                String aleks = req.queryParams("aleks");
+                System.out.println("----------------------------------------------------"+aleks);
+
+                String name = "TestSeason" +aleks;
                 Date start = new Date();
                 Date end = new Date();
-                SeasonService.createSeason(name, start, end);
+
+                Season s = new Season(name,start,end);
+                SeasonService ss = new SeasonService();
+                ss.createSeason(s);
                 return "created new season";
             });
             get("/:id",  (req, res) -> {

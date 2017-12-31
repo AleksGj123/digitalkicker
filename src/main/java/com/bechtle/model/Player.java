@@ -10,7 +10,7 @@ import java.util.List;
 public class Player {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy= GenerationType.SEQUENCE)
     private long id;
 
     @NotEmpty
@@ -36,8 +36,7 @@ public class Player {
 
     private String nickname;
 
-    @OneToMany(targetEntity = Match.class)
-    private List<Match> matches;
+
 
     public Player(String forename, String surname, String email, String password, String passwordRepeat,
                   String biography, String nickname) {

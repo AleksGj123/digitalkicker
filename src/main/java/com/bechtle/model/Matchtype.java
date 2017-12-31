@@ -11,7 +11,7 @@ import javax.persistence.Id;
 public class Matchtype {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy= GenerationType.SEQUENCE)
     private long id;
 
     @NotEmpty
@@ -26,6 +26,10 @@ public class Matchtype {
     }
 
     public Matchtype() {
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getName() {
