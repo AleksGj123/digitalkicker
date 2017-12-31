@@ -53,6 +53,12 @@
             <version>5.2.12.Final</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>0.4</version>
+        </dependency>
+
 
         <dependency>
             <groupId>javax.el</groupId>

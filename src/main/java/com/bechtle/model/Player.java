@@ -36,7 +36,7 @@ public class Player {
 
     private String nickname;
 
-
+    // ---------------- constructors ------------------
 
     public Player(String forename, String surname, String email, String password, String passwordRepeat,
                   String biography, String nickname) {
@@ -50,6 +50,25 @@ public class Player {
     }
 
     public Player() {
+    }
+
+    // ---------------- getters and setters ------------------
+
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
     public String getNickname() {

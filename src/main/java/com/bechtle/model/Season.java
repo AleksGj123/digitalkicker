@@ -24,8 +24,10 @@ public class Season {
     @NotEmpty
     private Date endDate;
 
-    /*@OneToMany(targetEntity = Match.class)
-    private List<Match> matches = new ArrayList<>();*/
+    @OneToMany(targetEntity = Match.class)
+    private List<Match> matches = new ArrayList<>();
+
+    // ---------------- constructors ------------------
 
     public Season(String name, Date startDate, Date endDate)
     {
@@ -36,6 +38,9 @@ public class Season {
 
     public Season() {
     }
+
+
+    // ---------------- getters and setters ------------------
 
     public long getId() {
         return id;
@@ -53,7 +58,7 @@ public class Season {
         this.name = name;
     }
 
-    /*private void addMatch(Match match){
+    private void addMatch(Match match){
         matches.add(match);
     }
 
@@ -64,7 +69,7 @@ public class Season {
 
     public void setMatches(List<Match> matches) {
         this.matches = matches;
-    }*/
+    }
 
     public Date getStartDate() {
         return startDate;

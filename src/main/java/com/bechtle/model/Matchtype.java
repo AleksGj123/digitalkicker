@@ -20,6 +20,8 @@ public class Matchtype {
     @NotEmpty
     private int goalLimit;
 
+    // ---------------- constructors ------------------
+
     public Matchtype(String name, int goalLimit) {
         this.name = name;
         this.goalLimit = goalLimit;
@@ -27,6 +29,8 @@ public class Matchtype {
 
     public Matchtype() {
     }
+
+    // ---------------- getters and setters ------------------
 
     public long getId() {
         return id;

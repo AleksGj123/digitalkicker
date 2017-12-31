@@ -38,10 +38,29 @@ public class Match {
     @OneToOne(optional = false)
     private Season season;
 
+    // ---------------- constructors ------------------
 
+    public Match(Player keeperTeam1, Player strikerTeam1, Player keeperTeam2, Player strikerTeam2, Matchtype matchtype,
+                 Season season) {
+        this.keeperTeam1 = keeperTeam1;
+        this.strikerTeam1 = strikerTeam1;
+        this.keeperTeam2 = keeperTeam2;
+        this.strikerTeam2 = strikerTeam2;
+        this.matchtype = matchtype;
+        this.season = season;
+    }
 
 
     // ---------------- getters and setters ------------------
+
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getStatus() {
         return status;

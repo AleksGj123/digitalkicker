@@ -2,6 +2,7 @@ package com.bechtle;
 
 import com.bechtle.model.Player;
 import com.bechtle.model.Season;
+import com.bechtle.service.PlayerService;
 import com.bechtle.service.SeasonService;
 import net.formio.FormData;
 import net.formio.FormMapping;
@@ -13,6 +14,7 @@ import spark.ModelAndView;
 import spark.template.velocity.VelocityTemplateEngine;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -66,10 +68,7 @@ public class start {
             before("/*", (q, a) -> System.out.println("Seasons ..."));
             post("", (req, res) -> {
 
-                String aleks = req.queryParams("aleks");
-                System.out.println("----------------------------------------------------"+aleks);
-
-                String name = "TestSeason" +aleks;
+                String name = "TestSeason";
                 Date start = new Date();
                 Date end = new Date();
 
@@ -102,6 +101,8 @@ public class start {
             player.setForename("Aleks");
             player.setEmail("Aleksandar.Gjurcinov@bechtle.com");
             player.setSurname("Gj");
+            player.setPassword("aleks123");
+            player.setPasswordRepeat("aleks123");
             FormData<Player> formData = new FormData<>(player, ValidationResult.empty);
 
             FormMapping<Player> filledForm = playerForm.fill(formData);
@@ -117,26 +118,17 @@ public class start {
 
             final HttpServletRequest raw = req.raw();
 
+
+            PlayerService playerService = new PlayerService();
+
             RequestParams params = new ServletRequestParams(req.raw());
-            FormData<Player> formData = playerForm.bind(params);
 
 
-            FormMapping<Player> filledForm = filledForm = playerForm.fill(formData);;
-            if (formData.isValid()) {
-                Player player = formData.getData();
-                System.out.println(player.getForename());
-                System.out.println(player.getSurname());
+            ValidationResult validationResult = playerForm.bind(params).getValidationResult();
+            System.out.println("ALeks");
+            System.out.println(validationResult);
 
-
-            }
-            else {
-                final ValidationResult validationResult = formData.getValidationResult();
-                System.out.println(validationResult);
-            }
-
-            final HashMap<String, FormMapping<Player>> stringPlayerHashMap = new HashMap<>();
-            stringPlayerHashMap.put("playerForm", filledForm);
-            return new ModelAndView(stringPlayerHashMap, "views/player.vm");
+            return new ModelAndView(playerService.validatePlayer(playerForm.bind(params)), "views/player.vm");
         }, velocityTemplateEngine);
 
     }
