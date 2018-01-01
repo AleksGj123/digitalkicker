@@ -1,0 +1,93 @@
+<html>
+
+<html lang="en">
+    #include("/views/layout.vm")
+    <body>
+
+        <div class="container container-aa">
+            <div class="container container-a">
+                <br>
+                #set($fields = $playerForm.fields)
+
+                #set($validationInfos = $playerForm.validationResult.fieldMessages)
+                #if (($validationInfos ) && ($validationInfos.size() > 0))
+                    #foreach($validationInfo in $validationInfos)
+                        <div class="alert alert-danger" role="alert">
+                            <strong>Oh snap!</strong> Change a few things up and try submitting again. + $validationInfo
+                        </div>
+                    #end
+                #end
+                <form action="/player" method="post">
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="$fields.forename.name">Forename:</label>
+                            <input type="text" class="form-control"
+                                   id="$fields.forename.name"
+                                   name="$fields.forename.name"
+                                   value="$fields.forename.value"
+                                   placeholder="Max">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="$fields.surname.name">Surname:</label>
+                            <input type="text" class="form-control"
+                                   id="$fields.surname.name"
+                                   name="$fields.surname.name"
+                                   value="$fields.surname.value"
+                                   placeholder="Mustermann">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="$fields.nickname.name">Nickname:</label>
+                            <input type="text" class="form-control"
+                                   id="$fields.nickname.name"
+                                   name="$fields.nickname.name"
+                                   value="$fields.nickname.value"
+                                   placeholder="The Thunder">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <label for="$fields.email.name">Email:</label>
+                        <input type="text" class="form-control"
+                               id="$fields.email.name"
+                               name="$fields.email.name"
+                               value="$fields.email.value"
+                               placeholder="Max@Mustermann.de">
+
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="$fields.password.name">Password</label>
+                            <input type="password" class="form-control"
+                                   id="$fields.password.name"
+                                   name="$fields.password.name"
+                                   value="$fields.password.value"
+                                   placeholder="Password">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="$fields.passwordRepeat.name">Repeat password</label>
+                            <input type="password" class="form-control"
+                                   id="$fields.passwordRepeat.name"
+                                   name="$fields.passwordRepeat.name"
+                                   value="$fields.passwordRepeat.value"
+                                   placeholder="Password">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12" >
+                        <label for="$fields.biography.name">Biography</label>
+                        <textarea class="form-control" id="exampleFormControlTextarea1"
+                                  placeholder="Your bio"
+                                  name="$fields.biography.name"
+                                  rows="4">$fields.biography.value</textarea>
+                    </div>
+                    <div class="container">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+
+
+            </div>
+        </div>
+    </body>
+</html>

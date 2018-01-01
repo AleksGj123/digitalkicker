@@ -13,11 +13,9 @@ import net.formio.validation.ValidationResult;
 import spark.ModelAndView;
 import spark.template.velocity.VelocityTemplateEngine;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import static spark.Spark.before;
 import static spark.Spark.get;
@@ -92,10 +90,53 @@ public class start {
             });*/
         });
 
-        get("/test", (req, res) -> {
-            return new ModelAndView(new HashMap<>(), "views/player.vm");
-        }, velocityTemplateEngine);
-        get("/player", (req, res) -> {
+
+        // players
+        path("/player", () -> {
+            before("/*", (q, a) -> System.out.println("Players ..."));
+            post("", (req, res) -> {
+
+                RequestParams params = new ServletRequestParams(req.raw());
+                FormData<Player> bind = playerForm.bind(params);
+
+                ValidationResult validationResult = bind.getValidationResult();
+
+                PlayerService playerService = new PlayerService();
+                HashMap<String, FormMapping<Player>> stringFormMappingHashMap = playerService.validatePlayer(playerForm.bind(params));
+
+                FormMapping<Player> playerFormMapping = stringFormMappingHashMap.get(0);
+
+                if(playerForm.bind(params).isValid()){
+                    Player player = bind.getData();
+                    playerService.createPlayer(player);
+                }
+
+                return new ModelAndView(stringFormMappingHashMap, "views/player/player.vm");
+
+            }, velocityTemplateEngine);
+            get("/list",  (req, res) -> {
+                PlayerService playerService = new PlayerService();
+
+                HashMap<String, List<Player>> playersMap = new HashMap<>();
+                playersMap.put("players", playerService.getPlayers());
+                return new ModelAndView(playersMap, "views/player/players.vm");
+            }, velocityTemplateEngine);
+            get("/new",  (req, res) -> {
+                return new ModelAndView(new HashMap<>(), "views/player/player.vm");
+            }, velocityTemplateEngine);
+            get("/:id",  (req, res) -> {
+                return new ModelAndView(new HashMap<>(), "views/player/player.vm");
+            }, velocityTemplateEngine);
+            put("/:status", (req, res) -> {
+                final String command = req.params(":status");
+                return command;
+            });
+            /*delete("/remove",  (req, res) -> {
+                return "";
+            });*/
+        });
+
+        /*get("/player", (req, res) -> {
 
             Player player = new Player();
             player.setForename("Aleks");
@@ -103,6 +144,7 @@ public class start {
             player.setSurname("Gj");
             player.setPassword("aleks123");
             player.setPasswordRepeat("aleks123");
+            player.setBiography("bla");
             FormData<Player> formData = new FormData<>(player, ValidationResult.empty);
 
             FormMapping<Player> filledForm = playerForm.fill(formData);
@@ -111,13 +153,10 @@ public class start {
             final HashMap<String, Object> stringPlayerHashMap = new HashMap<>();
             stringPlayerHashMap.put("playerForm", filledForm);
 
-            return new ModelAndView(stringPlayerHashMap, "views/player.vm");
-        }, velocityTemplateEngine);
+            return new ModelAndView(stringPlayerHashMap, "views/player/player.vm");
+        }, velocityTemplateEngine);*/
 
-        post("/player", (req, res) -> {
-
-            final HttpServletRequest raw = req.raw();
-
+        /*post("/player", (req, res) -> {
 
             PlayerService playerService = new PlayerService();
 
@@ -128,8 +167,8 @@ public class start {
             System.out.println("ALeks");
             System.out.println(validationResult);
 
-            return new ModelAndView(playerService.validatePlayer(playerForm.bind(params)), "views/player.vm");
-        }, velocityTemplateEngine);
+            return new ModelAndView(playerService.validatePlayer(playerForm.bind(params)), "views/player/player.vm");
+        }, velocityTemplateEngine);*/
 
     }
 

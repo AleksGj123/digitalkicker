@@ -19,7 +19,14 @@ public class PlayerService {
     private static final FormMapping<Player> playerForm = Forms.automatic(Player.class, "player").build();
 
     public List<Player> getPlayers(){
-        return null;
+        EntityManager entityManager = JPAUtil.getEntityManager();
+
+        entityManager.getTransaction().begin();
+        List<Player> allPlayers = entityManager.createQuery("select p from Player as p").getResultList();
+
+        entityManager.close();
+        JPAUtil.shutdown();
+        return allPlayers;
     }
 
     public long createPlayer(Player newPlayer){
@@ -31,6 +38,11 @@ public class PlayerService {
         newPlayer.setPasswordHash(hashpw);
 
         entityManager.persist(newPlayer);
+        System.out.println(newPlayer.getEmail());
+        System.out.println(newPlayer.getPasswordHash());
+        System.out.println(newPlayer.getNickname());
+        System.out.println(newPlayer.getForename());
+        System.out.println(newPlayer.getSurname());
         entityManager.getTransaction().commit();
 
         entityManager.close();
@@ -39,21 +51,33 @@ public class PlayerService {
         return newPlayer.getId();
     }
 
-    public HashMap validatePlayer(final FormData<Player> formData){
+    public HashMap<String, FormMapping<Player>> validatePlayer(final FormData<Player> formData){
 
-        FormMapping<Player> filledForm = null;
+        FormMapping<Player> filledForm = playerForm.fill(formData);
 
-        if(formData.isValid()){
-            Player player = formData.getData();
-            if( !(player.getPassword().equals(player.getPasswordRepeat())) ){
+        Player player = formData.getData();
 
+        String password = player.getPassword();
+        String passwordRepeat = player.getPasswordRepeat();
+
+        if( (password!= null && passwordRepeat!= null) && !(password.equals(passwordRepeat)) ){
+
+            if (filledForm.getValidationResult().getFieldMessages().isEmpty()){
                 FormData<Player> playerFormData =
                         new FormData<>(formData.getData(), createValidationResultForSamePassword(formData));
                 filledForm = playerForm.fill(playerFormData);
             }
-            else {
-                filledForm = playerForm.fill(formData);
+            else{
+
+                Map<String, List<ConstraintViolationMessage>> fieldMessages = filledForm.getValidationResult().getFieldMessages();
+                HashMap newFieldMessages = new HashMap(fieldMessages);
+                newFieldMessages.put("player-passwordRepeat", getConstraintViolationMessage());
+                newFieldMessages.put("player-password", getConstraintViolationMessage());
+                ValidationResult validationResult = new ValidationResult(newFieldMessages, filledForm.getValidationResult().getGlobalMessages());
+                FormData<Player> newPlayerFormData = new FormData<>(formData.getData(), validationResult);
+                filledForm = playerForm.fill(newPlayerFormData);
             }
+
         }
         else{
             filledForm = playerForm.fill(formData);
@@ -62,9 +86,7 @@ public class PlayerService {
         final HashMap<String, FormMapping<Player>> stringPlayerHashMap = new HashMap<>();
         stringPlayerHashMap.put("playerForm", filledForm);
 
-        ValidationResult validationResult = formData.getValidationResult();
-        System.out.println("AAAA");
-        System.out.println(validationResult);
+        //ValidationResult validationResult = formData.getValidationResult();
 
         return stringPlayerHashMap;
     }

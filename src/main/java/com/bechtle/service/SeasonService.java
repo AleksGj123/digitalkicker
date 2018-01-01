@@ -11,8 +11,6 @@ public class SeasonService {
 
 
     public Long createSeason(Season s) {
-
-
         EntityManager entityManager = JPAUtil.getEntityManager();
         entityManager.getTransaction().begin();
 
@@ -37,8 +35,6 @@ public class SeasonService {
     }
 
     public List<Season> getAllSeasons(){
-
-
         EntityManager entityManager = JPAUtil.getEntityManager();
 
         entityManager.getTransaction().begin();

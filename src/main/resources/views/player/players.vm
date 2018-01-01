@@ -1,0 +1,34 @@
+<html>
+
+    #include("/views/layout.vm")
+
+HASDSAHDSA
+    <body>
+        <div class="container container-aa">
+            <div class="container container-a">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Forname</th>
+                        <th>Nickname</th>
+                        <th>Surename</th>
+                        <th>Edit</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        #foreach($player in $players)
+                            <tr>
+                                <td>Aleks</td>
+                                <td>The sherrif</td>
+                                <td>Gjurcinov</td>
+                                <td><a href="/player/:id">edit</a> </td>
+                            </tr>
+                        #end
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+
+</html>
