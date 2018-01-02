@@ -4,6 +4,7 @@ import com.bechtle.model.Player;
 import com.bechtle.model.Season;
 import com.bechtle.service.PlayerService;
 import com.bechtle.service.SeasonService;
+import com.bechtle.util.Constants;
 import net.formio.FormData;
 import net.formio.FormMapping;
 import net.formio.Forms;
@@ -16,6 +17,7 @@ import spark.template.velocity.VelocityTemplateEngine;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import static spark.Spark.before;
 import static spark.Spark.get;
@@ -99,17 +101,16 @@ public class start {
                 RequestParams params = new ServletRequestParams(req.raw());
                 FormData<Player> bind = playerForm.bind(params);
 
-                ValidationResult validationResult = bind.getValidationResult();
-
                 PlayerService playerService = new PlayerService();
-                HashMap<String, FormMapping<Player>> stringFormMappingHashMap = playerService.validatePlayer(playerForm.bind(params));
-
-                FormMapping<Player> playerFormMapping = stringFormMappingHashMap.get(0);
-
-                if(playerForm.bind(params).isValid()){
+                HashMap<String, Object> stringFormMappingHashMap = playerService.validatePlayer(playerForm.bind(params));
+                FormMapping<Player> playerFormMapping = (FormMapping<Player>) stringFormMappingHashMap.get(Constants.PLAYERFORM);
+                if(playerForm.bind(params).isValid() && (playerFormMapping.getValidationResult().isEmpty()) ){
                     Player player = bind.getData();
                     playerService.createPlayer(player);
                 }
+
+                ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages");
+                stringFormMappingHashMap.put("messages", bundle);
 
                 return new ModelAndView(stringFormMappingHashMap, "views/player/player.vm");
 

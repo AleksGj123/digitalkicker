@@ -1,6 +1,7 @@
 package com.bechtle.service;
 
 import com.bechtle.model.Player;
+import com.bechtle.util.Constants;
 import com.bechtle.util.JPAUtil;
 import net.formio.FormData;
 import net.formio.FormMapping;
@@ -32,17 +33,14 @@ public class PlayerService {
     public long createPlayer(Player newPlayer){
         EntityManager entityManager = JPAUtil.getEntityManager();
 
+        entityManager.getTransaction().begin();
+
         String pw = newPlayer.getPassword();
         String hashpw = BCrypt.hashpw(pw, BCrypt.gensalt());
 
         newPlayer.setPasswordHash(hashpw);
 
         entityManager.persist(newPlayer);
-        System.out.println(newPlayer.getEmail());
-        System.out.println(newPlayer.getPasswordHash());
-        System.out.println(newPlayer.getNickname());
-        System.out.println(newPlayer.getForename());
-        System.out.println(newPlayer.getSurname());
         entityManager.getTransaction().commit();
 
         entityManager.close();
@@ -51,7 +49,7 @@ public class PlayerService {
         return newPlayer.getId();
     }
 
-    public HashMap<String, FormMapping<Player>> validatePlayer(final FormData<Player> formData){
+    public HashMap<String, Object> validatePlayer(final FormData<Player> formData){
 
         FormMapping<Player> filledForm = playerForm.fill(formData);
 
@@ -83,8 +81,8 @@ public class PlayerService {
             filledForm = playerForm.fill(formData);
         }
 
-        final HashMap<String, FormMapping<Player>> stringPlayerHashMap = new HashMap<>();
-        stringPlayerHashMap.put("playerForm", filledForm);
+        final HashMap<String, Object> stringPlayerHashMap = new HashMap<>();
+        stringPlayerHashMap.put(Constants.PLAYERFORM, filledForm);
 
         //ValidationResult validationResult = formData.getValidationResult();
 

@@ -10,10 +10,11 @@
                 #set($fields = $playerForm.fields)
 
                 #set($validationInfos = $playerForm.validationResult.fieldMessages)
+
                 #if (($validationInfos ) && ($validationInfos.size() > 0))
-                    #foreach($validationInfo in $validationInfos)
+                    #foreach($validationInfoMapEntry in $validationInfos.entrySet())
                         <div class="alert alert-danger" role="alert">
-                            <strong>Oh snap!</strong> Change a few things up and try submitting again. + $validationInfo
+                            <strong>Oh snap!</strong> Change a few things up and try submitting again.  $messages.getString($validationInfoMapEntry.key) $messages.getString($validationInfoMapEntry.value.get(0).msgKey)
                         </div>
                     #end
                 #end
