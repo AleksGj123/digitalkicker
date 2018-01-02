@@ -50,6 +50,9 @@ public class Match {
         this.season = season;
     }
 
+    public Match() {
+    }
+
 
     // ---------------- getters and setters ------------------
 

@@ -4,6 +4,7 @@ import net.formio.validation.constraints.Email;
 import net.formio.validation.constraints.NotEmpty;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -35,6 +36,13 @@ public class Player {
     private String biography;
 
     private String nickname;
+
+    @ManyToMany
+    @JoinTable(
+            name="player_matches",
+            joinColumns=@JoinColumn(name="player_id", referencedColumnName="id"),
+            inverseJoinColumns=@JoinColumn(name="match_id", referencedColumnName="id"))
+    private List<Match> matches;
 
     // ---------------- constructors ------------------
 
@@ -126,4 +134,13 @@ public class Player {
     public void setPasswordRepeat(String passwordRepeat) {
         this.passwordRepeat = passwordRepeat;
     }
+
+    public List<Match> getMatches() {
+        return matches;
+    }
+
+    /*
+    public void setMatches(List<Match> matches) {
+        this.matches = matches;
+    }*/
 }
