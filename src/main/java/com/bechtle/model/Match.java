@@ -14,10 +14,8 @@ public class Match {
     @NotEmpty
     private Status status;
 
-    @NotEmpty
     private int goalsTeam1;
 
-    @NotEmpty
     private int goalsTeam2;
 
     @OneToOne(optional = false)

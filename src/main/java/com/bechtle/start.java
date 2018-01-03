@@ -4,6 +4,7 @@ import com.bechtle.model.Match;
 import com.bechtle.model.Player;
 import com.bechtle.model.Season;
 import com.bechtle.service.MatchService;
+import com.bechtle.service.MatchTypeService;
 import com.bechtle.service.PlayerService;
 import com.bechtle.service.SeasonService;
 import com.bechtle.util.Constants;
@@ -48,9 +49,6 @@ public class start {
             post("", (req, res) -> {
                 return "create new match";
             });
-            get("/:id",  (req, res) -> {
-                return req.params();
-            });
             get("/list",  (req, res) -> {
                 MatchService matchService = new MatchService();
                 List<Match> allMatches = matchService.getAllMatches();
@@ -63,10 +61,27 @@ public class start {
             get("/new",  (req, res) -> {
                 HashMap<String, Object> map = new HashMap<>();
 
+                // init empty form ...
                 FormData<Match> formData = new FormData<>(new Match(), ValidationResult.empty);
                 FormMapping<Match> filledForm = matchForm.fill(formData);
 
+                // now get all players
+                PlayerService playerService = new PlayerService();
+                List<Player> players = playerService.getPlayers();
+
+                // ... get all seasons
+                SeasonService seasonService = new SeasonService();
+                List<Season> allSeasons = seasonService.getAllSeasons();
+
+                // ... get all matchTypes
+                MatchTypeService matchTypeService = new MatchTypeService();
+
+
                 map.put(Constants.MATCH_FORM, filledForm);
+                map.put(Constants.PLAYERS, players);
+                map.put(Constants.SEASONS, allSeasons);
+                //map.put(Constants.MATCH_TYPES, allMatchTypes);
+
                 return new ModelAndView(map, "views/match/match.vm");
             }, velocityTemplateEngine);
             get("/:id", (req, res) -> {

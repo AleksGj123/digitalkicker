@@ -13,7 +13,6 @@ public class Season {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
     @NotEmpty
@@ -43,6 +42,7 @@ public class Season {
 
     // ---------------- getters and setters ------------------
 
+    @Ignored
     public long getId() {
         return id;
     }

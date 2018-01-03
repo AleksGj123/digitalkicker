@@ -7,29 +7,6 @@
     #include("/views/layout.vm")
     #set($fields = $matchForm.fields)
 
-    <script>
-        $(document).ready(function(){
-            var date_input=$('input[name="$fields.startDate.name"]');
-            var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
-            var options={
-                format: 'dd/mm/yyyy',
-                container: container,
-                todayHighlight: true,
-                autoclose: true,
-            };
-            date_input.datepicker(options);
-
-            var date_input2=$('input[name="$fields.endDate.name"]');
-            var container2=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
-            var options2={
-                format: 'dd/mm/yyyy',
-                container: container,
-                todayHighlight: true,
-                autoclose: true,
-            };
-            date_input2.datepicker(options2);
-        })
-    </script>
     <body>
 
         <div class="container container-aa">
@@ -45,7 +22,7 @@
                     #end
                 #end
                 <div class="col-lg-6">
-                    <form action="/season" method="post">
+                    <form action="/match" method="post">
 
                         <div class="form-group">
                             <label for="$fields.name.name">Season-name:</label>
@@ -55,6 +32,34 @@
                                    value="$fields.name.value"
                                    placeholder="Super Season">
                         </div>
+
+                        <label for="sel1">Team 1 Keeper :</label>
+                        <select class="form-control" id="sel1" name="">
+                            #foreach($player in $players)
+                                <option value="$player.id">$player.forename</option>
+                            #end
+                        </select>
+
+                        <label for="sel1">Team 1 Striker :</label>
+                        <select class="form-control" id="sel1" name="">
+                            #foreach($player in $players)
+                                <option value="$player.id">$player.forename</option>
+                            #end
+                        </select>
+
+                        <label for="sel1">Team 2 Keeper :</label>
+                        <select class="form-control" id="sel1" name="">
+                            #foreach($player in $players)
+                                <option value="$player.id">$player.forename</option>
+                            #end
+                        </select>
+
+                        <label for="sel1">Team 2 Striker :</label>
+                        <select class="form-control" id="sel1" name="">
+                            #foreach($player in $players)
+                                <option value="$player.id">$player.forename</option>
+                            #end
+                        </select>
 
                         <div class="input-group date">
                             <label class="control-label" for="$fields.startDate.name">Start-date</label>
