@@ -46,14 +46,26 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-md-12">
-                        <label for="$fields.email.name">Email:</label>
-                        <input type="text" class="form-control"
-                               id="$fields.email.name"
-                               name="$fields.email.name"
-                               value="$fields.email.value"
-                               placeholder="Max@Mustermann.de">
 
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="$fields.email.name">Email:</label>
+                            <input type="text" class="form-control"
+                                   id="$fields.email.name"
+                                   name="$fields.email.name"
+                                   value="$fields.email.value"
+                                   placeholder="Max@Mustermann.de">
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox"> Locksafe
+                            </label>
+                        </div>
                     </div>
 
                     <div class="form-row">
@@ -82,8 +94,9 @@
                                   name="$fields.biography.name"
                                   rows="4">$fields.biography.value</textarea>
                     </div>
-                    <div class="container">
-                        <button type="submit" class="btn btn-primary">Submit</button>
+
+                    <div class="form-group col-md-12" >
+                    <button type="submit" class="btn btn-primary">Submit</button>
                     </div>
                 </form>
 

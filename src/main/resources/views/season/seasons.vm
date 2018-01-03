@@ -1,0 +1,41 @@
+<html>
+
+
+<html lang="en">
+<head>
+    #include("/views/layout.vm")
+
+<body>
+<div class="container container-aa">
+    <div class="container container-a">
+        <br>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Season</th>
+                <th>StartDate</th>
+                <th>EndDate</th>
+                <th>Edit</th>
+            </tr>
+            </thead>
+            <tbody>
+                #foreach($season in $seasons)
+                <tr>
+                    <td>$season.name</td>
+                    <td>$season.startDate</td>
+                    <td>$season.endDate</td>
+                    <td><a href="/season/$season.id">edit</a> </td>
+                </tr>
+                #end
+
+            </tbody>
+        </table>
+
+
+    </div>
+</div>
+</body>
+<body>
+</body>
+
+</html>

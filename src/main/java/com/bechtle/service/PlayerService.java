@@ -30,6 +30,16 @@ public class PlayerService {
         return allPlayers;
     }
 
+    private Player getPlayer(Long id){
+        EntityManager entityManager = JPAUtil.getEntityManager();
+        entityManager.getTransaction().begin();
+
+        Player playerForId = entityManager.find(Player.class, id);
+
+        JPAUtil.shutdown();
+        return playerForId;
+    }
+
     public long createPlayer(Player newPlayer){
         EntityManager entityManager = JPAUtil.getEntityManager();
 
@@ -82,7 +92,7 @@ public class PlayerService {
         }
 
         final HashMap<String, Object> stringPlayerHashMap = new HashMap<>();
-        stringPlayerHashMap.put(Constants.PLAYERFORM, filledForm);
+        stringPlayerHashMap.put(Constants.PLAYER_FORM, filledForm);
 
         //ValidationResult validationResult = formData.getValidationResult();
 
@@ -115,6 +125,15 @@ public class PlayerService {
 
     public void updatePlayer(Player player){
 
+        EntityManager entityManager = JPAUtil.getEntityManager();
+
+        entityManager.getTransaction().begin();
+        Player playerToUpdate = entityManager.find(Player.class, player.getId());
+
+        entityManager.merge(playerToUpdate);
+        entityManager.getTransaction().commit();
+
+        JPAUtil.shutdown();
     }
 
     public void deletePlayer(Player player){

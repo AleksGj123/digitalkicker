@@ -5,11 +5,11 @@
 
 
     #include("/views/layout.vm")
-
+    #set($fields = $seasonForm.fields)
 
     <script>
         $(document).ready(function(){
-            var date_input=$('input[name="$fields.start.name"]');
+            var date_input=$('input[name="$fields.startDate.name"]');
             var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
             var options={
                 format: 'dd/mm/yyyy',
@@ -19,7 +19,7 @@
             };
             date_input.datepicker(options);
 
-            var date_input2=$('input[name="$fields.end.name"]');
+            var date_input2=$('input[name="$fields.endDate.name"]');
             var container2=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
             var options2={
                 format: 'dd/mm/yyyy',
@@ -31,12 +31,12 @@
         })
     </script>
     <body>
+
         <div class="container container-aa">
             <div class="container container-a">
 
-                #set($fields = $seasonForm.fields)
-
                 #set($validationInfos = $seasonForm.validationResult.fieldMessages)
+
                 #if($validationInfos.size() > 0)
                     #foreach($validationInfo in $validationInfos)
                         <div class="alert alert-danger" role="alert">
@@ -45,7 +45,7 @@
                     #end
                 #end
                 <div class="col-lg-6">
-                    <form action="/player" method="post">
+                    <form action="/season" method="post">
 
                         <div class="form-group">
                             <label for="$fields.name.name">Season-name:</label>
@@ -57,12 +57,22 @@
                         </div>
 
                         <div class="input-group date">
-                            <label class="control-label" for="$fields.start.name">Start-date</label>
-                            <input class="form-control" id="$fields.start.name" value="$fields.start.value" name="$fields.start.name" placeholder="MM/DD/YYY" type="text"/>
+                            <label class="control-label" for="$fields.startDate.name">Start-date</label>
+                            <input class="form-control" id="$fields.startDate.name"
+                                   value="$fields.startDate.value"
+                                   name="$fields.startDate.name"
+                                   placeholder="MM/DD/YYY"
+                                   type="text"/>
                         </div>
                         <div class="input-group date">
-                            <label class="control-label" for="$fields.start.name">End-date</label>
-                            <input class="form-control" id="$fields.end.name" value="$fields.start.value" name="$fields.end.name" placeholder="MM/DD/YYY" type="text"/>
+                            <label class="control-label" for="$fields.startDate.name">End-date</label>
+                            <input class="form-control"
+                                   id="$fields.endDate.name"
+                                   #*value=" $date.format('dd/MM/yyyy', $fields.startDate.value)"*#
+                                   value="$fields.endDate.value"
+                                   name="$fields.endDate.name"
+                                   placeholder="MM/DD/YYY"
+                                   type="text"/>
                         </div>
 
                         <br>

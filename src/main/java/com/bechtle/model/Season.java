@@ -1,5 +1,6 @@
 package com.bechtle.model;
 
+import net.formio.binding.Ignored;
 import net.formio.validation.constraints.NotEmpty;
 
 import javax.persistence.*;
@@ -63,6 +64,7 @@ public class Season {
     }
 
 
+    @Ignored
     public List<Match> getMatches() {
         return matches;
     }

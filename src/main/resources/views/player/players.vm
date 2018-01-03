@@ -2,31 +2,33 @@
 
     #include("/views/layout.vm")
 
-HASDSAHDSA
     <body>
         <div class="container container-aa">
             <div class="container container-a">
-                <table class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th>Forname</th>
-                        <th>Nickname</th>
-                        <th>Surename</th>
-                        <th>Edit</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        #foreach($player in $players)
+                <br>
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Forname</th>
+                            <th>Nickname</th>
+                            <th>Surename</th>
+                            <th>Edit</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            #foreach($player in $players)
                             <tr>
-                                <td>Aleks</td>
-                                <td>The sherrif</td>
-                                <td>Gjurcinov</td>
-                                <td><a href="/player/:id">edit</a> </td>
+                                <td>$player.surname</td>
+                                <td>$player.nickname</td>
+                                <td>$player.forename</td>
+                                <td><a href="/player/$player.id">edit</a> </td>
                             </tr>
-                        #end
+                            #end
 
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+
+
             </div>
         </div>
     </body>

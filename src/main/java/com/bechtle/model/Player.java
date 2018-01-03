@@ -1,5 +1,6 @@
 package com.bechtle.model;
 
+import net.formio.binding.Ignored;
 import net.formio.validation.constraints.Email;
 import net.formio.validation.constraints.NotEmpty;
 
@@ -36,6 +37,8 @@ public class Player {
     private String biography;
 
     private String nickname;
+
+    private Boolean lokSafe;
 
     @ManyToMany
     @JoinTable(
@@ -135,8 +138,21 @@ public class Player {
         this.passwordRepeat = passwordRepeat;
     }
 
+    public Boolean getLokSafe() {
+        return lokSafe;
+    }
+
+    public void setLokSafe(Boolean lokSafe) {
+        this.lokSafe = lokSafe;
+    }
+
+    @Ignored
     public List<Match> getMatches() {
         return matches;
+    }
+
+    public void addMatch(Match match){
+        matches.add(match);
     }
 
     /*

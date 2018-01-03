@@ -10,8 +10,7 @@ public class JPAUtil {
 
     public static EntityManager getEntityManager() {
 
-        EntityManagerFactory emFactory = Persistence.createEntityManagerFactory("KickerPersistence");
-        if (factory == null) {
+        if (factory == null || !factory.isOpen()) {
             factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
         }
         return factory.createEntityManager();

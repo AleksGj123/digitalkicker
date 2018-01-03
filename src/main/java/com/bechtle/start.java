@@ -1,7 +1,9 @@
 package com.bechtle;
 
+import com.bechtle.model.Match;
 import com.bechtle.model.Player;
 import com.bechtle.model.Season;
+import com.bechtle.service.MatchService;
 import com.bechtle.service.PlayerService;
 import com.bechtle.service.SeasonService;
 import com.bechtle.util.Constants;
@@ -14,10 +16,7 @@ import net.formio.validation.ValidationResult;
 import spark.ModelAndView;
 import spark.template.velocity.VelocityTemplateEngine;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import static spark.Spark.before;
 import static spark.Spark.get;
@@ -30,6 +29,8 @@ import static spark.Spark.staticFileLocation;
 public class start {
 
     private static final FormMapping<Player> playerForm = Forms.automatic(Player.class, "player").build();
+    private static final FormMapping<Season> seasonForm = Forms.automatic(Season.class, "season").build();
+    private static final FormMapping<Match> matchForm = Forms.automatic(Match.class, "match").build();
 
     public static void main(String[] args) {
 
@@ -50,11 +51,26 @@ public class start {
             get("/:id",  (req, res) -> {
                 return req.params();
             });
-            get("",  (req, res) -> {
-                return new ModelAndView(new HashMap<>(), "views/matches.vm");
+            get("/list",  (req, res) -> {
+                MatchService matchService = new MatchService();
+                List<Match> allMatches = matchService.getAllMatches();
+
+                HashMap<String, List<Match>> matchesMap = new HashMap<>();
+                matchesMap.put("matches", allMatches);
+
+                return new ModelAndView(matchesMap, "views/match/matches.vm");
             }, velocityTemplateEngine);
-            put("/:status", (req, res) -> {
-                final String command = req.params(":status");
+            get("/new",  (req, res) -> {
+                HashMap<String, Object> map = new HashMap<>();
+
+                FormData<Match> formData = new FormData<>(new Match(), ValidationResult.empty);
+                FormMapping<Match> filledForm = matchForm.fill(formData);
+
+                map.put(Constants.MATCH_FORM, filledForm);
+                return new ModelAndView(map, "views/match/match.vm");
+            }, velocityTemplateEngine);
+            get("/:id", (req, res) -> {
+                final String command = req.params(":id");
                 return command;
             });
             /*delete("/remove",  (req, res) -> {
@@ -68,20 +84,50 @@ public class start {
             before("/*", (q, a) -> System.out.println("Seasons ..."));
             post("", (req, res) -> {
 
-                String name = "TestSeason";
-                Date start = new Date();
-                Date end = new Date();
+                RequestParams params = new ServletRequestParams(req.raw());
+                FormData<Season> bind = seasonForm.bind(params);
 
-                Season s = new Season(name,start,end);
-                SeasonService ss = new SeasonService();
-                ss.createSeason(s);
+                if(seasonForm.bind(params).isValid()){
+                    Season season = bind.getData();
+                    SeasonService seasonService = new SeasonService();
+                    seasonService.createSeason(season);
+                }
                 return "created new season";
             });
+            get("/list",  (req, res) -> {
+                SeasonService seasonService = new SeasonService();
+
+                HashMap<String, List<Season>> seasonsMap = new HashMap<>();
+                seasonsMap.put("seasons", seasonService.getAllSeasons());
+                //seasonsMap.put("date", "date", new DateTool());
+                return new ModelAndView(seasonsMap, "views/season/seasons.vm");
+            }, velocityTemplateEngine);
+            get("/new",  (req, res) -> {
+                HashMap<String, Object> map = new HashMap<>();
+
+                FormData<Season> formData = new FormData<>(new Season(), ValidationResult.empty);
+                FormMapping<Season> filledForm = seasonForm.fill(formData);
+
+                map.put(Constants.SEASON_FORM, filledForm);
+                return new ModelAndView(map, "views/season/season.vm");
+            }, velocityTemplateEngine);
             get("/:id",  (req, res) -> {
-                return new ModelAndView(new HashMap<>(), "views/season.vm");
+
+                String id = req.params(":id");
+
+                SeasonService seasonService = new SeasonService();
+                Season season = seasonService.getSeason(Long.parseLong(id));
+
+                FormData<Season> formData = new FormData<>(season, ValidationResult.empty);
+                FormMapping<Season> filledForm = seasonForm.fill(formData);
+
+                HashMap<String, Object> seasonsMap = new HashMap<>();
+                seasonsMap.put(Constants.SEASON_FORM, filledForm );
+
+                return new ModelAndView(seasonsMap, "views/season/season.vm");
             }, velocityTemplateEngine);
             get("",  (req, res) -> {
-                return new ModelAndView(new HashMap<>(), "views/season.vm");
+                return new ModelAndView(new HashMap<>(), "views/season/season.vm");
             }, velocityTemplateEngine);
             put("/:status", (req, res) -> {
                 final String command = req.params(":status");
@@ -103,7 +149,7 @@ public class start {
 
                 PlayerService playerService = new PlayerService();
                 HashMap<String, Object> stringFormMappingHashMap = playerService.validatePlayer(playerForm.bind(params));
-                FormMapping<Player> playerFormMapping = (FormMapping<Player>) stringFormMappingHashMap.get(Constants.PLAYERFORM);
+                FormMapping<Player> playerFormMapping = (FormMapping<Player>) stringFormMappingHashMap.get(Constants.PLAYER_FORM);
                 if(playerForm.bind(params).isValid() && (playerFormMapping.getValidationResult().isEmpty()) ){
                     Player player = bind.getData();
                     playerService.createPlayer(player);
@@ -123,7 +169,15 @@ public class start {
                 return new ModelAndView(playersMap, "views/player/players.vm");
             }, velocityTemplateEngine);
             get("/new",  (req, res) -> {
-                return new ModelAndView(new HashMap<>(), "views/player/player.vm");
+                HashMap<String, Object> map = new HashMap<>();
+
+                FormData<Player> formData = new FormData<>(new Player(), ValidationResult.empty);
+                FormMapping<Player> filledForm = playerForm.fill(formData);
+
+                ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages");
+                map.put("messages", bundle);
+                map.put(Constants.PLAYER_FORM, filledForm);
+                return new ModelAndView(map, "views/player/player.vm");
             }, velocityTemplateEngine);
             get("/:id",  (req, res) -> {
                 return new ModelAndView(new HashMap<>(), "views/player/player.vm");

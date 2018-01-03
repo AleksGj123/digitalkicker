@@ -23,7 +23,7 @@ public class SeasonService {
         return s.getId();
     }
 
-    public Season getSeasons(long seasonId){
+    public Season getSeason(long seasonId){
         EntityManager entityManager = JPAUtil.getEntityManager();
 
         entityManager.getTransaction().begin();
