@@ -3,6 +3,7 @@ package com.bechtle.model;
 import net.formio.validation.constraints.NotEmpty;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity(name = "Matches")
 public class Match {
@@ -10,6 +11,8 @@ public class Match {
     @Id
     @GeneratedValue(strategy= GenerationType.SEQUENCE)
     private long id;
+
+    private Date timestamp;
 
     @NotEmpty
     private Status status;
@@ -30,7 +33,6 @@ public class Match {
     @OneToOne
     private Player strikerTeam2;
 
-    @OneToOne(optional = false)
     private Matchtype matchtype;
 
     @OneToOne(optional = false)
@@ -46,6 +48,7 @@ public class Match {
         this.strikerTeam2 = strikerTeam2;
         this.matchtype = matchtype;
         this.season = season;
+        this.timestamp = new Date();
     }
 
     public Match() {
@@ -133,5 +136,13 @@ public class Match {
 
     public void setSeason(Season season) {
         this.season = season;
+    }
+
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
     }
 }

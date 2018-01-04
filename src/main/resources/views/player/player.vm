@@ -18,14 +18,16 @@
                         </div>
                     #end
                 #end
-                <form action="/player" method="post">
+                <form action="/player/new" method="post">
                     <div class="form-row">
                         <div class="form-group col-md-4">
                             <label for="$fields.forename.name">Forename:</label>
                             <input type="text" class="form-control"
                                    id="$fields.forename.name"
                                    name="$fields.forename.name"
-                                   value="$fields.forename.value"
+                                   value=#if($fields.forename.value)"$fields.forename.value"
+                                    #else "Test"
+                                   #end
                                    placeholder="Max">
                         </div>
                         <div class="form-group col-md-4">
@@ -33,7 +35,8 @@
                             <input type="text" class="form-control"
                                    id="$fields.surname.name"
                                    name="$fields.surname.name"
-                                   value="$fields.surname.value"
+                                   value=#if($fields.surname.value)"$fields.surname.value"
+                                    #else "Test"#end
                                    placeholder="Mustermann">
                         </div>
                         <div class="form-group col-md-4">
@@ -41,7 +44,8 @@
                             <input type="text" class="form-control"
                                    id="$fields.nickname.name"
                                    name="$fields.nickname.name"
-                                   value="$fields.nickname.value"
+                                   value=#if($fields.nickname.value)"$fields.nickname.value"
+                                    #else "Test"#end
                                    placeholder="The Thunder">
                         </div>
                     </div>
@@ -53,7 +57,8 @@
                             <input type="text" class="form-control"
                                    id="$fields.email.name"
                                    name="$fields.email.name"
-                                   value="$fields.email.value"
+                                   value=#if($fields.email.value)"$fields.email.value"
+                                    #else "Test@test.de"#end
                                    placeholder="Max@Mustermann.de">
 
                         </div>
@@ -63,7 +68,14 @@
                     <div class="form-group col-md-12">
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox"> Locksafe
+                                <input type="checkbox"
+                                       name="player-loksafe"
+                                       id="player-loksafe"
+                                       value="true"
+                                       #if($loksafe)
+                                           checked
+                                       #end
+                                > Loksafe
                             </label>
                         </div>
                     </div>
@@ -74,7 +86,8 @@
                             <input type="password" class="form-control"
                                    id="$fields.password.name"
                                    name="$fields.password.name"
-                                   value="$fields.password.value"
+                                   value=#if($fields.password.value)"$fields.password.value"
+                                    #else "Test"#end
                                    placeholder="Password">
                         </div>
                         <div class="form-group col-md-6">
@@ -82,7 +95,8 @@
                             <input type="password" class="form-control"
                                    id="$fields.passwordRepeat.name"
                                    name="$fields.passwordRepeat.name"
-                                   value="$fields.passwordRepeat.value"
+                                   value=#if($fields.passwordRepeat.value)"$fields.passwordRepeat.value"
+                                    #else "Test"#end
                                    placeholder="Password">
                         </div>
                     </div>
@@ -92,7 +106,8 @@
                         <textarea class="form-control" id="exampleFormControlTextarea1"
                                   placeholder="Your bio"
                                   name="$fields.biography.name"
-                                  rows="4">$fields.biography.value</textarea>
+                                  rows="4">#if($fields.biography.value)"$fields.biography.value"#else Test#end
+                        </textarea>
                     </div>
 
                     <div class="form-group col-md-12" >

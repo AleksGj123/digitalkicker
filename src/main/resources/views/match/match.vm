@@ -61,24 +61,7 @@
                             #end
                         </select>
 
-                        <div class="input-group date">
-                            <label class="control-label" for="$fields.startDate.name">Start-date</label>
-                            <input class="form-control" id="$fields.startDate.name"
-                                   value="$fields.startDate.value"
-                                   name="$fields.startDate.name"
-                                   placeholder="MM/DD/YYY"
-                                   type="text"/>
-                        </div>
-                        <div class="input-group date">
-                            <label class="control-label" for="$fields.startDate.name">End-date</label>
-                            <input class="form-control"
-                                   id="$fields.endDate.name"
-                                   #*value=" $date.format('dd/MM/yyyy', $fields.startDate.value)"*#
-                                   value="$fields.endDate.value"
-                                   name="$fields.endDate.name"
-                                   placeholder="MM/DD/YYY"
-                                   type="text"/>
-                        </div>
+
 
                         <br>
                         <button type="submit" class="btn btn-primary">Submit</button>

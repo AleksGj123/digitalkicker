@@ -30,7 +30,7 @@ public class PlayerService {
         return allPlayers;
     }
 
-    private Player getPlayer(Long id){
+    public Player getPlayer(Long id){
         EntityManager entityManager = JPAUtil.getEntityManager();
         entityManager.getTransaction().begin();
 

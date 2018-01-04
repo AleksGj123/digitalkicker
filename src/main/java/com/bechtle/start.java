@@ -19,13 +19,7 @@ import spark.template.velocity.VelocityTemplateEngine;
 
 import java.util.*;
 
-import static spark.Spark.before;
-import static spark.Spark.get;
-import static spark.Spark.path;
-import static spark.Spark.port;
-import static spark.Spark.post;
-import static spark.Spark.put;
-import static spark.Spark.staticFileLocation;
+import static spark.Spark.*;
 
 public class start {
 
@@ -157,7 +151,7 @@ public class start {
         // players
         path("/player", () -> {
             before("/*", (q, a) -> System.out.println("Players ..."));
-            post("", (req, res) -> {
+            post("/new", (req, res) -> {
 
                 RequestParams params = new ServletRequestParams(req.raw());
                 FormData<Player> bind = playerForm.bind(params);
@@ -167,7 +161,15 @@ public class start {
                 FormMapping<Player> playerFormMapping = (FormMapping<Player>) stringFormMappingHashMap.get(Constants.PLAYER_FORM);
                 if(playerForm.bind(params).isValid() && (playerFormMapping.getValidationResult().isEmpty()) ){
                     Player player = bind.getData();
+                    String loksafe = req.queryParams("player-loksafe");
+                    if(Boolean.TRUE.equals(Boolean.parseBoolean(loksafe))){
+                        player.setLokSafe(true);
+                    }
+                    else {
+                        player.setLokSafe(false);
+                    }
                     playerService.createPlayer(player);
+                    res.redirect("/player/" + player.getId());
                 }
 
                 ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages");
@@ -195,7 +197,20 @@ public class start {
                 return new ModelAndView(map, "views/player/player.vm");
             }, velocityTemplateEngine);
             get("/:id",  (req, res) -> {
-                return new ModelAndView(new HashMap<>(), "views/player/player.vm");
+
+                String id = req.params(":id");
+
+                PlayerService playerService = new PlayerService();
+                Player player = playerService.getPlayer(Long.parseLong(id));
+
+                HashMap<String, Object> map = new HashMap<>();
+
+                FormData<Player> formData = new FormData<>(player, ValidationResult.empty);
+                FormMapping<Player> filledForm = playerForm.fill(formData);
+                map.put(Constants.PLAYER_FORM, filledForm);
+                map.put(Constants.LOKSAFE, player.getLokSafe());
+
+                return new ModelAndView(map, "views/player/player.vm");
             }, velocityTemplateEngine);
             put("/:status", (req, res) -> {
                 final String command = req.params(":status");

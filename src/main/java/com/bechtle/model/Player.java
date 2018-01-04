@@ -58,6 +58,7 @@ public class Player {
         this.passwordRepeat = passwordRepeat;
         this.biography = biography;
         this.nickname = nickname;
+        this.lokSafe = true;
     }
 
     public Player() {
