@@ -1,5 +1,6 @@
 package com.bechtle.model;
 
+import com.bechtle.util.MatchtypeConverter;
 import net.formio.validation.constraints.NotEmpty;
 
 import javax.persistence.*;
@@ -33,6 +34,7 @@ public class Match {
     @OneToOne
     private Player strikerTeam2;
 
+    @Convert(converter = MatchtypeConverter.class)
     private Matchtype matchtype;
 
     @OneToOne(optional = false)
@@ -49,6 +51,16 @@ public class Match {
         this.matchtype = matchtype;
         this.season = season;
         this.timestamp = new Date();
+        this.status = Status.STARTED;
+    }
+
+    public Match(Player player1, Player player2, Matchtype matchtype, Season season) {
+        this.keeperTeam1 = player1;
+        this.keeperTeam2 = player2;
+        this.matchtype = matchtype;
+        this.season = season;
+        this.timestamp = new Date();
+        this.status = Status.STARTED;
     }
 
     public Match() {

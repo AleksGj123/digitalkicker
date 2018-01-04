@@ -33,18 +33,18 @@
                                             <tr>
                                                 <th>Keeper</th>
                                                 <th>Striker</th>
-                                                <th>Result</th>
+                                                <th>Standing</th>
                                                 <th>Keeper</th>
                                                 <th>Striker</th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             <tr>
-                                                <td>$match.keeperTeam1</td>
-                                                <td>$match.strikerTeam1</td>
+                                                <td>$match.keeperTeam1.forename</td>
+                                                <td>$match.strikerTeam1.forename</td>
                                                 <td>$match.goalsTeam1 : $match.goalsTeam2</td>
-                                                <td>$match.keeperTeam2</td>
-                                                <td>$match.strikerTeam2</td>
+                                                <td>$match.keeperTeam2.forename</td>
+                                                <td>$match.strikerTeam2.forename</td>
                                             </tr>
                                             </tbody>
                                         </table>
@@ -81,11 +81,11 @@
                                             </thead>
                                             <tbody>
                                             <tr>
-                                                <td>$match.keeperTeam1</td>
-                                                <td>$match.strikerTeam1</td>
+                                                <td>$match.keeperTeam1.forename</td>
+                                                <td>$match.strikerTeam1.forename</td>
                                                 <td>$match.goalsTeam1 : $match.goalsTeam2</td>
-                                                <td>$match.keeperTeam2</td>
-                                                <td>$match.strikerTeam2</td>
+                                                <td>$match.keeperTeam2.forename</td>
+                                                <td>$match.strikerTeam2.forename</td>
                                             </tr>
                                             </tbody>
                                         </table>

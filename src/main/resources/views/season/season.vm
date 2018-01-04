@@ -34,6 +34,7 @@
 
         <div class="container container-aa">
             <div class="container container-a">
+                <br>
 
                 #set($validationInfos = $seasonForm.validationResult.fieldMessages)
 
@@ -48,7 +49,7 @@
                     <form action="/season" method="post">
 
                         <div class="form-group">
-                            <label for="$fields.name.name">Season-name:</label>
+                            <label class="control-label" for="$fields.name.name">Season-name:</label>
                             <input type="text" class="form-control"
                                    id="$fields.name.name"
                                    name="$fields.name.name"
@@ -58,9 +59,10 @@
 
                         <div class="input-group date">
                             <label class="control-label" for="$fields.startDate.name">Start-date</label>
-                            <input class="form-control" id="$fields.startDate.name"
-                                   value="$fields.startDate.value"
+                            <input class="form-control"
+                                   id="$fields.startDate.name"
                                    name="$fields.startDate.name"
+                                   value="$fields.startDate.value"
                                    placeholder="MM/DD/YYY"
                                    type="text"/>
                         </div>

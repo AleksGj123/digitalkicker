@@ -1,10 +1,7 @@
 package com.bechtle;
 
-import com.bechtle.model.Match;
-import com.bechtle.model.Player;
-import com.bechtle.model.Season;
+import com.bechtle.model.*;
 import com.bechtle.service.MatchService;
-import com.bechtle.service.MatchTypeService;
 import com.bechtle.service.PlayerService;
 import com.bechtle.service.SeasonService;
 import com.bechtle.util.Constants;
@@ -15,9 +12,16 @@ import net.formio.RequestParams;
 import net.formio.servlet.ServletRequestParams;
 import net.formio.validation.ValidationResult;
 import spark.ModelAndView;
+import spark.Request;
+import spark.Response;
 import spark.template.velocity.VelocityTemplateEngine;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static spark.Spark.*;
 
@@ -25,7 +29,6 @@ public class start {
 
     private static final FormMapping<Player> playerForm = Forms.automatic(Player.class, "player").build();
     private static final FormMapping<Season> seasonForm = Forms.automatic(Season.class, "season").build();
-    private static final FormMapping<Match> matchForm = Forms.automatic(Match.class, "match").build();
 
     public static void main(String[] args) {
 
@@ -37,14 +40,100 @@ public class start {
 
         staticFileLocation("/static");
 
+        MatchService matchService = new MatchService();
+
         // match
         path("/match", () -> {
             before("/*", (q, a) -> System.out.println("Match ..."));
-            post("", (req, res) -> {
-                return "create new match";
+            post("/new", (Request req, Response res) -> {
+
+                SeasonService seasonService = new SeasonService();
+                PlayerService playerService = new PlayerService();
+
+                String matchType = req.queryParams("matchType");
+                // -- you receive only ids --
+                String season = req.queryParams("season");
+                String keeperTeam1 = req.queryParams("keeperTeam1");
+                String keeperTeam2 = req.queryParams("keeperTeam2");
+                String strikerTeam1 = req.queryParams("strikerTeam1");
+                String strikerTeam2 = req.queryParams("strikerTeam2");
+
+                Season s = seasonService.getSeason(Long.parseLong(season));
+                Player kT1 = playerService.getPlayer(Long.parseLong(keeperTeam1));
+                Player kT2 = playerService.getPlayer(Long.parseLong(keeperTeam2));
+
+                if (Matchtype.REGULAR.toString().equals(matchType)){
+
+                    Player sT1 = playerService.getPlayer(Long.parseLong(strikerTeam1));
+                    Player sT2 = playerService.getPlayer(Long.parseLong(strikerTeam2));
+
+                    matchService.createMatch(kT1,sT1,kT2,sT2,s);
+                }
+                else {
+
+                    if (Matchtype.DEATH_MATCH.toString().equals(matchType)){
+                        matchService.createMatch(kT1, kT2, Matchtype.DEATH_MATCH, s);
+                    }
+                    else if(Matchtype.DEATH_MATCH_BO3.toString().equals(matchType))
+                    {
+                        matchService.createMatch(kT1, kT2, Matchtype.DEATH_MATCH_BO3, s);
+                    }
+
+                }
+
+                res.redirect("/match/list");
+                return "";
+            });
+            put("", (req, res) ->{
+
+                // -- required attributes
+                Long matchId = Long.parseLong(req.queryParams("matchId"));
+                int goalsTeam1 = Integer.parseInt(req.queryParams("goalsTeam1"));
+                int goalsTeam2 = Integer.parseInt(req.queryParams("goalsTeam2"));
+
+                Match match = matchService.getMatch(matchId);
+
+
+
+                // check if this match needs to be set to status finished
+                if(goalsTeam1 == 5 || goalsTeam2 == 5){
+
+                    match.setStatus(Status.FINISHED);
+                    matchService.updateMatch(match);
+
+                    if(Matchtype.REGULAR.name().equals(match.getMatchtype())){
+                        // -- check if Deathmatch is necessary --
+                        if (goalsTeam1 == 0){
+                            Player keeperTeam1 = match.getKeeperTeam1();
+                            Player strikerTeam1 = match.getStrikerTeam1();
+
+                            if(matchService.teamOneIsLokSafe(match)){
+                                matchService.createMatch(keeperTeam1, strikerTeam1, Matchtype.DEATH_MATCH_BO3, match.getSeason());
+                            }
+                            else{
+                                matchService.createMatch(keeperTeam1, strikerTeam1, Matchtype.DEATH_MATCH, match.getSeason());
+                            }
+                        }
+                        else if (goalsTeam2 == 0){
+                            Player keeperTeam2 = match.getKeeperTeam2();
+                            Player strikerTeam2 = match.getStrikerTeam2();
+
+                            if(matchService.teamTwoIsLokSafe(match)){
+                                matchService.createMatch(keeperTeam2, strikerTeam2, Matchtype.DEATH_MATCH_BO3, match.getSeason());
+                            }
+                            else{
+                                matchService.createMatch(keeperTeam2, strikerTeam2, Matchtype.DEATH_MATCH, match.getSeason());
+                            }
+                        }
+                    }
+                }
+                // else just update the match
+                else matchService.updateMatch(match);
+
+                return "Ok";
             });
             get("/list",  (req, res) -> {
-                MatchService matchService = new MatchService();
+
                 List<Match> allMatches = matchService.getAllMatches();
 
                 HashMap<String, List<Match>> matchesMap = new HashMap<>();
@@ -55,9 +144,6 @@ public class start {
             get("/new",  (req, res) -> {
                 HashMap<String, Object> map = new HashMap<>();
 
-                // init empty form ...
-                FormData<Match> formData = new FormData<>(new Match(), ValidationResult.empty);
-                FormMapping<Match> filledForm = matchForm.fill(formData);
 
                 // now get all players
                 PlayerService playerService = new PlayerService();
@@ -67,14 +153,10 @@ public class start {
                 SeasonService seasonService = new SeasonService();
                 List<Season> allSeasons = seasonService.getAllSeasons();
 
-                // ... get all matchTypes
-                MatchTypeService matchTypeService = new MatchTypeService();
 
-
-                map.put(Constants.MATCH_FORM, filledForm);
                 map.put(Constants.PLAYERS, players);
                 map.put(Constants.SEASONS, allSeasons);
-                //map.put(Constants.MATCH_TYPES, allMatchTypes);
+                map.put(Constants.MATCH_TYPES, Matchtype.values());
 
                 return new ModelAndView(map, "views/match/match.vm");
             }, velocityTemplateEngine);
@@ -93,14 +175,35 @@ public class start {
             before("/*", (q, a) -> System.out.println("Seasons ..."));
             post("", (req, res) -> {
 
+                List<String> collect = req.queryParams().stream()
+                        .filter(p -> p.equals("season-startDate") || p.equals("season-endDate"))
+                        .collect(Collectors.toList());
+
+                String startDateString = req.queryParams("season-startDate");
+                String endDateString = req.queryParams("season-endDate");
+
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+                Instant startDateInstant = LocalDate.parse(startDateString, formatter).atStartOfDay(ZoneId.systemDefault()).toInstant();
+                Instant endDateInstant = LocalDate.parse(endDateString, formatter).atStartOfDay(ZoneId.systemDefault()).toInstant();
+
+                Date startDate = Date.from(startDateInstant);
+                Date endDate = Date.from(endDateInstant);
+
                 RequestParams params = new ServletRequestParams(req.raw());
                 FormData<Season> bind = seasonForm.bind(params);
 
-                if(seasonForm.bind(params).isValid()){
-                    Season season = bind.getData();
-                    SeasonService seasonService = new SeasonService();
-                    seasonService.createSeason(season);
-                }
+
+                Season season = bind.getData();
+
+                season.setStartDate(startDate);
+                season.setEndDate(endDate);
+                SeasonService seasonService = new SeasonService();
+                seasonService.createSeason(season);
+
+                //if(seasonForm.bind(params).isValid()){}
+
+                res.redirect("/season/list");
                 return "created new season";
             });
             get("/list",  (req, res) -> {
@@ -220,41 +323,6 @@ public class start {
                 return "";
             });*/
         });
-
-        /*get("/player", (req, res) -> {
-
-            Player player = new Player();
-            player.setForename("Aleks");
-            player.setEmail("Aleksandar.Gjurcinov@bechtle.com");
-            player.setSurname("Gj");
-            player.setPassword("aleks123");
-            player.setPasswordRepeat("aleks123");
-            player.setBiography("bla");
-            FormData<Player> formData = new FormData<>(player, ValidationResult.empty);
-
-            FormMapping<Player> filledForm = playerForm.fill(formData);
-
-
-            final HashMap<String, Object> stringPlayerHashMap = new HashMap<>();
-            stringPlayerHashMap.put("playerForm", filledForm);
-
-            return new ModelAndView(stringPlayerHashMap, "views/player/player.vm");
-        }, velocityTemplateEngine);*/
-
-        /*post("/player", (req, res) -> {
-
-            PlayerService playerService = new PlayerService();
-
-            RequestParams params = new ServletRequestParams(req.raw());
-
-
-            ValidationResult validationResult = playerForm.bind(params).getValidationResult();
-            System.out.println("ALeks");
-            System.out.println(validationResult);
-
-            return new ModelAndView(playerService.validatePlayer(playerForm.bind(params)), "views/player/player.vm");
-        }, velocityTemplateEngine);*/
-
     }
 
 

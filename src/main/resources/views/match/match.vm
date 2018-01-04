@@ -11,10 +11,11 @@
 
         <div class="container container-aa">
             <div class="container container-a">
+                <br>
 
                 #set($validationInfos = $seasonForm.validationResult.fieldMessages)
 
-                #if($validationInfos.size() > 0)
+                #if($validationInfos && $validationInfos.size() > 0)
                     #foreach($validationInfo in $validationInfos)
                         <div class="alert alert-danger" role="alert">
                             <strong>Oh snap!</strong> Change a few things up and try submitting again. + $validationInfo
@@ -22,40 +23,58 @@
                     #end
                 #end
                 <div class="col-lg-6">
-                    <form action="/match" method="post">
+                    <form action="/match/new" method="post">
 
-                        <div class="form-group">
-                            <label for="$fields.name.name">Season-name:</label>
-                            <input type="text" class="form-control"
-                                   id="$fields.name.name"
-                                   name="$fields.name.name"
-                                   value="$fields.name.value"
-                                   placeholder="Super Season">
-                        </div>
+                        <label for="sel1">Select season type :</label>
+                        <select class="form-control" id="sel1" name="season" size="2">
+                            #set($selected = false)
+                            #foreach($season in $seasons)
+                                #if($selected == false)
+                                    <option selected value="$season.id">$season.name</option>
+                                    #set($selected = true)
+                                #else
+                                    <option value="$season.id">$season.name</option>
+                                #end
+                            #end
+                        </select>
+
+
+                        <label for="sel1">Select match type :</label>
+                        <select class="form-control" id="sel1" name="matchType" size="3">
+                            #set($selected = false)
+                            #foreach($matchType in $matchTypes)
+                                #if($selected == false)
+                                    <option selected value="$matchType">$matchType.toString()</option>
+                                    #set($selected = true)
+                                #else
+                                    <option value="$matchType">$matchType.toString()</option>
+                                #end
+                            #end
+                        </select>
 
                         <label for="sel1">Team 1 Keeper :</label>
-                        <select class="form-control" id="sel1" name="">
+                        <select class="form-control" id="sel1" name="keeperTeam1">
                             #foreach($player in $players)
                                 <option value="$player.id">$player.forename</option>
                             #end
                         </select>
 
                         <label for="sel1">Team 1 Striker :</label>
-                        <select class="form-control" id="sel1" name="">
+                        <select class="form-control" id="sel1" name="strikerTeam1">
                             #foreach($player in $players)
                                 <option value="$player.id">$player.forename</option>
                             #end
                         </select>
 
                         <label for="sel1">Team 2 Keeper :</label>
-                        <select class="form-control" id="sel1" name="">
+                        <select class="form-control" id="sel1" name="keeperTeam2">
                             #foreach($player in $players)
                                 <option value="$player.id">$player.forename</option>
                             #end
                         </select>
 
                         <label for="sel1">Team 2 Striker :</label>
-                        <select class="form-control" id="sel1" name="">
+                        <select class="form-control" id="sel1" name="strikerTeam2">
                             #foreach($player in $players)
                                 <option value="$player.id">$player.forename</option>
                             #end
@@ -64,7 +83,7 @@
 
 
                         <br>
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="submit" class="btn btn-primary">Create new match</button>
                     </form>
                 </div>
             </div>
