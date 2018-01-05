@@ -22,22 +22,22 @@ public class Match {
 
     private int goalsTeam2;
 
-    @OneToOne(optional = false)
+    @ManyToOne(optional = false)
     private Player keeperTeam1;
 
-    @OneToOne
+    @ManyToOne
     private Player strikerTeam1;
 
-    @OneToOne(optional = false)
+    @ManyToOne(optional = false)
     private Player keeperTeam2;
 
-    @OneToOne
+    @ManyToOne
     private Player strikerTeam2;
 
     @Convert(converter = MatchtypeConverter.class)
     private Matchtype matchtype;
 
-    @OneToOne(optional = false)
+    @ManyToOne(optional = false)
     private Season season;
 
     // ---------------- constructors ------------------

@@ -40,12 +40,8 @@ public class Player {
 
     private Boolean lokSafe;
 
-    @ManyToMany
-    @JoinTable(
-            name="player_matches",
-            joinColumns=@JoinColumn(name="player_id", referencedColumnName="id"),
-            inverseJoinColumns=@JoinColumn(name="match_id", referencedColumnName="id"))
-    private List<Match> matches;
+    @OneToMany(targetEntity = Match.class)
+    private List<Match> matches = new ArrayList<>();
 
     // ---------------- constructors ------------------
 
