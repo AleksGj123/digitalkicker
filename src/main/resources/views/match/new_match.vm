@@ -10,12 +10,11 @@
             <div class="container container-a">
                 <br>
 
-                #set($validationInfos = $seasonForm.validationResult.fieldMessages)
 
-                #if($validationInfos && $validationInfos.size() > 0)
-                    #foreach($validationInfo in $validationInfos)
+                #if($validations && $validations.size() > 0)
+                    #foreach($validation in $validations)
                         <div class="alert alert-danger" role="alert">
-                            <strong>Oh snap!</strong> Change a few things up and try submitting again. + $validationInfo
+                            <strong>Oh snap!</strong> $validation
                         </div>
                     #end
                 #end
@@ -24,13 +23,24 @@
 
                         <label for="sel1">Select season type :</label>
                         <select class="form-control" id="sel1" name="season" size="2">
-                            #set($selected = false)
-                            #foreach($season in $seasons)
-                                #if($selected == false)
-                                    <option selected value="$season.id">$season.name</option>
-                                    #set($selected = true)
-                                #else
-                                    <option value="$season.id">$season.name</option>
+
+                            #if($state && $state.size() > 0)
+                                #foreach($season in $seasons)
+                                    #if($season.id == $state.seasonId)
+                                        <option selected value="$season.id">$season.name</option>
+                                    #else
+                                        <option value="$season.id">$season.name</option>
+                                    #end
+                                #end
+                            #else
+                                #set($selected = false)
+                                #foreach($season in $seasons)
+                                    #if($selected == false)
+                                        <option selected value="$season.id">$season.name</option>
+                                        #set($selected = true)
+                                    #else
+                                        <option value="$season.id">$season.name</option>
+                                    #end
                                 #end
                             #end
                         </select>
@@ -38,42 +48,92 @@
 
                         <label for="sel1">Select match type :</label>
                         <select class="form-control" id="sel1" name="matchType" size="3">
-                            #set($selected = false)
-                            #foreach($matchType in $matchTypes)
-                                #if($selected == false)
-                                    <option selected value="$matchType">$matchType.toString()</option>
-                                    #set($selected = true)
-                                #else
-                                    <option value="$matchType">$matchType.toString()</option>
+                            #if($state && $state.size() > 0)
+                                #foreach($matchType in $matchTypes)
+                                    #if($matchType.toString() == $state.matchTypeId)
+                                        <option selected value="$matchType">$matchType.toString()</option>
+                                    #else
+                                        <option value="$matchType">$matchType.toString()</option>
+                                    #end
+                                #end
+                            #else
+                                #set($selected = false)
+                                #foreach($matchType in $matchTypes)
+                                    #if($selected == false)
+                                        <option selected value="$matchType">$matchType.toString()</option>
+                                        #set($selected = true)
+                                    #else
+                                        <option value="$matchType">$matchType.toString()</option>
+                                    #end
                                 #end
                             #end
                         </select>
 
                         <label for="sel1">Team 1 Keeper :</label>
                         <select class="form-control" id="sel1" name="keeperTeam1">
-                            #foreach($player in $players)
-                                <option value="$player.id">$player.forename</option>
+                            #if($state && $state.size() > 0)
+                                #foreach($player in $players)
+                                    #if($state.keeperTeam1Id == $player.id)
+                                        <option selected value="$player.id">$player.forename</option>
+                                    #else
+                                        <option value="$player.id">$player.forename</option>
+                                    #end
+                                #end
+                            #else
+                                #foreach($player in $players)
+                                    <option value="$player.id">$player.forename</option>
+                                #end
                             #end
                         </select>
 
                         <label for="sel1">Team 1 Striker :</label>
                         <select class="form-control" id="sel1" name="strikerTeam1">
-                            #foreach($player in $players)
-                                <option value="$player.id">$player.forename</option>
+                            #if($state && $state.size() > 0)
+                                #foreach($player in $players)
+                                    #if($state.strikerTeam1Id == $player.id)
+                                        <option selected value="$player.id">$player.forename</option>
+                                    #else
+                                        <option value="$player.id">$player.forename</option>
+                                    #end
+                                #end
+                            #else
+                                #foreach($player in $players)
+                                    <option value="$player.id">$player.forename</option>
+                                #end
                             #end
                         </select>
 
                         <label for="sel1">Team 2 Keeper :</label>
                         <select class="form-control" id="sel1" name="keeperTeam2">
-                            #foreach($player in $players)
-                                <option value="$player.id">$player.forename</option>
+                            #if($state && $state.size() > 0)
+                                #foreach($player in $players)
+                                    #if($state.keeperTeam2Id == $player.id)
+                                        <option selected value="$player.id">$player.forename</option>
+                                    #else
+                                        <option value="$player.id">$player.forename</option>
+                                    #end
+                                #end
+                            #else
+                                #foreach($player in $players)
+                                    <option value="$player.id">$player.forename</option>
+                                #end
                             #end
                         </select>
 
                         <label for="sel1">Team 2 Striker :</label>
                         <select class="form-control" id="sel1" name="strikerTeam2">
-                            #foreach($player in $players)
-                                <option value="$player.id">$player.forename</option>
+                            #if($state && $state.size() > 0)
+                                #foreach($player in $players)
+                                    #if($state.strikerTeam2Id == $player.id)
+                                        <option selected value="$player.id">$player.forename</option>
+                                    #else
+                                        <option value="$player.id">$player.forename</option>
+                                    #end
+                                #end
+                            #else
+                                #foreach($player in $players)
+                                    <option value="$player.id">$player.forename</option>
+                                #end
                             #end
                         </select>
 

@@ -14,6 +14,7 @@
             <span class="button red" id="end-button-no">No</span>
         </div>
         <div class="team black">
+            BLACK
             <div class="live-player">
                 <img class="avatar" src="/images/player.jpg"/>
                 <div class="name">Enrico <span class="nick">The Wall</span> Mischorr</div>
@@ -24,6 +25,7 @@
         </div>
         <img class="live-background" src="/images/table.png"/>
         <div class="team white">
+            WHITE
             <div class="live-player">
                 <img class="avatar" src="/images/player.jpg"/>
                 <div class="name">Rouven <span class="nick">The Hornet</span> Pfeiffer</div>

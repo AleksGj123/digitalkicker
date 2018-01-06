@@ -3,8 +3,13 @@ package com.bechtle.service;
 import com.bechtle.model.*;
 import com.bechtle.util.JPAUtil;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class MatchService {
 
@@ -29,6 +34,20 @@ public class MatchService {
         return match;
     }
 
+    public boolean playersValid(Player... pX ){
+
+        List<Player> collect = Arrays.stream(pX).filter(distinctByKey(Player::getId)).collect(Collectors.toList());
+
+        if(pX.length == collect.size())return true;
+        return false;
+    }
+
+    private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+        Set<Object> seen = ConcurrentHashMap.newKeySet();
+        return t -> seen.add(keyExtractor.apply(t));
+    }
+
+
 
     public long createMatch(Player keeperTeam1, Player strikerTeam1, Player keeperTeam2, Player strikerTeam2, Season season) {
 
@@ -38,15 +57,9 @@ public class MatchService {
 
         Match match = new Match(keeperTeam1, strikerTeam1, keeperTeam2, strikerTeam2, Matchtype.REGULAR, season);
 
-
-
-        // size is necessary else matches are not loaded (lazy associations)
-        // TODO: better approaches are found here: https://www.thoughts-on-java.org/5-ways-to-initialize-lazy-relations-and-when-to-use-them/
-
         Season s = entityManager.find(Season.class, season.getId());
         s.getMatches();
 
-        //q.getSingleResult();
         s.addMatch(match);
         entityManager.merge(season);
 

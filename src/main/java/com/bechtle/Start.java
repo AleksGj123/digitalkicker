@@ -30,6 +30,10 @@ public class Start {
     private static final FormMapping<Player> playerForm = Forms.automatic(Player.class, "player").build();
     private static final FormMapping<Season> seasonForm = Forms.automatic(Season.class, "season").build();
 
+    private static final MatchService matchService = new MatchService();
+    private static final SeasonService seasonService = new SeasonService();
+    private static final PlayerService playerService = new PlayerService();
+
     public static void main(String[] args) {
 
 
@@ -39,10 +43,6 @@ public class Start {
         port(4444);
 
         staticFileLocation("/static");
-
-        MatchService matchService = new MatchService();
-        SeasonService seasonService = new SeasonService();
-        PlayerService playerService = new PlayerService();
 
         // match
         path("/match", () -> {
@@ -66,23 +66,51 @@ public class Start {
                     Player sT1 = playerService.getPlayer(Long.parseLong(strikerTeam1));
                     Player sT2 = playerService.getPlayer(Long.parseLong(strikerTeam2));
 
+                    boolean playersValid = matchService.playersValid(kT1, kT2, sT1, sT2);
+
+                    if(playersValid == false){
+
+                        // -- prepare form like you do on /new
+                        Map map = prepareMatchForm();
+
+                        // -- add also the validation info
+                        List<String> validionProblems = new LinkedList<>();
+                        validionProblems.add("Duplicate player(s)! Every match should consist of distinct players");
+                        map.put(Constants.VALIDATION, validionProblems);
+
+                        // now you need to restore the state of the form as it was before submitting
+                        Map<String, Object> state = new HashMap<>();
+                        state.put("seasonId", season);
+                        state.put("matchTypeId", matchType);
+                        state.put("keeperTeam1Id", keeperTeam1);
+                        state.put("keeperTeam2Id", keeperTeam2);
+                        state.put("strikerTeam1Id", strikerTeam1);
+                        state.put("strikerTeam2Id", strikerTeam2);
+                        map.put("state", state);
+
+                        return new ModelAndView(map, "views/match/new_match.vm");
+                    }
+
                     matchService.createMatch(kT1,sT1,kT2,sT2,s);
                 }
                 else {
 
                     if (Matchtype.DEATH_MATCH.toString().equals(matchType)){
+                        boolean playersValid = matchService.playersValid(kT1, kT2);
                         matchService.createMatch(kT1, kT2, Matchtype.DEATH_MATCH, s);
                     }
                     else if(Matchtype.DEATH_MATCH_BO3.toString().equals(matchType))
                     {
+                        boolean playersValid = matchService.playersValid(kT1, kT2);
                         matchService.createMatch(kT1, kT2, Matchtype.DEATH_MATCH_BO3, s);
                     }
 
                 }
 
                 res.redirect("/match/list");
-                return "";
-            });
+                // you never get to this state because of the redirect before ... but it is necessary
+                return new ModelAndView(new HashMap<>(), "views/player/new_match.vm");
+            }, velocityTemplateEngine);
             put("", (req, res) ->{
 
                 // -- required attributes
@@ -120,20 +148,9 @@ public class Start {
                 return new ModelAndView(matchesMap, "views/match/matches.vm");
             }, velocityTemplateEngine);
             get("/new",  (req, res) -> {
-                HashMap<String, Object> map = new HashMap<>();
 
+                return new ModelAndView(prepareMatchForm(), "views/match/new_match.vm");
 
-                // now get all players
-                List<Player> players = playerService.getPlayers();
-
-                // ... get all seasons
-                List<Season> allSeasons = seasonService.getAllSeasons();
-
-                map.put(Constants.PLAYERS, players);
-                map.put(Constants.SEASONS, allSeasons);
-                map.put(Constants.MATCH_TYPES, Matchtype.values());
-
-                return new ModelAndView(map, "views/match/new_match.vm");
             }, velocityTemplateEngine);
             get("/:id", (req, res) -> {
                 final String matchId = req.params(":id");
@@ -144,7 +161,6 @@ public class Start {
                 return "";
             });*/
         });
-
 
         // seasons
         path("/season", () -> {
@@ -294,6 +310,23 @@ public class Start {
                 return "";
             });*/
         });
+    }
+
+    private static Map prepareMatchForm(){
+        HashMap<String, Object> map = new HashMap<>();
+
+
+        // now get all players
+        List<Player> players = playerService.getPlayers();
+
+        // ... get all seasons
+        List<Season> allSeasons = seasonService.getAllSeasons();
+
+        map.put(Constants.PLAYERS, players);
+        map.put(Constants.SEASONS, allSeasons);
+        map.put(Constants.MATCH_TYPES, Matchtype.values());
+
+        return map;
     }
 
 
