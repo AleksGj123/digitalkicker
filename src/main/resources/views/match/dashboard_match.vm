@@ -1,0 +1,40 @@
+<html lang="en">
+    #include("/views/layout.vm")
+
+<body>
+
+    <div class="container">
+        <div id="match-result" class="live result">
+            <span>0:0</span>
+        </div>
+        <div id="end-message" class="live-message" style="display: none;">
+            <span class="message">End match?</span>
+            <br/>
+            <span class="button green" id="end-button-yes">Yes</span>
+            <span class="button red" id="end-button-no">No</span>
+        </div>
+        <div class="team black">
+            <div class="live-player">
+                <img class="avatar" src="/images/player.jpg"/>
+                <div class="name">Enrico <span class="nick">The Wall</span> Mischorr</div>
+            </div>
+            <div class="live-player">
+                <img class="avatar" src="/images/player.jpg"/>
+            </div>
+        </div>
+        <img class="live-background" src="/images/table.png"/>
+        <div class="team white">
+            <div class="live-player">
+                <img class="avatar" src="/images/player.jpg"/>
+                <div class="name">Rouven <span class="nick">The Hornet</span> Pfeiffer</div>
+            </div>
+            <div class="live-player">
+                <img class="avatar" src="/images/player.jpg"/>
+            </div>
+        </div>
+        <div class="live-button">
+            <span class="button green" id="start-button">Start new match</span>
+        </div>
+    </div>
+
+</body>

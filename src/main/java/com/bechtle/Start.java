@@ -41,14 +41,13 @@ public class Start {
         staticFileLocation("/static");
 
         MatchService matchService = new MatchService();
+        SeasonService seasonService = new SeasonService();
+        PlayerService playerService = new PlayerService();
 
         // match
         path("/match", () -> {
             before("/*", (q, a) -> System.out.println("Match ..."));
             post("/new", (Request req, Response res) -> {
-
-                SeasonService seasonService = new SeasonService();
-                PlayerService playerService = new PlayerService();
 
                 String matchType = req.queryParams("matchType");
                 // -- you receive only ids --
@@ -102,6 +101,15 @@ public class Start {
 
                 return "Ok";
             });
+            get("/current",  (req, res) -> {
+
+                List<Match> allMatches = matchService.getAllMatches();
+
+                HashMap<String, List<Match>> matchesMap = new HashMap<>();
+                matchesMap.put("matches", allMatches);
+
+                return new ModelAndView(matchesMap, "views/match/dashboard_match.vm");
+            }, velocityTemplateEngine);
             get("/list",  (req, res) -> {
 
                 List<Match> allMatches = matchService.getAllMatches();
@@ -116,11 +124,9 @@ public class Start {
 
 
                 // now get all players
-                PlayerService playerService = new PlayerService();
                 List<Player> players = playerService.getPlayers();
 
                 // ... get all seasons
-                SeasonService seasonService = new SeasonService();
                 List<Season> allSeasons = seasonService.getAllSeasons();
 
                 map.put(Constants.PLAYERS, players);
@@ -131,8 +137,9 @@ public class Start {
             }, velocityTemplateEngine);
             get("/:id", (req, res) -> {
                 final String matchId = req.params(":id");
-                return matchId;
-            });
+
+                return new ModelAndView(new HashMap<>(), "views/match/dashboard_match.vm");
+            }, velocityTemplateEngine);
             /*delete("/remove",  (req, res) -> {
                 return "";
             });*/
@@ -167,7 +174,6 @@ public class Start {
 
                 season.setStartDate(startDate);
                 season.setEndDate(endDate);
-                SeasonService seasonService = new SeasonService();
                 seasonService.createSeason(season);
 
                 //if(seasonForm.bind(params).isValid()){}
@@ -176,7 +182,6 @@ public class Start {
                 return "created new season";
             });
             get("/list",  (req, res) -> {
-                SeasonService seasonService = new SeasonService();
 
                 HashMap<String, List<Season>> seasonsMap = new HashMap<>();
                 seasonsMap.put("seasons", seasonService.getAllSeasons());
@@ -196,7 +201,7 @@ public class Start {
 
                 String id = req.params(":id");
 
-                SeasonService seasonService = new SeasonService();
+
                 Season season = seasonService.getSeason(Long.parseLong(id));
 
                 FormData<Season> formData = new FormData<>(season, ValidationResult.empty);
@@ -228,7 +233,6 @@ public class Start {
                 RequestParams params = new ServletRequestParams(req.raw());
                 FormData<Player> bind = playerForm.bind(params);
 
-                PlayerService playerService = new PlayerService();
                 HashMap<String, Object> stringFormMappingHashMap = playerService.validatePlayer(playerForm.bind(params));
                 FormMapping<Player> playerFormMapping = (FormMapping<Player>) stringFormMappingHashMap.get(Constants.PLAYER_FORM);
                 if(playerForm.bind(params).isValid() && (playerFormMapping.getValidationResult().isEmpty()) ){
@@ -251,7 +255,6 @@ public class Start {
 
             }, velocityTemplateEngine);
             get("/list",  (req, res) -> {
-                PlayerService playerService = new PlayerService();
 
                 HashMap<String, List<Player>> playersMap = new HashMap<>();
                 playersMap.put("players", playerService.getPlayers());
@@ -272,7 +275,6 @@ public class Start {
 
                 String id = req.params(":id");
 
-                PlayerService playerService = new PlayerService();
                 Player player = playerService.getPlayer(Long.parseLong(id));
 
                 HashMap<String, Object> map = new HashMap<>();

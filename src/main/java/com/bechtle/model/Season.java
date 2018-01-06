@@ -59,7 +59,7 @@ public class Season {
         this.name = name;
     }
 
-    private void addMatch(Match match){
+    public void addMatch(Match match){
         matches.add(match);
     }
 

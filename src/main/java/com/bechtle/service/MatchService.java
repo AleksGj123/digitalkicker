@@ -3,6 +3,7 @@ package com.bechtle.service;
 import com.bechtle.model.*;
 import com.bechtle.util.JPAUtil;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.List;
 
 public class MatchService {
@@ -37,6 +38,19 @@ public class MatchService {
 
         Match match = new Match(keeperTeam1, strikerTeam1, keeperTeam2, strikerTeam2, Matchtype.REGULAR, season);
 
+
+
+        // size is necessary else matches are not loaded (lazy associations)
+        // TODO: better approaches are found here: https://www.thoughts-on-java.org/5-ways-to-initialize-lazy-relations-and-when-to-use-them/
+
+        Season s = entityManager.find(Season.class, season.getId());
+        s.getMatches();
+
+        //q.getSingleResult();
+        s.addMatch(match);
+        entityManager.merge(season);
+
+        // on death matches players can be null
         entityManager.persist(match);
         if (keeperTeam1 != null) {
             keeperTeam1.addMatch(match);
