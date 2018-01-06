@@ -4,7 +4,8 @@ body {
     background-image: url("/images/chalkboard-background.jpg");
     background-color: #404040;
     background-blend-mode: overlay;
-    /*color: #E0E0E0;*/
+    /*bechtle green color code ;)*/
+    color: #008854;
     margin: 0;
 }
 
@@ -13,10 +14,38 @@ body {
 }
 
 .container-a{
-    background-color: white;
     margin-top: 10px;
     border-radius: 10px
 }
+
+.table-striped>tbody>tr:nth-of-type(odd) {
+    background-color: transparent;
+    background: rgba(64,64,64,0.3);
+}
+
+.table>thead>tr>th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #e09832;
+}
+
+.table>tbody>tr>td{
+    border-top: transparent;
+}
+
+
+
+.panel-info {
+    background-color: transparent;
+}
+
+/*select[multiple], select[size] {
+    height: auto;
+    background-color: transparent;
+}
+
+.form-control {
+    background-color: transparent;
+}*/
 
 .starter-template {
     padding: 40px 15px;

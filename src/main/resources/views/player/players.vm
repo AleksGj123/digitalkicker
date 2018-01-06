@@ -6,7 +6,7 @@
         <div class="container container-aa">
             <div class="container container-a">
                 <br>
-                    <table class="table table-bordered">
+                    <table class="table table-striped">
                         <thead>
                         <tr>
                             <th>Forname</th>
@@ -18,9 +18,9 @@
                         <tbody>
                             #foreach($player in $players)
                             <tr>
-                                <td>$player.surname</td>
-                                <td>$player.nickname</td>
                                 <td>$player.forename</td>
+                                <td>$player.nickname</td>
+                                <td>$player.surname</td>
                                 <td><a href="/player/$player.id">edit</a> </td>
                             </tr>
                             #end

@@ -38,7 +38,7 @@ public class MatchService {
         Match match = new Match(keeperTeam1, strikerTeam1, keeperTeam2, strikerTeam2, Matchtype.REGULAR, season);
 
         entityManager.persist(match);
-        /*if (keeperTeam1 != null) {
+        if (keeperTeam1 != null) {
             keeperTeam1.addMatch(match);
             entityManager.merge(keeperTeam1);
         }
@@ -53,7 +53,7 @@ public class MatchService {
         if (strikerTeam2 != null) {
             strikerTeam2.addMatch(match);
             entityManager.merge(strikerTeam2);
-        }*/
+        }
         entityManager.getTransaction().commit();
         JPAUtil.shutdown();
 
@@ -72,22 +72,63 @@ public class MatchService {
         return m.getId();
     }
 
-    public void updateMatch(Match match) {
+    /**
+     * Updates a match
+     *
+     * @param matchId : the id of that match that needs to be updated
+     * @param goalsTeam1 : the goals for team 1
+     * @param goalsTeam2 : the goals for team 2
+     * @return : a match id if a follow up game is created
+     */
+    public long updateMatch(long matchId, int goalsTeam1, int goalsTeam2) {
         EntityManager entityManager = JPAUtil.getEntityManager();
 
+        Match match = getMatch(matchId);
+        match.setGoalsTeam1(goalsTeam1);
+        match.setGoalsTeam2(goalsTeam2);
+
+        Long followUpMatch = null;
+
+        // check if this match needs to be set to status finished
+        switch (match.getMatchtype()){
+            case REGULAR:{
+                if(goalsTeam1 == 5 || goalsTeam2 == 5){
+                    match.setStatus(Status.FINISHED);
+                    // -- check if Deathmatch is necessary --
+                    if (goalsTeam1 == 0){
+                        followUpMatch = createFollowUpGame(match, match.getKeeperTeam1(), match.getStrikerTeam1());
+                    }
+                    else if (goalsTeam2 == 0){
+                        followUpMatch = createFollowUpGame(match, match.getKeeperTeam2(), match.getStrikerTeam2());
+                    }
+                }
+            }
+            case DEATH_MATCH_BO3: if(goalsTeam1 == 2 || goalsTeam2 == 2) match.setStatus(Status.FINISHED);
+            case DEATH_MATCH: if(goalsTeam1 == 1 || goalsTeam2 == 1) match.setStatus(Status.FINISHED);
+        }
+
+        // in any case update the match
         entityManager.getTransaction().begin();
         entityManager.merge(match);
 
         entityManager.getTransaction().commit();
         JPAUtil.shutdown();
+
+        return followUpMatch;
     }
 
-    public boolean teamOneIsLokSafe(Match match){
-        return  (Boolean.TRUE.equals(match.getKeeperTeam1().getLokSafe()) || Boolean.TRUE.equals(match.getStrikerTeam1().getLokSafe()));
+    private long createFollowUpGame(Match match, Player player1, Player player2){
+
+        if(this.teamIsLokSafe(player1, player2)){
+            return createMatch(player1, player2, Matchtype.DEATH_MATCH_BO3, match.getSeason());
+        }
+        else{
+            return createMatch(player1, player2, Matchtype.DEATH_MATCH, match.getSeason());
+        }
     }
 
-    public boolean teamTwoIsLokSafe(Match match){
-        return  (Boolean.TRUE.equals(match.getKeeperTeam2().getLokSafe()) || Boolean.TRUE.equals(match.getStrikerTeam2().getLokSafe()));
+    public boolean teamIsLokSafe(Player player1, Player player2){
+        return  (Boolean.TRUE.equals(player1.getLokSafe()) || Boolean.TRUE.equals(player2.getLokSafe()));
     }
 
 

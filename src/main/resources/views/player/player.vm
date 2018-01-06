@@ -106,7 +106,7 @@
                         <textarea class="form-control" id="exampleFormControlTextarea1"
                                   placeholder="Your bio"
                                   name="$fields.biography.name"
-                                  rows="4">#if($fields.biography.value)"$fields.biography.value"#else Test#end
+                                  rows="4">#if($fields.biography.value)$fields.biography.value#else Test#end
                         </textarea>
                     </div>
 

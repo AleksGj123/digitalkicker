@@ -15,7 +15,7 @@ To get started, check out <http://getbootstrap.com>!
 
 ## Table of contents
 
-* [Quick com.bechtle.start](#quick-com.bechtle.start)
+* [Quick com.bechtle.Start](#quick-com.bechtle.start)
 * [Bugs and feature requests](#bugs-and-feature-requests)
 * [Documentation](#documentation)
 * [Contributing](#contributing)
@@ -25,9 +25,9 @@ To get started, check out <http://getbootstrap.com>!
 * [Copyright and license](#copyright-and-license)
 
 
-## Quick com.bechtle.start
+## Quick com.bechtle.Start
 
-Several quick com.bechtle.start options are available:
+Several quick com.bechtle.Start options are available:
 
 * [Download the latest release](https://github.com/twbs/bootstrap/archive/v3.3.7.zip).
 * Clone the repo: `git clone https://github.com/twbs/bootstrap.git`.

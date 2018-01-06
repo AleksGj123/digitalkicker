@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 import static spark.Spark.*;
 
-public class start {
+public class Start {
 
     private static final FormMapping<Player> playerForm = Forms.automatic(Player.class, "player").build();
     private static final FormMapping<Season> seasonForm = Forms.automatic(Season.class, "season").build();
@@ -91,44 +91,14 @@ public class start {
                 int goalsTeam1 = Integer.parseInt(req.queryParams("goalsTeam1"));
                 int goalsTeam2 = Integer.parseInt(req.queryParams("goalsTeam2"));
 
-                Match match = matchService.getMatch(matchId);
+                Long newMatchId = matchService.updateMatch(matchId, goalsTeam1, goalsTeam2);
 
-
-
-                // check if this match needs to be set to status finished
-                if(goalsTeam1 == 5 || goalsTeam2 == 5){
-
-                    match.setStatus(Status.FINISHED);
-                    matchService.updateMatch(match);
-
-                    if(Matchtype.REGULAR.name().equals(match.getMatchtype())){
-                        // -- check if Deathmatch is necessary --
-                        if (goalsTeam1 == 0){
-                            Player keeperTeam1 = match.getKeeperTeam1();
-                            Player strikerTeam1 = match.getStrikerTeam1();
-
-                            if(matchService.teamOneIsLokSafe(match)){
-                                matchService.createMatch(keeperTeam1, strikerTeam1, Matchtype.DEATH_MATCH_BO3, match.getSeason());
-                            }
-                            else{
-                                matchService.createMatch(keeperTeam1, strikerTeam1, Matchtype.DEATH_MATCH, match.getSeason());
-                            }
-                        }
-                        else if (goalsTeam2 == 0){
-                            Player keeperTeam2 = match.getKeeperTeam2();
-                            Player strikerTeam2 = match.getStrikerTeam2();
-
-                            if(matchService.teamTwoIsLokSafe(match)){
-                                matchService.createMatch(keeperTeam2, strikerTeam2, Matchtype.DEATH_MATCH_BO3, match.getSeason());
-                            }
-                            else{
-                                matchService.createMatch(keeperTeam2, strikerTeam2, Matchtype.DEATH_MATCH, match.getSeason());
-                            }
-                        }
-                    }
+                if (newMatchId == null){
+                    res.redirect("/match/new");
                 }
-                // else just update the match
-                else matchService.updateMatch(match);
+                else{
+                    res.redirect("/match/"+matchId.toString());
+                }
 
                 return "Ok";
             });
@@ -153,16 +123,15 @@ public class start {
                 SeasonService seasonService = new SeasonService();
                 List<Season> allSeasons = seasonService.getAllSeasons();
 
-
                 map.put(Constants.PLAYERS, players);
                 map.put(Constants.SEASONS, allSeasons);
                 map.put(Constants.MATCH_TYPES, Matchtype.values());
 
-                return new ModelAndView(map, "views/match/match.vm");
+                return new ModelAndView(map, "views/match/new_match.vm");
             }, velocityTemplateEngine);
             get("/:id", (req, res) -> {
-                final String command = req.params(":id");
-                return command;
+                final String matchId = req.params(":id");
+                return matchId;
             });
             /*delete("/remove",  (req, res) -> {
                 return "";

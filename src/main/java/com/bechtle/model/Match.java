@@ -22,6 +22,10 @@ public class Match {
 
     private int goalsTeam2;
 
+    // a recorded Match contains max one loksafe player
+    @ManyToOne
+    private Player loksafePlayer;
+
     @ManyToOne(optional = false)
     private Player keeperTeam1;
 
