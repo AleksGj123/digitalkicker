@@ -18,9 +18,9 @@
                                 <div class="panel-body">
                                     <div class="container">
                                         <div class="row">
-                                            <div class="col-md-2"><center>Team 1</center></div>
+                                            <div class="col-md-2"><center>Team 1 (White)</center></div>
                                             <div class="col-md-1"></div>
-                                            <div class="col-md-2"><center>Team 2</center></div>
+                                            <div class="col-md-2"><center>Team 2 (Black)</center></div>
                                         </div>
                                     </div>
 
@@ -30,7 +30,7 @@
                                             <tr>
                                                 <th>Keeper</th>
                                                 <th>Striker</th>
-                                                <th align="center" >Standing</th>
+                                                <th style="text-align: center" >Standing</th>
                                                 <th>Keeper</th>
                                                 <th>Striker</th>
                                             </tr>
@@ -39,7 +39,7 @@
                                             <tr>
                                                 <td>$match.keeperTeam1.forename</td>
                                                 <td>$match.strikerTeam1.forename</td>
-                                                <td align="center"><b style="color: floralwhite">$match.goalsTeam1 : $match.goalsTeam2<b></td>
+                                                <td style="text-align: center"><b style="color: floralwhite">$match.goalsTeam1 : $match.goalsTeam2<b></td>
                                                 <td>$match.keeperTeam2.forename</td>
                                                 <td>$match.strikerTeam2.forename</td>
                                             </tr>
@@ -59,9 +59,9 @@
                                 <div class="panel-body">
                                     <div class="container">
                                         <div class="row">
-                                            <div class="col-md-2"><center>Team 1</center></div>
+                                            <div class="col-md-2"><center>Team 1 (White)</center></div>
                                             <div class="col-md-1"></div>
-                                            <div class="col-md-2"><center>Team 2</center></div>
+                                            <div class="col-md-2"><center>Team 2 (Black)</center></div>
                                         </div>
                                     </div>
 
@@ -71,7 +71,7 @@
                                             <tr>
                                                 <th>Keeper</th>
                                                 <th>Striker</th>
-                                                <th align="center">Result</th>
+                                                <th style="text-align: center">Result</th>
                                                 <th>Keeper</th>
                                                 <th>Striker</th>
                                             </tr>
@@ -80,7 +80,7 @@
                                             <tr>
                                                 <td>$match.keeperTeam1.forename</td>
                                                 <td>$match.strikerTeam1.forename</td>
-                                                <td align="center">$match.goalsTeam1 : $match.goalsTeam2</td>
+                                                <td style="text-align: center"><b style="color: floralwhite">$match.goalsTeam1 : $match.goalsTeam2<b></td>
                                                 <td>$match.keeperTeam2.forename</td>
                                                 <td>$match.strikerTeam2.forename</td>
                                             </tr>

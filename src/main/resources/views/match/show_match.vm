@@ -1,0 +1,106 @@
+<html lang="en">
+    #include("/views/layout.vm")
+
+<body>
+    <div class="container container-aa">
+
+        #if($match.getStatus().name() == "STARTED")
+        <div>
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Current Match | $match.id | status</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-2"><center>Team 1 (White)</center></div>
+                            <div class="col-md-1"></div>
+                            <div class="col-md-2"><center>Team 2 (Black)</center></div>
+                        </div>
+                    </div>
+
+                    <div class="">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Keeper</th>
+                                <th>Striker</th>
+                                <th style="text-align: center">Standing</th>
+                                <th>Keeper</th>
+                                <th>Striker</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>$match.keeperTeam1.forename</td>
+                                <td>$match.strikerTeam1.forename</td>
+                                <td style="text-align: center"><b style="color: floralwhite">$match.goalsTeam1 : $match.goalsTeam2<b></td>
+                                <td>$match.keeperTeam2.forename</td>
+                                <td>$match.strikerTeam2.forename</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3"><button type="submit" class="btn btn-primary">+1 Goal Team 1</button></div>
+                <div class="col-md-3"><button type="submit" class="btn btn-danger">+1 Goal Team 1</button></div>
+                <div class="col-md-3"><button type="submit" class="btn btn-primary">+1 Goal Team 2</button></div>
+                <div class="col-md-3"><button type="submit" class="btn btn-danger">+1 Goal Team 2</button></div>
+            </div>
+            <div class="row">
+                ##if( ($match.goalsTeam1 == 5) || ($match.goalsTeam2 == 5) )
+                    <div class="col-md-12 text-center">
+                        <button type="submit" class="btn btn-success">finish game</button>
+                    <div class="col-md-12">
+
+                ##end
+            </div>
+
+        </div>
+        #else
+        <div class="col-md-6">
+
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Finshed Match | $match.id | status</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-2"><center>Team 1 (White)</center></div>
+                            <div class="col-md-1"></div>
+                            <div class="col-md-2"><center>Team 2 (Black)</center></div>
+                        </div>
+                    </div>
+
+                    <div class="">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Keeper</th>
+                                <th>Striker</th>
+                                <th style="text-align: center">Result</th>
+                                <th>Keeper</th>
+                                <th>Striker</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>$match.keeperTeam1.forename</td>
+                                <td>$match.strikerTeam1.forename</td>
+                                <td style="text-align: center"><b style="color: floralwhite">$match.goalsTeam1 : $match.goalsTeam2<b></td>
+                                <td>$match.keeperTeam2.forename</td>
+                                <td>$match.strikerTeam2.forename</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        #end
+
+    </div>
+</body>

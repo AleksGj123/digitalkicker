@@ -61,6 +61,8 @@ public class Start {
                 Player kT1 = playerService.getPlayer(Long.parseLong(keeperTeam1));
                 Player kT2 = playerService.getPlayer(Long.parseLong(keeperTeam2));
 
+                Long matchId = null;
+
                 if (Matchtype.REGULAR.toString().equals(matchType)){
 
                     Player sT1 = playerService.getPlayer(Long.parseLong(strikerTeam1));
@@ -91,23 +93,23 @@ public class Start {
                         return new ModelAndView(map, "views/match/new_match.vm");
                     }
 
-                    matchService.createMatch(kT1,sT1,kT2,sT2,s);
+                    matchId = matchService.createMatch(kT1,sT1,kT2,sT2,s);
                 }
                 else {
 
                     if (Matchtype.DEATH_MATCH.toString().equals(matchType)){
                         boolean playersValid = matchService.playersValid(kT1, kT2);
-                        matchService.createMatch(kT1, kT2, Matchtype.DEATH_MATCH, s);
+                        matchId = matchService.createMatch(kT1, kT2, Matchtype.DEATH_MATCH, s);
                     }
                     else if(Matchtype.DEATH_MATCH_BO3.toString().equals(matchType))
                     {
                         boolean playersValid = matchService.playersValid(kT1, kT2);
-                        matchService.createMatch(kT1, kT2, Matchtype.DEATH_MATCH_BO3, s);
+                        matchId = matchService.createMatch(kT1, kT2, Matchtype.DEATH_MATCH_BO3, s);
                     }
 
                 }
 
-                res.redirect("/match/list");
+                res.redirect("/match/"+matchId);
                 // you never get to this state because of the redirect before ... but it is necessary
                 return new ModelAndView(new HashMap<>(), "views/player/new_match.vm");
             }, velocityTemplateEngine);
@@ -154,8 +156,11 @@ public class Start {
             }, velocityTemplateEngine);
             get("/:id", (req, res) -> {
                 final String matchId = req.params(":id");
+                Match match = matchService.getMatch(Long.parseLong(matchId));
+                HashMap<String, Object> map = new HashMap<>();
+                map.put("match", match);
 
-                return new ModelAndView(new HashMap<>(), "views/match/dashboard_match.vm");
+                return new ModelAndView(map, "views/match/show_match.vm");
             }, velocityTemplateEngine);
             /*delete("/remove",  (req, res) -> {
                 return "";
