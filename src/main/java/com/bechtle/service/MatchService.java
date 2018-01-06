@@ -47,8 +47,16 @@ public class MatchService {
         return t -> seen.add(keyExtractor.apply(t));
     }
 
-
-
+    /**
+     * Create a match, if striker team 1 (white) and striker team 2 (black) is not present the match is either of type
+     * Matchtype.
+     * @param keeperTeam1
+     * @param strikerTeam1
+     * @param keeperTeam2
+     * @param strikerTeam2
+     * @param season
+     * @return
+     */
     public long createMatch(Player keeperTeam1, Player strikerTeam1, Player keeperTeam2, Player strikerTeam2, Season season) {
 
         EntityManager entityManager = JPAUtil.getEntityManager();
@@ -58,29 +66,25 @@ public class MatchService {
         Match match = new Match(keeperTeam1, strikerTeam1, keeperTeam2, strikerTeam2, Matchtype.REGULAR, season);
 
         Season s = entityManager.find(Season.class, season.getId());
+
         s.getMatches();
-
         s.addMatch(match);
-        entityManager.merge(season);
 
-        // on death matches players can be null
+        entityManager.merge(season);
         entityManager.persist(match);
-        if (keeperTeam1 != null) {
-            keeperTeam1.addMatch(match);
-            entityManager.merge(keeperTeam1);
-        }
-        if (keeperTeam2 != null) {
-            keeperTeam2.addMatch(match);
-            entityManager.merge(keeperTeam2);
-        }
-        if (strikerTeam1 != null) {
-            strikerTeam1.addMatch(match);
-            entityManager.merge(strikerTeam1);
-        }
-        if (strikerTeam2 != null) {
-            strikerTeam2.addMatch(match);
-            entityManager.merge(strikerTeam2);
-        }
+
+        keeperTeam1.addMatch(match);
+        entityManager.merge(keeperTeam1);
+
+        keeperTeam2.addMatch(match);
+        entityManager.merge(keeperTeam2);
+
+        strikerTeam1.addMatch(match);
+        entityManager.merge(strikerTeam1);
+
+        strikerTeam2.addMatch(match);
+        entityManager.merge(strikerTeam2);
+
         entityManager.getTransaction().commit();
         JPAUtil.shutdown();
 
@@ -92,7 +96,20 @@ public class MatchService {
         EntityManager entityManager = JPAUtil.getEntityManager();
 
         Match m = new Match(player1, player2, matchtype, season);
+
+        Season s = entityManager.find(Season.class, season.getId());
+
+        s.getMatches();
+        s.addMatch(m);
+
         entityManager.persist(m);
+
+        player1.addMatch(m);
+        entityManager.merge(player1);
+
+        player2.addMatch(m);
+        entityManager.merge(player2);
+
         entityManager.getTransaction().commit();
         JPAUtil.shutdown();
 

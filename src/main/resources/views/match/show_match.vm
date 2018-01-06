@@ -44,16 +44,16 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-3"><button type="submit" class="btn btn-primary">+1 Goal Team 1</button></div>
-                <div class="col-md-3"><button type="submit" class="btn btn-danger">+1 Goal Team 1</button></div>
-                <div class="col-md-3"><button type="submit" class="btn btn-primary">+1 Goal Team 2</button></div>
-                <div class="col-md-3"><button type="submit" class="btn btn-danger">+1 Goal Team 2</button></div>
+                <div class="col-md-3 text-center"><button type="submit" class="btn btn-primary">+1 Goal Team 1</button></div>
+                <div class="col-md-3 text-center"><button type="submit" class="btn btn-danger">+1 Goal Team 1</button></div>
+                <div class="col-md-3 text-center"><button type="submit" class="btn btn-primary">+1 Goal Team 2</button></div>
+                <div class="col-md-3 text-center"><button type="submit" class="btn btn-danger">+1 Goal Team 2</button></div>
             </div>
-            <div class="row">
+            <div class="row" style="margin-top: 10px">
                 ##if( ($match.goalsTeam1 == 5) || ($match.goalsTeam2 == 5) )
                     <div class="col-md-12 text-center">
                         <button type="submit" class="btn btn-success">finish game</button>
-                    <div class="col-md-12">
+                    </div>
 
                 ##end
             </div>
