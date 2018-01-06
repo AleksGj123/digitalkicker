@@ -11,6 +11,10 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static com.bechtle.model.Matchtype.DEATH_MATCH;
+import static com.bechtle.model.Matchtype.DEATH_MATCH_BO3;
+import static com.bechtle.model.Matchtype.REGULAR;
+
 public class MatchService {
 
     public List<Match> getAllMatches() {
@@ -63,7 +67,7 @@ public class MatchService {
         entityManager.getTransaction().begin();
 
 
-        Match match = new Match(keeperTeam1, strikerTeam1, keeperTeam2, strikerTeam2, Matchtype.REGULAR, season);
+        Match match = new Match(keeperTeam1, strikerTeam1, keeperTeam2, strikerTeam2, REGULAR, season);
 
         Season s = entityManager.find(Season.class, season.getId());
 
@@ -124,18 +128,25 @@ public class MatchService {
      * @param goalsTeam2 : the goals for team 2
      * @return : a match id if a follow up game is created
      */
-    public long updateMatch(long matchId, int goalsTeam1, int goalsTeam2) {
+    public Long updateMatch(long matchId, int goalsTeam1, int goalsTeam2) {
         EntityManager entityManager = JPAUtil.getEntityManager();
 
-        Match match = getMatch(matchId);
+        Match match = entityManager.find(Match.class, matchId);
         match.setGoalsTeam1(goalsTeam1);
         match.setGoalsTeam2(goalsTeam2);
 
         Long followUpMatch = null;
 
         // check if this match needs to be set to status finished
-        switch (match.getMatchtype()){
-            case REGULAR:{
+        switch (match.getMatchtype())
+        {
+            case DEATH_MATCH_BO3:
+                if(goalsTeam1 == 2 || goalsTeam2 == 2) match.setStatus(Status.FINISHED);
+                break;
+            case DEATH_MATCH:
+                if(goalsTeam1 == 1 || goalsTeam2 == 1) match.setStatus(Status.FINISHED);
+                break;
+            case REGULAR :
                 if(goalsTeam1 == 5 || goalsTeam2 == 5){
                     match.setStatus(Status.FINISHED);
                     // -- check if Deathmatch is necessary --
@@ -146,9 +157,7 @@ public class MatchService {
                         followUpMatch = createFollowUpGame(match, match.getKeeperTeam2(), match.getStrikerTeam2());
                     }
                 }
-            }
-            case DEATH_MATCH_BO3: if(goalsTeam1 == 2 || goalsTeam2 == 2) match.setStatus(Status.FINISHED);
-            case DEATH_MATCH: if(goalsTeam1 == 1 || goalsTeam2 == 1) match.setStatus(Status.FINISHED);
+                break;
         }
 
         // in any case update the match
@@ -158,16 +167,16 @@ public class MatchService {
         entityManager.getTransaction().commit();
         JPAUtil.shutdown();
 
-        return followUpMatch;
+        return  followUpMatch;
     }
 
     private long createFollowUpGame(Match match, Player player1, Player player2){
 
         if(this.teamIsLokSafe(player1, player2)){
-            return createMatch(player1, player2, Matchtype.DEATH_MATCH_BO3, match.getSeason());
+            return createMatch(player1, player2, DEATH_MATCH_BO3, match.getSeason());
         }
         else{
-            return createMatch(player1, player2, Matchtype.DEATH_MATCH, match.getSeason());
+            return createMatch(player1, player2, DEATH_MATCH, match.getSeason());
         }
     }
 

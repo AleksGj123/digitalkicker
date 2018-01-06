@@ -122,14 +122,14 @@ public class Start {
 
                 Long newMatchId = matchService.updateMatch(matchId, goalsTeam1, goalsTeam2);
 
-                if (newMatchId == null){
+                /*if (newMatchId == null){
                     res.redirect("/match/new");
                 }
                 else{
                     res.redirect("/match/"+matchId.toString());
-                }
+                }*/
 
-                return "Ok";
+                return "" +newMatchId;
             });
             get("/current",  (req, res) -> {
 
