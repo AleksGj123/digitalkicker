@@ -1,5 +1,7 @@
 package com.bechtle.service;
 
+import com.bechtle.model.Match;
+import com.bechtle.model.Matchtype;
 import com.bechtle.model.Player;
 import com.bechtle.util.Constants;
 import com.bechtle.util.JPAUtil;
@@ -14,6 +16,8 @@ import org.mindrot.jbcrypt.BCrypt;
 import javax.persistence.EntityManager;
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class PlayerService {
 
@@ -121,6 +125,67 @@ public class PlayerService {
         ArrayList<ConstraintViolationMessage> constraintViolationMessages = new ArrayList<>();
         constraintViolationMessages.add(violationMessage);
         return constraintViolationMessages;
+    }
+
+
+    public List<Match> getLostDeathmachtesForPlayer(Player player){
+        //EntityManager entityManager = JPAUtil.getEntityManager();
+
+        List<Match> matches = player.getMatches();
+        List<Match> lostDeatmatches = matches.stream()
+                .filter(match -> match.getMatchtype().equals(Matchtype.DEATH_MATCH))
+                .filter(match -> playerHasLost(match, player.getId()))
+                .collect(Collectors.toList());
+
+        List<Match> lostDeatmatchesBo3 = matches.stream()
+                .filter(match -> match.getMatchtype().equals(Matchtype.DEATH_MATCH_BO3))
+                .filter(match -> playerHasLost(match, player.getId()))
+                .collect(Collectors.toList());
+
+        lostDeatmatches.addAll(lostDeatmatchesBo3);
+
+        //entityManager.merge(playerToUpdate);
+        //entityManager.getTransaction().commit();
+
+        //JPAUtil.shutdown();
+
+        return lostDeatmatches;
+    }
+
+    private boolean playerHasLost(Match match, long playerId){
+
+        long idPlayer1 = match.getKeeperTeam1().getId();
+
+        int goalsTeam1 = match.getGoalsTeam1();
+        int goalsTeam2 = match.getGoalsTeam2();
+
+        // player was in team 1
+        if(playerId == idPlayer1){
+            if(goalsTeam1 < goalsTeam2)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else {
+            if(goalsTeam1 > goalsTeam2)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+
+    public int getNumberOfPlayedGamesForPlayer(Player player){
+        return player.getMatches().stream()
+                .filter(match -> match.getMatchtype() == Matchtype.REGULAR )
+                .collect(Collectors.toList()).size();
     }
 
     public void updatePlayer(Player player){
