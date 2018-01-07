@@ -49,6 +49,7 @@
                 <li><a href="/player/list">Players</a></li>
                 <li><a href="/match/list">Matches</a></li>
                 <li><a href="/season/list">Seasons</a></li>
+                <li><a href="/match/dashboard">Dashboard</a></li>
                 <li><a href="/statisitcs">Statistics</a></li>
             </ul>
         </div>

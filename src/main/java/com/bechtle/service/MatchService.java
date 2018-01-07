@@ -28,6 +28,18 @@ public class MatchService {
         return allMatches;
     }
 
+    public Match getCurrentMatch(){
+        EntityManager entityManager = JPAUtil.getEntityManager();
+
+        entityManager.getTransaction().begin();
+        List<Match> allMatches = entityManager.createQuery("select m from Matches as m where m.status = 'FINISHED'").getResultList();
+
+
+        entityManager.close();
+        JPAUtil.shutdown();
+        return allMatches.get(0);
+    }
+
     public Match getMatch(Long id) {
         EntityManager entityManager = JPAUtil.getEntityManager();
         entityManager.getTransaction().begin();

@@ -131,7 +131,7 @@ public class Start {
 
                 return "" +newMatchId;
             });
-            get("/current",  (req, res) -> {
+            get("/dashboard",  (req, res) -> {
 
                 List<Match> allMatches = matchService.getAllMatches();
 

@@ -156,10 +156,12 @@
         #if($match.getStatus().name() == "STARTED")
         <div>
             #if($match.matchtype.toString() == "regular")
+                <div class="panel panel-info">
+            #else
+                <div class="panel panel-danger">
             #end
-            <div class="panel panel-info">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Current Match | $match.id | status</h3>
+                    <h3 class="panel-title">Current Match | $match.id | <b>$match.matchtype.toString()</b></h3>
                 </div>
                 <div class="panel-body">
                     <div class="container">
@@ -184,13 +186,21 @@
                             <tbody>
                             <tr>
                                 <td>$match.keeperTeam1.forename</td>
-                                <td>$match.strikerTeam1.forename</td>
+                                #if($match.strikerTeam1.forename)
+                                    <td>$match.strikerTeam1.forename</td>
+                                #else
+                                    <td></td>
+                                #end
                                 <td style="text-align: center"><b style="color: floralwhite">
                                     <div style="display: initial" id="goalsTeam1">$match.goalsTeam1</div> :
                                     <div style="display: initial" id="goalsTeam2">$match.goalsTeam2</div>
                                     <b></td>
                                 <td>$match.keeperTeam2.forename</td>
-                                <td>$match.strikerTeam2.forename</td>
+                                #if($match.strikerTeam2.forename)
+                                    <td>$match.strikerTeam2.forename</td>
+                                #else
+                                    <td></td>
+                                #end
                             </tr>
                             </tbody>
                         </table>
@@ -198,7 +208,6 @@
                 </div>
             </div>
             <div class="row">
-                ## matchId goalsTeam1
                 <div class="col-md-3 text-center"><button id="addGoalTeam1" type="submit" class="btn btn-primary">+1 Goal Team 1</button></div>
                 <div class="col-md-3 text-center"><button id="removeGoalTeam1" type="submit" class="btn btn-danger">-1 Goal Team 1</button></div>
                 <div class="col-md-3 text-center"><button id="addGoalTeam2" type="submit" class="btn btn-primary">+1 Goal Team 2</button></div>
@@ -209,17 +218,17 @@
                     <div id="finishDiv" class="col-md-12">
                         <button id="finishButton" type="submit" class="btn btn-default">finish Match</button>
                     </div>
-
-
             </div>
 
         </div>
         #else
-        <div class="col-md-6">
-
+            #if($match.matchtype.toString() == "regular")
             <div class="panel panel-success">
+            #else
+            <div class="panel panel-danger">
+            #end
                 <div class="panel-heading">
-                    <h3 class="panel-title">Finshed Match | $match.id | status</h3>
+                    <h3 class="panel-title">Finshed Match | $match.id | <b>$match.matchtype.toString()</b></h3>
                 </div>
                 <div class="panel-body">
                     <div class="container">
@@ -244,17 +253,24 @@
                             <tbody>
                             <tr>
                                 <td>$match.keeperTeam1.forename</td>
-                                <td>$match.strikerTeam1.forename</td>
+                                #if($match.strikerTeam1.forename)
+                                    <td>$match.strikerTeam1.forename</td>
+                                #else
+                                    <td></td>
+                                #end
                                 <td style="text-align: center"><b style="color: floralwhite">$match.goalsTeam1 : $match.goalsTeam2<b></td>
                                 <td>$match.keeperTeam2.forename</td>
-                                <td>$match.strikerTeam2.forename</td>
+                                #if($match.strikerTeam2.forename)
+                                    <td>$match.strikerTeam2.forename</td>
+                                #else
+                                    <td></td>
+                                #end
                             </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
-        </div>
         #end
 
     </div>
