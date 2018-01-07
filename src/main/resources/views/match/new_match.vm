@@ -100,7 +100,7 @@
                             #end
                         </select>
 
-                        <label for="keeperTeam1">Team 1 Keeper :</label>
+                        <label for="keeperTeam1">[WHITE] Team 1 Keeper :</label>
                         <select class="form-control" id="keeperTeam1" name="keeperTeam1">
                             #if($state && $state.size() > 0)
                                 #foreach($player in $players)
@@ -117,7 +117,7 @@
                             #end
                         </select>
 
-                        <label for="strikerTeam1" id="strikerTeam1Label">Team 1 Striker :</label>
+                        <label for="strikerTeam1" id="strikerTeam1Label">[WHITE] Team 1 Striker :</label>
                         <select class="form-control" id="strikerTeam1" name="strikerTeam1">
                             #if($state && $state.size() > 0)
                                 #foreach($player in $players)
@@ -134,7 +134,7 @@
                             #end
                         </select>
 
-                        <label for="keeperTeam2">Team 2 Keeper :</label>
+                        <label for="keeperTeam2">[BLACK] Team 2 Keeper :</label>
                         <select class="form-control" id="keeperTeam2" name="keeperTeam2">
                             #if($state && $state.size() > 0)
                                 #foreach($player in $players)
@@ -151,7 +151,7 @@
                             #end
                         </select>
 
-                        <label for="strikerTeam2" id="strikerTeam2Label">Team 2 Striker :</label>
+                        <label for="strikerTeam2" id="strikerTeam2Label">[BLACK] Team 2 Striker :</label>
                         <select class="form-control" id="strikerTeam2" name="strikerTeam2">
                             #if($state && $state.size() > 0)
                                 #foreach($player in $players)
