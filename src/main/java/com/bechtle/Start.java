@@ -133,10 +133,10 @@ public class Start {
             });
             get("/dashboard",  (req, res) -> {
 
-                List<Match> allMatches = matchService.getAllMatches();
+                Match currentMatch = matchService.getCurrentMatch();
 
-                HashMap<String, List<Match>> matchesMap = new HashMap<>();
-                matchesMap.put("matches", allMatches);
+                HashMap<String, Match> matchesMap = new HashMap<>();
+                matchesMap.put("match", currentMatch);
 
                 return new ModelAndView(matchesMap, "views/match/dashboard_match.vm");
             }, velocityTemplateEngine);

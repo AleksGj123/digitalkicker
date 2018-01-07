@@ -32,8 +32,7 @@ public class MatchService {
         EntityManager entityManager = JPAUtil.getEntityManager();
 
         entityManager.getTransaction().begin();
-        List<Match> allMatches = entityManager.createQuery("select m from Matches as m where m.status = 'FINISHED'").getResultList();
-
+        List<Match> allMatches = entityManager.createQuery("select m from Matches as m where m.status = '0'").getResultList();
 
         entityManager.close();
         JPAUtil.shutdown();
