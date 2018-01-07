@@ -19,10 +19,12 @@
                 <img class="avatar" src="/images/player.jpg"/>
                 <div class="name">$match.keeperTeam2.forename <span class="nick">$match.keeperTeam2.nickname</span> $match.keeperTeam2.surname</div>
             </div>
+            #if($match.strikerTeam2)
             <div class="live-player">
                 <img class="avatar" src="/images/player.jpg"/>
                 <div class="name">$match.strikerTeam2.forename <span class="nick">$match.strikerTeam2.nickname</span> $match.strikerTeam2.surname</div>
             </div>
+            #end
         </div>
         <img class="live-background" src="/images/table.png"/>
         <div class="team white">
@@ -31,10 +33,12 @@
                 <img class="avatar" src="/images/player.jpg"/>
                 <div class="name">$match.strikerTeam1.forename <span class="nick">$match.strikerTeam1.nickname</span> $match.strikerTeam1.surname</div>
             </div>
-            <div class="live-player">
-                <img class="avatar" src="/images/player.jpg"/>
-                <div class="name">$match.keeperTeam1.forename <span class="nick">$match.keeperTeam1.nickname</span> $match.keeperTeam1.surname</div>
-            </div>
+            #if($match.keeperTeam1)
+                <div class="live-player">
+                    <img class="avatar" src="/images/player.jpg"/>
+                    <div class="name">$match.keeperTeam1.forename <span class="nick">$match.keeperTeam1.nickname</span> $match.keeperTeam1.surname</div>
+                </div>
+            #end
         </div>
     </div>
 

@@ -72,25 +72,7 @@ public class Start {
 
                     if(playersValid == false){
 
-                        // -- prepare form like you do on /new
-                        Map map = prepareMatchForm();
-
-                        // -- add also the validation info
-                        List<String> validionProblems = new LinkedList<>();
-                        validionProblems.add("Duplicate player(s)! Every match should consist of distinct players");
-                        map.put(Constants.VALIDATION, validionProblems);
-
-                        // now you need to restore the state of the form as it was before submitting
-                        Map<String, Object> state = new HashMap<>();
-                        state.put("seasonId", season);
-                        state.put("matchTypeId", matchType);
-                        state.put("keeperTeam1Id", keeperTeam1);
-                        state.put("keeperTeam2Id", keeperTeam2);
-                        state.put("strikerTeam1Id", strikerTeam1);
-                        state.put("strikerTeam2Id", strikerTeam2);
-                        map.put("state", state);
-
-                        return new ModelAndView(map, "views/match/new_match.vm");
+                        return getStateAndValidation(season, matchType, keeperTeam1, keeperTeam2, strikerTeam1, strikerTeam2);
                     }
 
                     matchId = matchService.createMatch(kT1,sT1,kT2,sT2,s);
@@ -99,11 +81,19 @@ public class Start {
 
                     if (Matchtype.DEATH_MATCH.toString().equals(matchType)){
                         boolean playersValid = matchService.playersValid(kT1, kT2);
+                        if(playersValid == false){
+
+                            return getStateAndValidation(season, matchType, keeperTeam1, keeperTeam2, strikerTeam1, strikerTeam2);
+                        }
                         matchId = matchService.createMatch(kT1, kT2, Matchtype.DEATH_MATCH, s);
                     }
                     else if(Matchtype.DEATH_MATCH_BO3.toString().equals(matchType))
                     {
                         boolean playersValid = matchService.playersValid(kT1, kT2);
+                        if(playersValid == false){
+
+                            return getStateAndValidation(season, matchType, keeperTeam1, keeperTeam2, strikerTeam1, strikerTeam2);
+                        }
                         matchId = matchService.createMatch(kT1, kT2, Matchtype.DEATH_MATCH_BO3, s);
                     }
 
@@ -153,6 +143,11 @@ public class Start {
 
                 return new ModelAndView(prepareMatchForm(), "views/match/new_match.vm");
 
+            }, velocityTemplateEngine);
+            get("/start",  (req, res) -> {
+
+                return new ModelAndView(new HashMap<>(), "views/match/overview_match.vm" +
+                        "");
             }, velocityTemplateEngine);
             get("/:id", (req, res) -> {
                 final String matchId = req.params(":id");
@@ -217,6 +212,11 @@ public class Start {
 
                 map.put(Constants.SEASON_FORM, filledForm);
                 return new ModelAndView(map, "views/season/season.vm");
+            }, velocityTemplateEngine);
+            get("/start",  (req, res) -> {
+
+                return new ModelAndView(new HashMap<>(), "views/season/overview_season.vm" +
+                        "");
             }, velocityTemplateEngine);
             get("/:id",  (req, res) -> {
 
@@ -292,6 +292,9 @@ public class Start {
                 map.put(Constants.PLAYER_FORM, filledForm);
                 return new ModelAndView(map, "views/player/player.vm");
             }, velocityTemplateEngine);
+            get("/start",  (req, res) -> {
+                return new ModelAndView(new HashMap<>(), "views/player/overview_player.vm");
+            }, velocityTemplateEngine);
             get("/:id",  (req, res) -> {
 
                 String id = req.params(":id");
@@ -315,6 +318,29 @@ public class Start {
                 return "";
             });*/
         });
+    }
+
+    private static ModelAndView getStateAndValidation(String season, String matchType, String keeperTeam1,
+                                                      String keeperTeam2, String strikerTeam1, String strikerTeam2){
+        // -- prepare form like you do on /new
+        Map map = prepareMatchForm();
+
+        // -- add also the validation info
+        List<String> validionProblems = new LinkedList<>();
+        validionProblems.add("Duplicate player(s)! Every match should consist of distinct players");
+        map.put(Constants.VALIDATION, validionProblems);
+
+        // now you need to restore the state of the form as it was before submitting
+        Map<String, Object> state = new HashMap<>();
+        state.put("seasonId", season);
+        state.put("matchTypeId", matchType);
+        state.put("keeperTeam1Id", keeperTeam1);
+        state.put("keeperTeam2Id", keeperTeam2);
+        state.put("strikerTeam1Id", strikerTeam1);
+        state.put("strikerTeam2Id", strikerTeam2);
+        map.put("state", state);
+
+        return new ModelAndView(map, "views/match/new_match.vm");
     }
 
     private static Map prepareMatchForm(){

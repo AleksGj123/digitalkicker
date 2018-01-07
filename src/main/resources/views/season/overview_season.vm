@@ -1,0 +1,7 @@
+<html lang="en">
+#include("/views/layout.vm")
+    <div class="container">
+        <a href="/season/list">Season List</a>
+        <a href="/season/new">New Season</a>
+    </div>
+</html>

@@ -2,6 +2,37 @@
 
 
     #include("/views/layout.vm")
+
+<script>
+    $(function() {
+
+
+        $(document).on('change', 'select', function() {
+            //console.log($(this).val()); // the selected options’s value
+
+            if( ($(this).val() == "death match") || ($(this).val() == "death match bo3"))
+            {
+                $( "#strikerTeam1" ).hide();
+                $( "#strikerTeam1Label" ).hide();
+                $( "#strikerTeam2" ).hide();
+                $( "#strikerTeam2Label" ).hide();
+            }
+            else if($(this).val() == "regular"){
+                $( "#strikerTeam1" ).show();
+                $( "#strikerTeam1Label" ).show();
+                $( "#strikerTeam2" ).show();
+                $( "#strikerTeam2Label" ).show();
+            }
+
+            // if you want to do stuff based on the OPTION element:
+            var opt = $(this).find('option:selected')[0];
+            // use switch or if/else etc.
+        });
+
+    });
+
+</script>
+
     #set($fields = $matchForm.fields)
 
     <body>
@@ -21,8 +52,8 @@
                 <div class="col-lg-6">
                     <form action="/match/new" method="post">
 
-                        <label for="sel1">Select season type :</label>
-                        <select class="form-control" id="sel1" name="season" size="2">
+                        <label for="season">Select season type :</label>
+                        <select class="form-control" id="season" name="season" size="2">
 
                             #if($state && $state.size() > 0)
                                 #foreach($season in $seasons)
@@ -46,8 +77,8 @@
                         </select>
 
 
-                        <label for="sel1">Select match type :</label>
-                        <select class="form-control" id="sel1" name="matchType" size="3">
+                        <label for="matchType">Select match type :</label>
+                        <select class="form-control" id="matchType" name="matchType" size="3">
                             #if($state && $state.size() > 0)
                                 #foreach($matchType in $matchTypes)
                                     #if($matchType.toString() == $state.matchTypeId)
@@ -69,8 +100,8 @@
                             #end
                         </select>
 
-                        <label for="sel1">Team 1 Keeper :</label>
-                        <select class="form-control" id="sel1" name="keeperTeam1">
+                        <label for="keeperTeam1">Team 1 Keeper :</label>
+                        <select class="form-control" id="keeperTeam1" name="keeperTeam1">
                             #if($state && $state.size() > 0)
                                 #foreach($player in $players)
                                     #if($state.keeperTeam1Id == $player.id)
@@ -86,8 +117,8 @@
                             #end
                         </select>
 
-                        <label for="sel1">Team 1 Striker :</label>
-                        <select class="form-control" id="sel1" name="strikerTeam1">
+                        <label for="strikerTeam1" id="strikerTeam1Label">Team 1 Striker :</label>
+                        <select class="form-control" id="strikerTeam1" name="strikerTeam1">
                             #if($state && $state.size() > 0)
                                 #foreach($player in $players)
                                     #if($state.strikerTeam1Id == $player.id)
@@ -103,8 +134,8 @@
                             #end
                         </select>
 
-                        <label for="sel1">Team 2 Keeper :</label>
-                        <select class="form-control" id="sel1" name="keeperTeam2">
+                        <label for="keeperTeam2">Team 2 Keeper :</label>
+                        <select class="form-control" id="keeperTeam2" name="keeperTeam2">
                             #if($state && $state.size() > 0)
                                 #foreach($player in $players)
                                     #if($state.keeperTeam2Id == $player.id)
@@ -120,8 +151,8 @@
                             #end
                         </select>
 
-                        <label for="sel1">Team 2 Striker :</label>
-                        <select class="form-control" id="sel1" name="strikerTeam2">
+                        <label for="strikerTeam2" id="strikerTeam2Label">Team 2 Striker :</label>
+                        <select class="form-control" id="strikerTeam2" name="strikerTeam2">
                             #if($state && $state.size() > 0)
                                 #foreach($player in $players)
                                     #if($state.strikerTeam2Id == $player.id)
