@@ -32,11 +32,18 @@ public class MatchService {
         EntityManager entityManager = JPAUtil.getEntityManager();
 
         entityManager.getTransaction().begin();
-        List<Match> allMatches = entityManager.createQuery("select m from Matches as m where m.status = '0'").getResultList();
+        List<Match> activeMatches = entityManager.createQuery("select m from Matches as m where m.status = '0'").getResultList();
+
+        if (activeMatches.isEmpty()){
+            //SELECT * FROM Matches ORDER BY timestamp DESC LIMIT 1;
+            List<Match>  resultList = entityManager.createQuery("SELECT m FROM Matches AS m ORDER BY m.timestamp DESC")
+                    .setMaxResults(1).getResultList();
+            return resultList.get(0);
+        }
 
         entityManager.close();
         JPAUtil.shutdown();
-        return allMatches.get(0);
+        return activeMatches.get(0);
     }
 
     public Match getMatch(Long id) {
