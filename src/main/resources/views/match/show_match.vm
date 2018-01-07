@@ -17,7 +17,7 @@
 
             var matchtype = "${match.matchtype.toString()}";
 
-            //alert(matchtype);
+
 
             function checkAndSubmit(team, addorRemove) {
                 var goalsTeam1 = $("#goalsTeam1").text();
@@ -25,8 +25,6 @@
 
                 var goals1 = parseInt(goalsTeam1);
                 var goals2 = parseInt(goalsTeam2);
-
-
 
                 if(team == "team1"){
                     if(addorRemove == "add"){
@@ -73,11 +71,40 @@
                         alert("Min or max goal limit reached");
                     }
                 }
-                else if(matchtype == "deathmatch"){
+                else if(matchtype == "death match"){
+                    if( (goals1 <= 1) && (goals2 <= 1) && (goals1 >= 0) && (goals2 >= 0)) {
+                        if(goals1 == 1 || goals2 == 1) {
+                            $("#finishDiv").show();
+                            $("#goalsTeam1").text("" + goals1);
+                            $("#goalsTeam2").text("" + goals2);
+                        }
+                        else{
+                            $("#finishDiv").hide();
+                            $("#goalsTeam1").text("" + goals1);
+                            $("#goalsTeam2").text("" + goals2);
+                        }
+                    }
+                    else{
+                        alert("Min or max goal limit reached");
+                    }
 
                 }
-                else if(matchtype == "deathmatchbo3"){
-
+                else if(matchtype == "death match bo3"){
+                    if( (goals1 <= 2) && (goals2 <= 2) && (goals1 >= 0) && (goals2 >= 0)) {
+                        if(goals1 == 2 || goals2 == 2) {
+                            $("#finishDiv").show();
+                            $("#goalsTeam1").text("" + goals1);
+                            $("#goalsTeam2").text("" + goals2);
+                        }
+                        else{
+                            $("#finishDiv").hide();
+                            $("#goalsTeam1").text("" + goals1);
+                            $("#goalsTeam2").text("" + goals2);
+                        }
+                    }
+                    else{
+                        alert("Min or max goal limit reached");
+                    }
                 }
             }
 
@@ -96,6 +123,30 @@
             $( "#removeGoalTeam2" ).click(function() {
                 checkAndSubmit("team2", "remove");
             });
+
+            $("#finishButton").click(function () {
+
+
+                var goalsTeam1 = $("#goalsTeam1").text();
+                var goalsTeam2 = $("#goalsTeam2").text();
+
+                var goals1 = parseInt(goalsTeam1);
+                var goals2 = parseInt(goalsTeam2);
+
+                $.ajax({
+                    url: '/match',
+                    type: 'PUT',
+                    data: "matchId=$match.id&goalsTeam1=" + goals1 + "&goalsTeam2=" + goals2,
+                    success: function (data) {
+                        if(data != "null"){
+                            window.location = "/match/"+data;
+                        }
+                        else{
+                            window.location = "/match/new";
+                        }
+                    }
+                });
+            });
         });
 
     </script>
@@ -104,6 +155,8 @@
 
         #if($match.getStatus().name() == "STARTED")
         <div>
+            #if($match.matchtype.toString() == "regular")
+            #end
             <div class="panel panel-info">
                 <div class="panel-heading">
                     <h3 class="panel-title">Current Match | $match.id | status</h3>
@@ -154,7 +207,7 @@
             <div class="row" style="margin-top: 50px">
 
                     <div id="finishDiv" class="col-md-12">
-                        <button type="submit" class="btn btn-default">finish Match</button>
+                        <button id="finishButton" type="submit" class="btn btn-default">finish Match</button>
                     </div>
 
 

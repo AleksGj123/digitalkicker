@@ -98,6 +98,7 @@ public class MatchService {
     public long createMatch(Player player1, Player player2, Matchtype matchtype, Season season) {
 
         EntityManager entityManager = JPAUtil.getEntityManager();
+        entityManager.getTransaction().begin();
 
         Match m = new Match(player1, player2, matchtype, season);
 
@@ -158,6 +159,10 @@ public class MatchService {
                     }
                 }
                 break;
+        }
+
+        if(!entityManager.isOpen()){
+            entityManager = JPAUtil.getEntityManager();
         }
 
         // in any case update the match
