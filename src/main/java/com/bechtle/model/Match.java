@@ -161,4 +161,12 @@ public class Match {
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
+
+    public Player getLoksafePlayer() {
+        return loksafePlayer;
+    }
+
+    public void setLoksafePlayer(Player loksafePlayer) {
+        this.loksafePlayer = loksafePlayer;
+    }
 }

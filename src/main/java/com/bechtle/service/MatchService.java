@@ -77,8 +77,13 @@ public class MatchService {
         EntityManager entityManager = JPAUtil.getEntityManager();
         entityManager.getTransaction().begin();
 
-
         Match match = new Match(keeperTeam1, strikerTeam1, keeperTeam2, strikerTeam2, REGULAR, season);
+
+        List<Player> loksafePlayers = checkIfPlayerIsLoksafe(Arrays.asList(keeperTeam1, strikerTeam1, keeperTeam2, strikerTeam2));
+        if(!loksafePlayers.isEmpty())
+        {
+            match.setLoksafePlayer(loksafePlayers.get(0));
+        }
 
         Season s = entityManager.find(Season.class, season.getId());
 
@@ -112,6 +117,12 @@ public class MatchService {
         entityManager.getTransaction().begin();
 
         Match m = new Match(player1, player2, matchtype, season);
+
+        List<Player> loksafePlayers = checkIfPlayerIsLoksafe(Arrays.asList(player1, player2));
+        if(!loksafePlayers.isEmpty())
+        {
+            m.setLoksafePlayer(loksafePlayers.get(0));
+        }
 
         Season s = entityManager.find(Season.class, season.getId());
 
@@ -184,6 +195,15 @@ public class MatchService {
         JPAUtil.shutdown();
 
         return  followUpMatch;
+    }
+
+    private List<Player> checkIfPlayerIsLoksafe(List<Player> playerList){
+
+        List<Player> playersLockSafe = playerList.stream()
+                .filter(player -> player.getLokSafe() == true)
+                .collect(Collectors.toList());
+
+        return playersLockSafe;
     }
 
     private long createFollowUpGame(Match match, Player player1, Player player2){
