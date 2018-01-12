@@ -124,6 +124,17 @@
                 checkAndSubmit("team2", "remove");
             });
 
+            $("#deleteButton").click(function () {
+                $.ajax({
+                    url: '/match/$match.id',
+                    type: 'DELETE',
+                    data: '',
+                    success: function (data) {
+                        window.location = "/match/list";
+                    }
+                });
+            });
+
             $("#finishButton").click(function () {
 
 
@@ -215,6 +226,12 @@
             </div>
             <div class="row" style="margin-top: 50px">
 
+                <div id="delteDiv" class="col-md-12">
+                    <button id="deleteButton" type="submit" class="btn btn-danger">delete Match</button>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 50px">
+
                     <div id="finishDiv" class="col-md-12">
                         <button id="finishButton" type="submit" class="btn btn-default">finish Match</button>
                     </div>
@@ -269,6 +286,12 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 50px">
+
+                <div id="delteDiv" class="col-md-12">
+                    <button id="deleteButton" type="submit" class="btn btn-danger">delete Match</button>
                 </div>
             </div>
         #end

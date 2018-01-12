@@ -193,9 +193,9 @@ public class PlayerService {
         EntityManager entityManager = JPAUtil.getEntityManager();
 
         entityManager.getTransaction().begin();
-        Player playerToUpdate = entityManager.find(Player.class, player.getId());
+        //Player playerToUpdate = entityManager.find(Player.class, player.getId());
 
-        entityManager.merge(playerToUpdate);
+        entityManager.merge(player);
         entityManager.getTransaction().commit();
 
         JPAUtil.shutdown();

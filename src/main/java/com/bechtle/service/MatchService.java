@@ -3,6 +3,7 @@ package com.bechtle.service;
 import com.bechtle.model.*;
 import com.bechtle.util.JPAUtil;
 import javax.persistence.EntityManager;
+import javax.persistence.Id;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -44,6 +45,45 @@ public class MatchService {
         entityManager.close();
         JPAUtil.shutdown();
         return activeMatches.get(0);
+    }
+
+    /**
+     * Delete a match by id
+     *
+     * @param matchId the Id of the match you want to delete
+     * @return false if match could not be delete because it was not found
+     */
+    public boolean deleteMatch(Long matchId){
+        EntityManager entityManager = JPAUtil.getEntityManager();
+        entityManager.getTransaction().begin();
+
+
+        Match match = entityManager.find(Match.class, matchId);
+        final Season season = match.getSeason();
+        final Player keeperTeam1 = match.getKeeperTeam1();
+        final Player keeperTeam2 = match.getKeeperTeam2();
+        final Player strikerTeam1 = match.getStrikerTeam1();
+        final Player strikerTeam2 = match.getStrikerTeam2();
+
+        keeperTeam1.getMatches().removeIf(m -> m.getId() == matchId);
+        keeperTeam2.getMatches().removeIf(m -> m.getId() == matchId);
+        strikerTeam1.getMatches().removeIf(m -> m.getId() == matchId);
+        strikerTeam2.getMatches().removeIf(m -> m.getId() == matchId);
+
+        season.getMatches().removeIf(m -> m.getId() == matchId);
+
+        entityManager.merge(season);
+        entityManager.merge(keeperTeam1);
+        entityManager.merge(keeperTeam2);
+        entityManager.merge(strikerTeam1);
+        entityManager.merge(strikerTeam2);
+
+        entityManager.remove(match);
+
+        entityManager.getTransaction().commit();
+
+        JPAUtil.shutdown();
+        return true;
     }
 
     public Match getMatch(Long id) {

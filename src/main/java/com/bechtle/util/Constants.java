@@ -9,6 +9,7 @@ public class Constants {
     public static final String MATCH_FORM = "matchForm";
 
     public static final String PLAYERS = "players";
+    public static final String PLAYER = "player";
     public static final String SEASONS = "seasons";
 
     public static final String LOKSAFE = "loksafe";
