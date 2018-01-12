@@ -79,14 +79,14 @@ public class PlayerController {
     public static ModelAndView updatePlayer(Request request, Response response){
         final long playerId = Long.parseLong(request.params(":id"));
 
-        final String forename = request.params("forename");
-        final String surname = request.params("surname");
-        final String nickname = request.params("nickname");
-        final String email = request.params("email");
-        final String password = request.params("password");
-        final String passwordRepeat = request.params("passwordRepeat");
-        final String biography = request.params("biography");
-        final boolean loksafe = Boolean.parseBoolean(request.params("loksafe"));
+        final String forename = request.queryParams("forename");
+        final String surname = request.queryParams("surname");
+        final String nickname = request.queryParams("nickname");
+        final String email = request.queryParams("email");
+        final String password = request.queryParams("password");
+        final String passwordRepeat = request.queryParams("passwordRepeat");
+        final String biography = request.queryParams("biography");
+        final boolean loksafe = Boolean.parseBoolean(request.queryParams("loksafe"));
 
         final Player playerToUpdate = playerService.getPlayer(playerId);
         playerToUpdate.setForename(forename);
@@ -96,7 +96,7 @@ public class PlayerController {
         playerToUpdate.setBiography(biography);
         playerToUpdate.setLokSafe(loksafe);
 
-        //playerService.updatePlayer(playerToUpdate);
+        playerService.updatePlayer(playerToUpdate);
 
         return new ModelAndView(new HashMap<>(), "views/player/edit_player.vm");
     }

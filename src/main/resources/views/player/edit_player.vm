@@ -6,7 +6,7 @@
     <script>
         $(function() {
             $("#editButton").click(function (data) {
-
+                event.preventDefault();
                 var forename = $("#$fields.forename.name").val();
                 var surname = $("#$fields.surname.name").val();
                 var nickname = $("#$fields.nickname.name").val();
@@ -20,17 +20,16 @@
 
 
                 $.ajax({
-                    url: '/player/$player.id?'+
-                    'forename='+forename+
-                    '&surname='+surname+
-                    '&nickname='+nickname+
-                    '&email='+email+
-                    '&password='+password+
-                    '&passwordRepeat='+passwordRepeat+
-                    '&biography='+biography+
-                    '&loksafe='+lokSafe,
+                    url: '/player/$player.id',
                     type: 'POST',
-                    data: data,
+                    data:   'forename='+forename+
+                            '&surname='+surname+
+                            '&nickname='+nickname+
+                            '&email='+email+
+                            '&password='+password+
+                            '&passwordRepeat='+passwordRepeat+
+                            '&biography='+biography+
+                            '&loksafe='+lokSafe,
                     success: function (data) {
 
                     }

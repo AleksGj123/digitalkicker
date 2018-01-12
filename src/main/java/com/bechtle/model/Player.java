@@ -25,11 +25,9 @@ public class Player {
     private String email;
 
     @Transient
-    @NotEmpty
     private String password;
 
     @Transient
-    @NotEmpty
     private String passwordRepeat;
 
     private String passwordHash;

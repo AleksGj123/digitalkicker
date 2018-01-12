@@ -39,7 +39,7 @@ public class PlayerService {
         entityManager.getTransaction().begin();
 
         Player playerForId = entityManager.find(Player.class, id);
-
+        entityManager.close();
         JPAUtil.shutdown();
         return playerForId;
     }
@@ -197,7 +197,7 @@ public class PlayerService {
 
         entityManager.merge(player);
         entityManager.getTransaction().commit();
-
+        entityManager.close();
         JPAUtil.shutdown();
     }
 
