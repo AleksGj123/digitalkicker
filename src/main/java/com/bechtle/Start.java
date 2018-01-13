@@ -7,7 +7,7 @@ import com.bechtle.controller.StatisticsController;
 import spark.ModelAndView;
 import spark.template.velocity.VelocityTemplateEngine;
 
-import java.util.*;
+import java.util.HashMap;
 
 import static spark.Spark.*;
 
@@ -23,15 +23,23 @@ public class Start {
 
         staticFileLocation("/static");
 
+        //index
+        // match
+        path("/", () -> {
+            get("", (req, res) -> {
+                return new ModelAndView(new HashMap<>(), "views/carousel.vm");
+            }, velocityTemplateEngine);
+        });
+
         // match
         path("/match", () -> {
             before("/*", (q, a) -> System.out.println("Match ..."));
             post("/new", MatchController::createNewMatch, velocityTemplateEngine);
             put("", MatchController::updateMatch);
             delete("/:id", MatchController::deleteMatch);
-            get("/dashboard",  MatchController::showDashboard, velocityTemplateEngine);
-            get("/list",  MatchController::listMatches, velocityTemplateEngine);
-            get("/new",  MatchController::showNewMatchFrom, velocityTemplateEngine);
+            get("/dashboard", MatchController::showDashboard, velocityTemplateEngine);
+            get("/list", MatchController::listMatches, velocityTemplateEngine);
+            get("/new", MatchController::showNewMatchFrom, velocityTemplateEngine);
             get("/:id", MatchController::showPlayer, velocityTemplateEngine);
             /*delete("/remove",  (req, res) -> {
                 return "";
@@ -42,10 +50,10 @@ public class Start {
         path("/season", () -> {
             before("/*", (q, a) -> System.out.println("Season ..."));
             post("", SeasonController::createNewSeason);
-            get("/list",  SeasonController::listSeasons, velocityTemplateEngine);
+            get("/list", SeasonController::listSeasons, velocityTemplateEngine);
             get("/new", SeasonController::showNewSeasonForm, velocityTemplateEngine);
-            get("/:id",  SeasonController::showSeason, velocityTemplateEngine);
-            get("",  (req, res) -> {
+            get("/:id", SeasonController::showSeason, velocityTemplateEngine);
+            get("", (req, res) -> {
                 return new ModelAndView(new HashMap<>(), "views/season/season.vm");
             }, velocityTemplateEngine);
             /*put("/:status", (req, res) -> {
@@ -63,10 +71,10 @@ public class Start {
             before("/*", (q, a) -> System.out.println("Player ..."));
 
             post("/new", PlayerController::createNewPlayer, velocityTemplateEngine);
-            get("/list",  (req, res) -> PlayerController.listPlayers(), velocityTemplateEngine);
-            get("/new",  PlayerController::getNewPlayerForm, velocityTemplateEngine);
+            get("/list", (req, res) -> PlayerController.listPlayers(), velocityTemplateEngine);
+            get("/new", PlayerController::getNewPlayerForm, velocityTemplateEngine);
             get("/:id", PlayerController::showPlayer, velocityTemplateEngine);
-            post("/:id", PlayerController::updatePlayer,velocityTemplateEngine);
+            post("/:id", PlayerController::updatePlayer, velocityTemplateEngine);
             /*delete("/remove",  (req, res) -> {
                 return "";
             });*/
@@ -76,7 +84,6 @@ public class Start {
         path("/stats", () -> {
             get("", StatisticsController::getStats, velocityTemplateEngine);
         });
-
 
 
     }
