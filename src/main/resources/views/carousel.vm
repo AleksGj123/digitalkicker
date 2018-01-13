@@ -18,109 +18,103 @@
     <link href="/css/app.css" rel="stylesheet">
     <link href="/css/live.css" rel="stylesheet">
     <link href="/css/carousel.css" rel="stylesheet">
+    <link href="/css/menu.css" rel="stylesheet">
 
 
+    <script>
+        window.onresize = function(event) {
+        ...
+        };
 
-    <!-- Bootstrap Date-Picker Plugin -->
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+        $( ".dropbtn" ).click(function() {
+            alert( "button was clicked" );
+            if ($(window).width() < 767) {
+                alert("kleiner");
+            }
+        });
 
-    <style>
-        /*
-Code snippet by maridlcrmn for Bootsnipp.com
-Follow me on Twitter @maridlcrmn
-*/
-        .navbar{
-            margin-bottom: 0px !important;
-            border-radius: 0px !important;
-        }
+        window.res
 
-        .navbar-brand { position: relative; z-index: 2; }
-
-        .navbar-nav.navbar-right .btn { position: relative; z-index: 2; padding: 4px 20px; margin: 10px auto; }
-
-        .navbar .navbar-collapse { position: relative; }
-        .navbar .navbar-collapse .navbar-right > li:last-child { padding-left: 22px; }
-
-        .navbar .nav-collapse { position: absolute; z-index: 1; top: 0; left: 0; right: 0; bottom: 0; margin: 0; padding-right: 120px; padding-left: 80px; width: 100%; }
-        .navbar.navbar-default .nav-collapse { background-color: #f8f8f8; }
-        .navbar.navbar-inverse .nav-collapse { background-color: #222; }
-        .navbar .nav-collapse .navbar-form { border-width: 0; box-shadow: none; }
-        .nav-collapse>li { float: right; }
-
-        .btn.btn-circle { border-radius: 50px; }
-        .btn.btn-outline { background-color: transparent; }
-
-        @media screen and (max-width: 767px) {
-            .navbar .navbar-collapse .navbar-right > li:last-child { padding-left: 15px; padding-right: 15px; }
-
-            .navbar .nav-collapse { margin: 7.5px auto; padding: 0; }
-            .navbar .nav-collapse .navbar-form { margin: 0; }
-            .nav-collapse>li { float: none; }
-        }
-
-    </style>
+    </script>
 
 </head>
 <body>
 
-<!-- Second navbar for categories -->
 <nav class="navbar navbar-default">
     <div class="container">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#navbar-collapse-2">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Brand</a>
+            <a class="navbar-brand" href="#"><img style="height: 47px; width: 47px"
+                                                  src="https://d30y9cdsu7xlg0.cloudfront.net/png/445033-200.png"></a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="navbar-collapse-1">
+        <div class="collapse navbar-collapse" id="navbar-collapse-2">
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Services</a></li>
-                <li><a href="#">Works</a></li>
-                <li><a href="#">News</a></li>
-                <li><a href="#">Contact</a></li>
                 <li>
-                    <a class="btn btn-default btn-outline btn-circle"  data-toggle="collapse" href="#nav-collapse1" aria-expanded="false" aria-controls="nav-collapse1">Categories</a>
+                    <div class="dropdown">
+                        <a class="menu-big-viewport" href="/player/list"><button class="dropbtn">Players</button></a>
+                        <button style="display: none" class="dropbtn menu-small-viewport">Players</button>
+                        <div class="dropdown-content">
+                            <a href="/player/new">New Player</a>
+                        </div>
+                    </div>
                 </li>
                 <li>
-                    <a class="btn btn-default btn-outline btn-circle"  data-toggle="collapse" href="#nav-collapse2" aria-expanded="false" aria-controls="nav-collapse2">Sign in</a>
+                    <div class="dropdown">
+                        <a class="menu-big-viewport" href="/match/list"><button class="dropbtn">Matches</button></a>
+                        <button style="display: none" class="dropbtn menu-small-viewport">Matches</button>
+                        <div class="dropdown-content">
+                            <a href="/match/new">New Match</a>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="dropdown">
+                        <a class="menu-big-viewport" href="/season/list"><button class="dropbtn">Season</button></a>
+                        <button style="display: none" class="dropbtn menu-small-viewport">Season</button>
+                        <div class="dropdown-content">
+                            <a href="/season/new">New Season</a>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="dropdown">
+                        <a class="menu-big-viewport" href="/stats"><button class="dropbtn">Statistics</button></a>
+                        <button style="display: none" class="dropbtn menu-small-viewport">Statistics</button>
+                    </div>
+                </li>
+                <li>
+                    <a class="btn btn-default btn-outline btn-circle collapsed" data-toggle="collapse"
+                       href="#nav-collapse2" aria-expanded="false" aria-controls="nav-collapse2">Sign in</a>
                 </li>
             </ul>
-            <ul class="collapse nav navbar-nav nav-collapse" id="nav-collapse1">
-                <li><a href="#">Web design</a></li>
-                <li><a href="#">Development</a></li>
-                <li><a href="#">Graphic design</a></li>
-                <li><a href="#">Print</a></li>
-                <li><a href="#">Motion</a></li>
-                <li><a href="#">Mobile apps</a></li>
-            </ul>
-            <div class="collapse nav navbar-nav nav-collapse" id="nav-collapse2">
+            <div class="collapse nav navbar-nav nav-collapse slide-down" id="nav-collapse2">
                 <form class="navbar-form navbar-right form-inline" role="form">
                     <div class="form-group">
                         <label class="sr-only" for="Email">Email</label>
-                        <input type="email" class="form-control" id="Email" placeholder="Email" required />
+                        <input type="email" class="form-control" id="Email" placeholder="Email" autofocus required/>
                     </div>
                     <div class="form-group">
                         <label class="sr-only" for="Password">Password</label>
-                        <input type="password" class="form-control" id="Password" placeholder="Password" required />
+                        <input type="password" class="form-control" id="Password" placeholder="Password" required/>
                     </div>
                     <button type="submit" class="btn btn-success">Sign in</button>
                 </form>
             </div>
-        </div>
-    </div>
-</nav>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container -->
+</nav><!-- /.navbar -->
 
 
-<div class="carousel fade-carousel slide" data-ride="carousel" data-interval="7500" id="bs-carousel">
+<div class="carousel fade-carousel slide" data-ride="carousel" data-interval="5000" id="bs-carousel">
     <div class="overlay"></div>
 
 
