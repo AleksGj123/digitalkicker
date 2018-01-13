@@ -5,8 +5,11 @@ import net.formio.validation.constraints.Email;
 import net.formio.validation.constraints.NotEmpty;
 
 import javax.persistence.*;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class Player {
@@ -37,6 +40,9 @@ public class Player {
     private String nickname;
 
     private Boolean lokSafe;
+
+    // field for NFC Card ID
+    //private String nfcId;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -158,4 +164,27 @@ public class Player {
     public void setMatches(List<Match> matches) {
         this.matches = matches;
     }*/
+
+    /**
+     * Checks if there is a Field that is null for an instance of Player
+     * @return List of field names that are empty
+     */
+    public List<String> getNullAndEmptyFields(){
+        ArrayList<String> missingFields = new ArrayList<>();
+
+        List<String> m = Arrays.stream(getClass().getDeclaredFields())
+                .filter(field -> field.getName() != "passwordHash")
+                .filter(field -> {
+                    try {
+                        if (field.get(this) == null || field.get(this).equals("")) return true;
+                    } catch (IllegalAccessException e) {
+                        return false;
+                    }
+                    return false;
+                })
+                .map(field -> field.getName()).collect(Collectors.toList());
+
+
+        return m;
+    }
 }

@@ -6,8 +6,6 @@ import com.bechtle.util.Constants;
 import net.formio.FormData;
 import net.formio.FormMapping;
 import net.formio.Forms;
-import net.formio.RequestParams;
-import net.formio.servlet.ServletRequestParams;
 import net.formio.validation.ValidationResult;
 import spark.ModelAndView;
 import spark.Request;
@@ -15,7 +13,6 @@ import spark.Response;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.ResourceBundle;
 
 public class PlayerController {
 
@@ -26,13 +23,13 @@ public class PlayerController {
     public static ModelAndView getNewPlayerForm(Request request, Response response){
         HashMap<String, Object> map = new HashMap<>();
 
-        FormData<Player> formData = new FormData<>(new Player(), ValidationResult.empty);
-        FormMapping<Player> filledForm = playerForm.fill(formData);
+        /*FormData<Player> formData = new FormData<>(new Player(), ValidationResult.empty);
+        FormMapping<Player> filledForm = playerForm.fill(formData);*/
 
-        ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages");
+        /*ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages");
         map.put("messages", bundle);
-        map.put(Constants.PLAYER_FORM, filledForm);
-        return new ModelAndView(map, "views/player/player.vm");
+        map.put(Constants.PLAYER_FORM, filledForm);*/
+        return new ModelAndView(map, "views/player/new_player.vm");
     }
 
     public static ModelAndView showPlayer(Request request, Response response){
@@ -52,7 +49,11 @@ public class PlayerController {
     }
 
     public static ModelAndView createNewPlayer(Request request, Response response){
-        RequestParams params = new ServletRequestParams(request.raw());
+
+        HashMap<String, Object> map  = new HashMap<>();
+
+
+        /*RequestParams params = new ServletRequestParams(request.raw());
         FormData<Player> bind = playerForm.bind(params);
 
         HashMap<String, Object> stringFormMappingHashMap = playerService.validatePlayer(playerForm.bind(params));
@@ -66,18 +67,48 @@ public class PlayerController {
             else {
                 player.setLokSafe(false);
             }
-            playerService.createPlayer(player);
+
             response.redirect("/player/" + player.getId());
         }
 
         ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages");
-        stringFormMappingHashMap.put("messages", bundle);
+        stringFormMappingHashMap.put("messages", bundle);*/
 
-        return new ModelAndView(stringFormMappingHashMap, "views/player/player.vm");
+        Player player = getPlayerFromParams(request, null);
+        List<String> nullFields = player.getNullAndEmptyFields();
+        if (!nullFields.isEmpty()){
+            map.put(Constants.VALIDATION_EMPTY, nullFields);
+        }
+        if( !player.getPassword().equals(player.getPasswordRepeat()) ){
+            map.put(Constants.VALIDATION_NOT_EQUAL, true);
+        }
+        else{
+            playerService.createPlayer(player);
+            response.redirect("/player/" + player.getId());
+        }
+        map.put(Constants.PLAYER, player);
+
+        return new ModelAndView(map, "views/player/new_player.vm");
     }
 
     public static ModelAndView updatePlayer(Request request, Response response){
+
         final long playerId = Long.parseLong(request.params(":id"));
+        final Player playerFromDB = playerService.getPlayer(playerId);
+
+        Player player = getPlayerFromParams(request, playerFromDB);
+
+        playerService.updatePlayer(player);
+
+        return new ModelAndView(new HashMap<>(), "views/player/edit_player.vm");
+    }
+
+    // helper
+    private static Player getPlayerFromParams(Request request, Player player){
+
+        if(player == null){
+            player = new Player();
+        }
 
         final String forename = request.queryParams("forename");
         final String surname = request.queryParams("surname");
@@ -88,17 +119,18 @@ public class PlayerController {
         final String biography = request.queryParams("biography");
         final boolean loksafe = Boolean.parseBoolean(request.queryParams("loksafe"));
 
-        final Player playerToUpdate = playerService.getPlayer(playerId);
-        playerToUpdate.setForename(forename);
-        playerToUpdate.setSurname(surname);
-        playerToUpdate.setNickname(nickname);
-        playerToUpdate.setEmail(email);
-        playerToUpdate.setBiography(biography);
-        playerToUpdate.setLokSafe(loksafe);
 
-        playerService.updatePlayer(playerToUpdate);
 
-        return new ModelAndView(new HashMap<>(), "views/player/edit_player.vm");
+        player.setForename(forename);
+        player.setSurname(surname);
+        player.setNickname(nickname);
+        player.setEmail(email);
+        player.setBiography(biography);
+        player.setLokSafe(loksafe);
+        player.setPassword(password);
+        player.setPasswordRepeat(passwordRepeat);
+
+        return player;
     }
 
     public static ModelAndView listPlayers(){

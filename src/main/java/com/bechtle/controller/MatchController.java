@@ -8,7 +8,6 @@ import com.bechtle.service.MatchService;
 import com.bechtle.service.PlayerService;
 import com.bechtle.service.SeasonService;
 import com.bechtle.util.Constants;
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
@@ -23,7 +22,6 @@ public class MatchController {
     private static final MatchService matchService = new MatchService();
     private static final SeasonService seasonService = new SeasonService();
     private static final PlayerService playerService = new PlayerService();
-
 
 
     public static ModelAndView showDashboard(Request request, Response Request){
