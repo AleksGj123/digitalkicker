@@ -84,7 +84,8 @@ public class PlayerController {
         }
         else{
             playerService.createPlayer(player);
-            response.redirect("/player/" + player.getId());
+            //response.redirect("/player/" + player.getId());
+            response.redirect("/player/list");
         }
         map.put(Constants.PLAYER, player);
 
@@ -99,6 +100,7 @@ public class PlayerController {
         Player player = getPlayerFromParams(request, playerFromDB);
 
         playerService.updatePlayer(player);
+        response.redirect("/player/list");
 
         return new ModelAndView(new HashMap<>(), "views/player/edit_player.vm");
     }
