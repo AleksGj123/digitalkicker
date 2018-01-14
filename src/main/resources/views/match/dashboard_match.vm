@@ -1,6 +1,38 @@
 <html lang="en">
     #include("/views/layout.vm")
 
+<script>
+
+    $(function () {
+        var webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/update");
+        webSocket.onmessage = function (msg) { updateMatch(msg); };
+        webSocket.onclose = function () { alert("WebSocket connection closed") };
+
+
+        //Update the chat-panel, and the list of connected users
+        function updateMatch(msg) {
+            var data = JSON.parse(msg.data);
+            var g1 = data.goalsTeam1;
+            var g2 = data.goalsTeam2;
+
+            if(g1 != null){
+                alert("Team 1 got a goal! " + g1);
+            }
+            if(g2 != null){
+                alert("Team 2 got a goal! " + g2);
+            }
+
+            /*insert("chat", data.userMessage);
+            id("userlist").innerHTML = "";
+            data.userlist.forEach(function (user) {
+                insert("userlist", "<li>" + user + "</li>");
+            });*/
+        }
+    })
+
+
+</script>
+
 <body>
 
     <div class="container">

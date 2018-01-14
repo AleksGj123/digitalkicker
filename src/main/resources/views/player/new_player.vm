@@ -47,7 +47,7 @@
                             <input type="text" class="form-control"
                                    id="email"
                                    name="email"
-                                   value="#if($player.email)$player.email)#end"
+                                   value="#if($player.email)$player.email#end"
                                    placeholder="Max@Mustermann.de">
 
                         </div>

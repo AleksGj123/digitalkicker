@@ -4,7 +4,11 @@ import com.bechtle.controller.MatchController;
 import com.bechtle.controller.PlayerController;
 import com.bechtle.controller.SeasonController;
 import com.bechtle.controller.StatisticsController;
+import com.bechtle.service.UpdateService;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPubSub;
 import spark.ModelAndView;
+
 import spark.template.velocity.VelocityTemplateEngine;
 
 import java.util.HashMap;
@@ -12,16 +16,18 @@ import java.util.HashMap;
 import static spark.Spark.*;
 
 public class Start {
+    private final static VelocityTemplateEngine velocityTemplateEngine = new VelocityTemplateEngine();
+
+    public static UpdateService updateService = new UpdateService();
 
     public static void main(String[] args) {
 
-
         System.setProperty("hibernate.dialect.storage_engine", "myisam");
-        final VelocityTemplateEngine velocityTemplateEngine = new VelocityTemplateEngine();
-
         port(4444);
-
         staticFileLocation("/static");
+
+        webSocket("/update", UpdateService.class);
+
 
         //index
         // match
@@ -85,6 +91,26 @@ public class Start {
             get("", StatisticsController::getStats, velocityTemplateEngine);
         });
 
+        Jedis jSubscriber = new Jedis();
+        jSubscriber.subscribe(new JedisPubSub() {
+            @Override
+            public void onMessage(String channel, String message) {
+                UpdateService.broadcastMessage(channel, message);
+                System.out.println(channel + "-" + message);
+                // handle message
+            }
+        }, "goalsTeam1");
+
+
+        // ask Enrico? new Thread necessary?
+        jSubscriber.subscribe(new JedisPubSub() {
+            @Override
+            public void onMessage(String channel, String message) {
+                UpdateService.broadcastMessage(channel, message);
+                System.out.println(channel + "-" + message);
+                // handle message
+            }
+        }, "goalsTeam2");
 
     }
 }
