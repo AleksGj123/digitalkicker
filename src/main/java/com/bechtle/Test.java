@@ -21,8 +21,8 @@ public class Test {
 
         JSONObject jsonObject = new JSONObject();
 
-        jsonObject.put("goalsTeam1", 0);
-        jsonObject.put("goalsTeam2", 3);
+        jsonObject.put("goalsTeam1", 0).put("goalsTeam2", 3);
+        //jsonObject.put("goalsTeam2", 3);
 
         System.out.println(jsonObject);
 

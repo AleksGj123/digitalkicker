@@ -6,27 +6,19 @@
     $(function () {
         var webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/update");
         webSocket.onmessage = function (msg) { updateMatch(msg); };
-        webSocket.onclose = function () { alert("WebSocket connection closed") };
+        //webSocket.onclose = function () { alert("WebSocket connection closed") };
 
-
-        //Update the chat-panel, and the list of connected users
         function updateMatch(msg) {
             var data = JSON.parse(msg.data);
             var g1 = data.goalsTeam1;
             var g2 = data.goalsTeam2;
 
-            if(g1 != null){
-                alert("Team 1 got a goal! " + g1);
-            }
-            if(g2 != null){
-                alert("Team 2 got a goal! " + g2);
-            }
+            console.log($("#goalsTeam1").text())
+            console.log(g1);
+            console.log(g2);
 
-            /*insert("chat", data.userMessage);
-            id("userlist").innerHTML = "";
-            data.userlist.forEach(function (user) {
-                insert("userlist", "<li>" + user + "</li>");
-            });*/
+            $("#goalsTeam1").text("SOMETEXT"+g1);
+            $("#goalsTeam1").text(""+g2);
         }
     })
 
@@ -37,7 +29,7 @@
 
     <div class="container">
         <div id="match-result" class="live result">
-            <span>$match.goalsTeam2 : $match.goalsTeam1</span>
+            <span id="goalsTeam2">$match.goalsTeam2</span> : <span id="goalsTeam1">$match.goalsTeam1</span>
         </div>
         <div id="end-message" class="live-message" style="display: none;">
             <span class="message">End match?</span>

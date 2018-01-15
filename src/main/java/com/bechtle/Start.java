@@ -92,25 +92,18 @@ public class Start {
         });
 
         Jedis jSubscriber = new Jedis();
-        jSubscriber.subscribe(new JedisPubSub() {
+
+        jSubscriber.psubscribe(new JedisPubSub() {
             @Override
-            public void onMessage(String channel, String message) {
-                UpdateService.broadcastMessage(channel, message);
-                System.out.println(channel + "-" + message);
-                // handle message
+            public void onPMessage(String pattern, String channel, String message) {
+                super.onPMessage(pattern, channel, message);
+                if(channel.equals("event.goal")){
+                    UpdateService.broadcastMessage("updateMatch", message);
+                }
+                else if(channel.equals("event.start")){
+
+                }
             }
-        }, "goalsTeam1");
-
-
-        // ask Enrico? new Thread necessary?
-        jSubscriber.subscribe(new JedisPubSub() {
-            @Override
-            public void onMessage(String channel, String message) {
-                UpdateService.broadcastMessage(channel, message);
-                System.out.println(channel + "-" + message);
-                // handle message
-            }
-        }, "goalsTeam2");
-
+        }, "event.*");
     }
 }
