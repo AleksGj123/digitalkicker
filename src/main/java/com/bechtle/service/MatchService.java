@@ -67,16 +67,22 @@ public class MatchService {
 
         keeperTeam1.getMatches().removeIf(m -> m.getId() == matchId);
         keeperTeam2.getMatches().removeIf(m -> m.getId() == matchId);
-        strikerTeam1.getMatches().removeIf(m -> m.getId() == matchId);
-        strikerTeam2.getMatches().removeIf(m -> m.getId() == matchId);
 
         season.getMatches().removeIf(m -> m.getId() == matchId);
 
         entityManager.merge(season);
         entityManager.merge(keeperTeam1);
         entityManager.merge(keeperTeam2);
-        entityManager.merge(strikerTeam1);
-        entityManager.merge(strikerTeam2);
+
+        // only relevant for death match and death match bo3
+        if(strikerTeam1 !=  null){
+            strikerTeam1.getMatches().removeIf(m -> m.getId() == matchId);
+            entityManager.merge(strikerTeam1);
+        }
+        if(strikerTeam2 != null){
+            strikerTeam2.getMatches().removeIf(m -> m.getId() == matchId);
+            entityManager.merge(strikerTeam2);
+        }
 
         entityManager.remove(match);
 
@@ -198,12 +204,33 @@ public class MatchService {
      * @param goalsTeam2 : the goals for team 2
      * @return : a match id if a follow up game is created
      */
-    public Long updateMatch(long matchId, int goalsTeam1, int goalsTeam2) {
+    public void updateMatch(long matchId, int goalsTeam1, int goalsTeam2) {
         EntityManager entityManager = JPAUtil.getEntityManager();
 
         Match match = entityManager.find(Match.class, matchId);
         match.setGoalsTeam1(goalsTeam1);
         match.setGoalsTeam2(goalsTeam2);
+
+        //TODO: not clean code change this  #agj
+        // reopen maybe necessary because createFollowUpGame opens and closes the entityManager
+        if(!entityManager.isOpen()){
+            entityManager = JPAUtil.getEntityManager();
+        }
+
+        // in any case update the match
+        entityManager.getTransaction().begin();
+        entityManager.merge(match);
+
+        entityManager.getTransaction().commit();
+        JPAUtil.shutdown();
+    }
+
+    public Long finishMatch(long matchId){
+        EntityManager entityManager = JPAUtil.getEntityManager();
+
+        Match match = entityManager.find(Match.class, matchId);
+        int goalsTeam1 = match.getGoalsTeam1();
+        int goalsTeam2 = match.getGoalsTeam2();
 
         Long followUpMatch = null;
 
@@ -230,6 +257,8 @@ public class MatchService {
                 break;
         }
 
+        //TODO: not clean code change this  #agj
+        // reopen maybe necessary because createFollowUpGame opens and closes the entityManager
         if(!entityManager.isOpen()){
             entityManager = JPAUtil.getEntityManager();
         }

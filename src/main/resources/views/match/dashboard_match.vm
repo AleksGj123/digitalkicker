@@ -13,12 +13,8 @@
             var g1 = data.goalsTeam1;
             var g2 = data.goalsTeam2;
 
-            console.log($("#goalsTeam1").text())
-            console.log(g1);
-            console.log(g2);
-
-            $("#goalsTeam1").text("SOMETEXT"+g1);
-            $("#goalsTeam1").text(""+g2);
+            $("#goalsTeam1").text(g1);
+            $("#goalsTeam2").text(g2);
         }
     })
 
@@ -53,16 +49,17 @@
         <img class="live-background" src="/images/table.png"/>
         <div class="team white">
             WHITE
+            #if($match.strikerTeam1)
             <div class="live-player">
                 <img class="avatar" src="/images/player.jpg"/>
                 <div class="name">$match.strikerTeam1.forename <span class="nick">$match.strikerTeam1.nickname</span> $match.strikerTeam1.surname</div>
             </div>
-            #if($match.keeperTeam1)
-                <div class="live-player">
-                    <img class="avatar" src="/images/player.jpg"/>
-                    <div class="name">$match.keeperTeam1.forename <span class="nick">$match.keeperTeam1.nickname</span> $match.keeperTeam1.surname</div>
-                </div>
             #end
+            <div class="live-player">
+                <img class="avatar" src="/images/player.jpg"/>
+                <div class="name">$match.keeperTeam1.forename <span class="nick">$match.keeperTeam1.nickname</span> $match.keeperTeam1.surname</div>
+            </div>
+
         </div>
     </div>
 

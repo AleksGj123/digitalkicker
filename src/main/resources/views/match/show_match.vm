@@ -4,6 +4,28 @@
 
     <script>
         $(function() {
+            ///////////////
+            // Websockets//
+            ///////////////
+
+            var webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/update");
+            webSocket.onmessage = function (msg) { updateMatch(msg); };
+            //webSocket.onclose = function () { alert("WebSocket connection closed") };
+
+            function updateMatch(msg) {
+                var data = JSON.parse(msg.data);
+                var g1 = data.goalsTeam1;
+                var g2 = data.goalsTeam2;
+
+                $("#goalsTeam1").text(g1);
+                $("#goalsTeam2").text(g2);
+
+                checkAndSubmit(g1,g2, false);
+            }
+
+            ////////////////
+            // Other stuff//
+            ////////////////
 
             var gt1 = parseInt($("#goalsTeam1").text());
             var gt2 = parseInt($("#goalsTeam2").text());
@@ -17,9 +39,7 @@
 
             var matchtype = "${match.matchtype.toString()}";
 
-
-
-            function checkAndSubmit(team, addorRemove) {
+            function addOrRemoveGoal(team, addorRemove) {
                 var goalsTeam1 = $("#goalsTeam1").text();
                 var goalsTeam2 = $("#goalsTeam2").text();
 
@@ -44,28 +64,37 @@
                     }
                 }
 
-                if( matchtype == "regular" ){
+                checkAndSubmit(goals1, goals2, true)
+            }
 
-                    if( (goals1 <= 5) && (goals2 <= 5) && (goals1 >= 0) && (goals2 >= 0) ) {
+            function updateMatch(goals1, goals2,submit) {
+                if(submit){
+                    $.ajax({
+                        url: '/match',
+                        type: 'PUT',
+                        data: "matchId=$match.id&goalsTeam1=" + goals1 + "&goalsTeam2=" + goals2,
+                        success: function (data) {
 
-                        if(goals1 == 5 || goals2 == 5){
-                            $("#finishDiv").show();
                             $("#goalsTeam1").text("" + goals1);
                             $("#goalsTeam2").text("" + goals2);
                         }
+                    });
+                }
+            }
+
+            function checkAndSubmit(goals1, goals2, submit) {
+                if( matchtype == "regular" ){
+                    if( (goals1 <= 5) && (goals2 <= 5) && (goals1 >= 0) && (goals2 >= 0) ) {
+                        $("#goalsTeam1").text("" + goals1);
+                        $("#goalsTeam2").text("" + goals2);
+
+                        if(goals1 == 5 || goals2 == 5){
+                            $("#finishDiv").show();
+                        }
                         else {
                             $("#finishDiv").hide();
-                            $.ajax({
-                                url: '/match',
-                                type: 'PUT',
-                                data: "matchId=$match.id&goalsTeam1=" + goals1 + "&goalsTeam2=" + goals2,
-                                success: function (data) {
-
-                                    $("#goalsTeam1").text("" + goals1);
-                                    $("#goalsTeam2").text("" + goals2);
-                                }
-                            });
                         }
+                        updateMatch(goals1, goals2, submit);
                     }
                     else{
                         alert("Min or max goal limit reached");
@@ -73,16 +102,15 @@
                 }
                 else if(matchtype == "death match"){
                     if( (goals1 <= 1) && (goals2 <= 1) && (goals1 >= 0) && (goals2 >= 0)) {
+                        $("#goalsTeam1").text("" + goals1);
+                        $("#goalsTeam2").text("" + goals2);
                         if(goals1 == 1 || goals2 == 1) {
                             $("#finishDiv").show();
-                            $("#goalsTeam1").text("" + goals1);
-                            $("#goalsTeam2").text("" + goals2);
                         }
                         else{
                             $("#finishDiv").hide();
-                            $("#goalsTeam1").text("" + goals1);
-                            $("#goalsTeam2").text("" + goals2);
                         }
+                        updateMatch(goals1, goals2, submit);
                     }
                     else{
                         alert("Min or max goal limit reached");
@@ -91,16 +119,15 @@
                 }
                 else if(matchtype == "death match bo3"){
                     if( (goals1 <= 2) && (goals2 <= 2) && (goals1 >= 0) && (goals2 >= 0)) {
+                        $("#goalsTeam1").text("" + goals1);
+                        $("#goalsTeam2").text("" + goals2);
                         if(goals1 == 2 || goals2 == 2) {
                             $("#finishDiv").show();
-                            $("#goalsTeam1").text("" + goals1);
-                            $("#goalsTeam2").text("" + goals2);
                         }
                         else{
                             $("#finishDiv").hide();
-                            $("#goalsTeam1").text("" + goals1);
-                            $("#goalsTeam2").text("" + goals2);
                         }
+                        updateMatch(goals1, goals2, submit);
                     }
                     else{
                         alert("Min or max goal limit reached");
@@ -109,19 +136,19 @@
             }
 
             $("#addGoalTeam1").click(function() {
-                checkAndSubmit("team1", "add");
+                addOrRemoveGoal("team1", "add");
             });
 
             $( "#removeGoalTeam1" ).click(function() {
-                checkAndSubmit("team1", "remove");
+                addOrRemoveGoal("team1", "remove");
             });
 
             $( "#addGoalTeam2" ).click(function() {
-                checkAndSubmit("team2", "add");
+                addOrRemoveGoal("team2", "add");
             });
 
             $( "#removeGoalTeam2" ).click(function() {
-                checkAndSubmit("team2", "remove");
+                addOrRemoveGoal("team2", "remove");
             });
 
             $("#deleteButton").click(function () {
@@ -136,18 +163,10 @@
             });
 
             $("#finishButton").click(function () {
-
-
-                var goalsTeam1 = $("#goalsTeam1").text();
-                var goalsTeam2 = $("#goalsTeam2").text();
-
-                var goals1 = parseInt(goalsTeam1);
-                var goals2 = parseInt(goalsTeam2);
-
                 $.ajax({
-                    url: '/match',
+                    url: '/match/finish',
                     type: 'PUT',
-                    data: "matchId=$match.id&goalsTeam1=" + goals1 + "&goalsTeam2=" + goals2,
+                    data: "matchId=$match.id",
                     success: function (data) {
                         if(data != "null"){
                             window.location = "/match/"+data;

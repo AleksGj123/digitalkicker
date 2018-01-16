@@ -42,6 +42,7 @@ public class Start {
             before("/*", (q, a) -> System.out.println("Match ..."));
             post("/new", MatchController::createNewMatch, velocityTemplateEngine);
             put("", MatchController::updateMatch);
+            put("/finish", MatchController::finishMatch);
             delete("/:id", MatchController::deleteMatch);
             get("/dashboard", MatchController::showDashboard, velocityTemplateEngine);
             get("/list", MatchController::listMatches, velocityTemplateEngine);

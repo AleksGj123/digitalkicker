@@ -58,16 +58,14 @@ public class MatchController {
         int goalsTeam1 = Integer.parseInt(request.queryParams("goalsTeam1"));
         int goalsTeam2 = Integer.parseInt(request.queryParams("goalsTeam2"));
 
-        Long newMatchId = matchService.updateMatch(matchId, goalsTeam1, goalsTeam2);
+        matchService.updateMatch(matchId, goalsTeam1, goalsTeam2);
+        return "";
+    }
 
-                /*if (newMatchId == null){
-                    res.redirect("/match/new");
-                }
-                else{
-                    res.redirect("/match/"+matchId.toString());
-                }*/
-
-        return "" +newMatchId;
+    public static String finishMatch(Request request, Response response){
+        Long matchId = Long.parseLong(request.queryParams("matchId"));
+        Long newMatchId = matchService.finishMatch(matchId);
+        return ""+newMatchId;
     }
 
 
