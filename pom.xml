@@ -109,7 +109,7 @@
                 <packaging.type>jar</packaging.type>
             </properties>
             <build>
-                <finalName>digitalkicker</finalName>
+                <finalName>kicker</finalName>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -119,7 +119,7 @@
                             <archive>
                                 <manifest>
                                     <addClasspath>true</addClasspath>
-                                    <mainClass>Starter</mainClass>
+                                    <mainClass>com.bechtle.Start</mainClass>
                                     <classpathPrefix>dependency-jars/</classpathPrefix>
                                 </manifest>
                             </archive>
@@ -144,13 +144,13 @@
                                 </goals>
                                 <phase>package</phase>
                                 <configuration>
-                                    <finalName>bestat</finalName>
+                                    <finalName>kicker</finalName>
                                     <descriptorRefs>
                                         <descriptorRef>jar-with-dependencies</descriptorRef>
                                     </descriptorRefs>
                                     <archive>
                                         <manifest>
-                                            <mainClass>Starter</mainClass>
+                                            <mainClass>com.bechtle.Start</mainClass>
                                         </manifest>
                                     </archive>
                                 </configuration>
