@@ -68,6 +68,10 @@ public class MatchController {
         return ""+newMatchId;
     }
 
+    public static String instantFinish(Request request, Response response){
+        MatchController.updateMatch(request, response);
+        return MatchController.finishMatch(request, response);
+    }
 
     public static ModelAndView showNewMatchFrom(Request request, Response response){
         return new ModelAndView(prepareMatchForm(), "views/match/new_match.vm");

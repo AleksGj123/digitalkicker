@@ -43,6 +43,7 @@ public class Start {
             post("/new", MatchController::createNewMatch, velocityTemplateEngine);
             put("", MatchController::updateMatch);
             put("/finish", MatchController::finishMatch);
+            put("/instant", MatchController::instantFinish);
             delete("/:id", MatchController::deleteMatch);
             get("/dashboard", MatchController::showDashboard, velocityTemplateEngine);
             get("/list", MatchController::listMatches, velocityTemplateEngine);
