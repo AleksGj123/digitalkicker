@@ -1,86 +1,80 @@
-<html lang="en">
+#@mainLayout()
 
+#set($fields = $seasonForm.fields)
 
-    #include("/views/layout.vm")
-    #set($fields = $seasonForm.fields)
+<script>
+    $(document).ready(function(){
+        var date_input=$('input[name="$fields.startDate.name"]');
+        var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
+        var options={
+            format: 'dd/mm/yyyy',
+            container: container,
+            todayHighlight: true,
+            autoclose: true,
+        };
+        date_input.datepicker(options);
 
-    <script>
-        $(document).ready(function(){
-            var date_input=$('input[name="$fields.startDate.name"]');
-            var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
-            var options={
-                format: 'dd/mm/yyyy',
-                container: container,
-                todayHighlight: true,
-                autoclose: true,
-            };
-            date_input.datepicker(options);
+        var date_input2=$('input[name="$fields.endDate.name"]');
+        var container2=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
+        var options2={
+            format: 'dd/mm/yyyy',
+            container: container,
+            todayHighlight: true,
+            autoclose: true,
+        };
+        date_input2.datepicker(options2);
+    })
+</script>
 
-            var date_input2=$('input[name="$fields.endDate.name"]');
-            var container2=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
-            var options2={
-                format: 'dd/mm/yyyy',
-                container: container,
-                todayHighlight: true,
-                autoclose: true,
-            };
-            date_input2.datepicker(options2);
-        })
-    </script>
-    <body>
+<div class="container container-aa">
+    <div class="container container-a">
+        <br/>
 
-        <div class="container container-aa">
-            <div class="container container-a">
-                <br>
+        #set($validationInfos = $seasonForm.validationResult.fieldMessages)
 
-                #set($validationInfos = $seasonForm.validationResult.fieldMessages)
-
-                #if($validationInfos.size() > 0)
-                    #foreach($validationInfo in $validationInfos)
-                        <div class="alert alert-danger" role="alert">
-                            <strong>Oh snap!</strong> Change a few things up and try submitting again. + $validationInfo
-                        </div>
-                    #end
-                #end
-                <div class="col-lg-6">
-                    <form action="/season" method="post">
-
-                        <div class="form-group">
-                            <label class="control-label" for="$fields.name.name">Season-name:</label>
-                            <input type="text" class="form-control"
-                                   id="$fields.name.name"
-                                   name="$fields.name.name"
-                                   value="$fields.name.value"
-                                   placeholder="Super Season">
-                        </div>
-
-                        <div class="input-group date">
-                            <label class="control-label" for="$fields.startDate.name">Start-date</label>
-                            <input class="form-control"
-                                   id="$fields.startDate.name"
-                                   name="$fields.startDate.name"
-                                   value="$fields.startDate.value"
-                                   placeholder="MM/DD/YYY"
-                                   type="text"/>
-                        </div>
-                        <div class="input-group date">
-                            <label class="control-label" for="$fields.startDate.name">End-date</label>
-                            <input class="form-control"
-                                   id="$fields.endDate.name"
-                                   #*value=" $date.format('dd/MM/yyyy', $fields.startDate.value)"*#
-                                   value="$fields.endDate.value"
-                                   name="$fields.endDate.name"
-                                   placeholder="MM/DD/YYY"
-                                   type="text"/>
-                        </div>
-
-                        <br>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
+        #if($validationInfos.size() > 0)
+            #foreach($validationInfo in $validationInfos)
+                <div class="alert alert-danger" role="alert">
+                    <strong>Oh snap!</strong> Change a few things up and try submitting again. + $validationInfo
                 </div>
-            </div>
+            #end
+        #end
+        <div class="col-lg-6">
+            <form action="/season" method="post">
+                <div class="form-group">
+                    <label class="control-label" for="$fields.name.name">Season-name:</label>
+                    <input type="text" class="form-control"
+                           id="$fields.name.name"
+                           name="$fields.name.name"
+                           value="#if($fields.name.value)fields.name.value#end"
+                           placeholder="Super Season">
+                </div>
 
+                <div class="input-group date">
+                    <label class="control-label" for="$fields.startDate.name">Start-date</label>
+                    <input class="form-control"
+                           id="$fields.startDate.name"
+                           name="$fields.startDate.name"
+                           value="#if($fields.startDate.value)fields.startDate.value#end"
+                           placeholder="MM/DD/YYY"
+                           type="text"/>
+                </div>
+                <div class="input-group date">
+                    <label class="control-label" for="$fields.startDate.name">End-date</label>
+                    <input class="form-control"
+                           id="$fields.endDate.name"
+                           #*value=" $date.format('dd/MM/yyyy', $fields.startDate.value)"*#
+                           value="#if($fields.endDate.value)fields.endDate.value#end"
+                           name="$fields.endDate.name"
+                           placeholder="MM/DD/YYY"
+                           type="text"/>
+                </div>
+
+                <br/>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
         </div>
-    </body>
+    </div>
 
-</html>
+</div>
+#end

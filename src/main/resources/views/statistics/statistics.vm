@@ -1,71 +1,68 @@
-<html lang="en">
-    #include("/views/layout.vm")
-
-<body>
-
-    <div class="container">
-        <h3>Lok List</h3>
-        <table class="table table-striped">
-            <thead>
+#@mainLayout()
+<div class="container">
+    <h3>Lok List</h3>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Player forename</th>
+            <th>Player nickname</th>
+            <th>Player surname</th>
+            <th>--Loks--</th>
+        </tr>
+        </thead>
+        <tbody>
+            #foreach($playerLokStats in $lokList.entrySet())
             <tr>
-                <th>Player forename</th>
-                <th>Player nickname</th>
-                <th>Player surname</th>
-                <th>--Loks--</th>
+                    <td>$playerLokStats.key.forename</td>
+                    <td>$playerLokStats.key.nickname</td>
+                    <td>$playerLokStats.key.surname</td>
+                    <td>$playerLokStats.value</td>
             </tr>
-            </thead>
-            <tbody>
-                #foreach($playerLokStats in $lokList.entrySet())
+            #end
+        </tbody>
+    </table>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <h3>Played matches</h3>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Player forename</th>
+                    <th>played games </th>
+                </tr>
+                </thead>
+                <tbody>
+                    #foreach($playerLokStats in $numberOfGamesList.entrySet())
+                    <tr>
                         <td>$playerLokStats.key.forename</td>
-                        <td>$playerLokStats.key.nickname</td>
-                        <td>$playerLokStats.key.surname</td>
                         <td>$playerLokStats.value</td>
-
                     </tr>
-                #end
-            </tbody>
-        </table>
-    </div>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4">
-                <h3>Played matches</h3>
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>Player forename</th>
-                        <th>played games </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        #foreach($playerLokStats in $numberOfGamesList.entrySet())
-                            <td>$playerLokStats.key.forename</td>
-                            <td>$playerLokStats.value</td>
-                            </tr>
-                        #end
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-md-8">
-                <h3>Some other stats??</h3>
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>Player forename</th>
-                        <th>played games </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    #* #foreach($playerLokStats in $numberOfGamesList.entrySet())
+                    #end
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-8">
+            <h3>Some other stats??</h3>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Player forename</th>
+                    <th>played games </th>
+                </tr>
+                </thead>
+                <tbody>
+                #* #foreach($playerLokStats in $numberOfGamesList.entrySet())
+                <tr>
                     <td>$playerLokStats.key.forename</td>
                     <td>$playerLokStats.value</td>
 
-                    </tr>
-                    #end*#
-                    </tbody>
-                </table>
-            </div>
+                </tr>
+                #end*#
+                </tbody>
+            </table>
         </div>
     </div>
-</body>
-</html>
+</div>
+#end

@@ -1,106 +1,101 @@
-<html lang="en">
-    #include("/views/layout.vm")
-    <body>
+#@mainLayout()
+<div class="container container-aa">
+    <div class="container container-a">
+        <br/>
 
-        <div class="container container-aa">
-            <div class="container container-a">
-                <br>
+        #if (($emptyFields ) || ($passwordNotEqual))
 
-                #if (($emptyFields ) || ($passwordNotEqual))
-
-                    <div class="alert alert-danger" role="alert">
-                        <strong>Oh snap!</strong> Change a few things up and try submitting again.
-                    </div>
-                #end
-                <form action="/player/new" method="post">
-                    <div class="form-row">
-                        <div class="form-group col-md-4">
-                            <label for="forename">Forename:</label>
-                            <input type="text" class="form-control"
-                                   id="forename"
-                                   name="forename"
-                                   value="#if($player.forename)$player.forename#end"
-                                   placeholder="Max">
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="surname">Surname:</label>
-                            <input type="text" class="form-control"
-                                   id="surname"
-                                   name="surname"
-                                   value="#if($player.surname)$player.surname#end"
-                                   placeholder="Mustermann">
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="nickname">Nickname:</label>
-                            <input type="text" class="form-control"
-                                   id="nickname"
-                                   name="nickname"
-                                   value="#if($player.nickname)$player.nickname#end"
-                                   placeholder="The Thunder">
-                        </div>
-                    </div>
+            <div class="alert alert-danger" role="alert">
+                <strong>Oh snap!</strong> Change a few things up and try submitting again.
+            </div>
+        #end
+        <form action="/player/new" method="post">
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="forename">Forename:</label>
+                    <input type="text" class="form-control"
+                           id="forename"
+                           name="forename"
+                           value="#if($player.forename)$player.forename#end"
+                           placeholder="Max">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="surname">Surname:</label>
+                    <input type="text" class="form-control"
+                           id="surname"
+                           name="surname"
+                           value="#if($player.surname)$player.surname#end"
+                           placeholder="Mustermann">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="nickname">Nickname:</label>
+                    <input type="text" class="form-control"
+                           id="nickname"
+                           name="nickname"
+                           value="#if($player.nickname)$player.nickname#end"
+                           placeholder="The Thunder">
+                </div>
+            </div>
 
 
-                    <div class="form-row">
-                        <div class="form-group col-md-12">
-                            <label for="email">Email:</label>
-                            <input type="text" class="form-control"
-                                   id="email"
-                                   name="email"
-                                   value="#if($player.email)$player.email#end"
-                                   placeholder="Max@Mustermann.de">
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label for="email">Email:</label>
+                    <input type="text" class="form-control"
+                           id="email"
+                           name="email"
+                           value="#if($player.email)$player.email#end"
+                           placeholder="Max@Mustermann.de">
 
-                        </div>
-
-                    </div>
-
-                    <div class="form-group col-md-12">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox"
-                                       name="player-loksafe"
-                                       id="player-loksafe"
-                                       value="true"
-                                       "#if($player.loksafe) checked#end"
-                                > Loksafe
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="password">Password</label>
-                            <input type="password" class="form-control"
-                                   id="password"
-                                   name="password"
-                                   value="#if($player.password)"password"#end"
-                                   placeholder="Password">
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="passwordRepeat">Repeat password</label>
-                            <input type="password" class="form-control"
-                                   id="passwordRepeat"
-                                   name="passwordRepeat"
-                                   value="#if($player.passwordRepeat)"passwordRepeat"#end"
-                                   placeholder="Password">
-                        </div>
-                    </div>
-
-                    <div class="form-group col-md-12" >
-                        <label for="biography">Biography</label>
-                        <textarea class="form-control" id="exampleFormControlTextarea1"
-                                  placeholder="Your bio"
-                                  name="biography"
-                                  rows="4">#if($player.biography)$player.biography#end</textarea>
-                    </div>
-
-                    <div class="form-group col-md-12" >
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                    </div>
-                </form>
-
+                </div>
 
             </div>
-        </div>
-    </body>
-</html>
+
+            <div class="form-group col-md-12">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox"
+                               name="player-loksafe"
+                               id="player-loksafe"
+                               value="true"
+                               "#if($player.loksafe) checked#end"
+                        > Loksafe
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control"
+                           id="password"
+                           name="password"
+                           value="#if($player.password)"password"#end"
+                           placeholder="Password">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="passwordRepeat">Repeat password</label>
+                    <input type="password" class="form-control"
+                           id="passwordRepeat"
+                           name="passwordRepeat"
+                           value="#if($player.passwordRepeat)"passwordRepeat"#end"
+                           placeholder="Password">
+                </div>
+            </div>
+
+            <div class="form-group col-md-12" >
+                <label for="biography">Biography</label>
+                <textarea class="form-control" id="biography"
+                          placeholder="Your bio"
+                          name="biography"
+                          rows="4">#if($player.biography)$player.biography#end</textarea>
+            </div>
+
+            <div class="form-group col-md-12" >
+            <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+#end

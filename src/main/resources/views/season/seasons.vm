@@ -1,11 +1,7 @@
-<html lang="en">
-<head>
-    #include("/views/layout.vm")
-
-<body>
+#@mainLayout()
 <div class="container container-aa">
     <div class="container container-a">
-        <br>
+        <br/>
         <table class="table table-striped">
             <thead>
             <tr>
@@ -24,15 +20,8 @@
                     <td><a href="/season/$season.id">edit</a> </td>
                 </tr>
                 #end
-
             </tbody>
         </table>
-
-
     </div>
 </div>
-</body>
-<body>
-</body>
-
-</html>
+#end

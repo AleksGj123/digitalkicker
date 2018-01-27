@@ -1,7 +1,6 @@
-<html lang="en">
-#include("/views/layout.vm")
-    <div class="container">
-        <a href="/match/list">Match List</a>
-        <a href="/match/new">New Match</a>
-    </div>
-</html>
+#@mainLayout()
+<div class="container">
+    <a href="/match/list">Match List</a>
+    <a href="/match/new">New Match</a>
+</div>
+#end

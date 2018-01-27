@@ -1,9 +1,6 @@
 package com.bechtle;
 
-import com.bechtle.controller.MatchController;
-import com.bechtle.controller.PlayerController;
-import com.bechtle.controller.SeasonController;
-import com.bechtle.controller.StatisticsController;
+import com.bechtle.controller.*;
 import com.bechtle.service.UpdateService;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
@@ -28,13 +25,10 @@ public class Start {
 
         webSocket("/update", UpdateService.class);
 
-
         //index
         // match
         path("/", () -> {
-            get("", (req, res) -> {
-                return new ModelAndView(new HashMap<>(), "views/carousel.vm");
-            }, velocityTemplateEngine);
+            get("", IndexController::index, velocityTemplateEngine);
         });
 
         // match
