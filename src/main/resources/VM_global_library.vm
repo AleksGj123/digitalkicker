@@ -2,193 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="icon" href="/images/ball.png">
 
     <title>BeKick</title>
 
-    <!-- Bootstrap core CSS -->
     <script src="/js/jquery-3.2.1.min.js"></script>
     <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <script src="/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/js/app.js"></script>
 
-    <!-- Custom styles for this template -->
     <link href="/css/app.css" rel="stylesheet">
     <link href="/css/live.css" rel="stylesheet">
     <link href="/css/carousel.css" rel="stylesheet">
     <link href="/css/menu.css" rel="stylesheet">
 
-    <script>
-        window.onresize = function(event) {
-        ...
-        };
-
-        $( ".dropbtn" ).click(function() {
-            alert( "button was clicked" );
-            if ($(window).width() < 767) {
-                alert("kleiner");
-            }
-        });
-
-        window.res
-    </script>
-
-    <!-- Bootstrap Date-Picker Plugin -->
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
-
-    <style>
-        /* Makes images fully responsive */
-
-        .img-responsive,
-        .thumbnail > img,
-        .thumbnail a > img,
-        .carousel-inner > .item > img,
-        .carousel-inner > .item > a > img {
-            display: block;
-            width: 100%;
-            height: auto;
-        }
-
-        /* ------------------- Carousel Styling ------------------- */
-
-        .carousel-inner {
-            border-radius: 15px;
-        }
-
-        .carousel-caption {
-            background-color: rgba(0,0,0,.5);
-            position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 10;
-            padding: 0 0 10px 25px;
-            color: #fff;
-            text-align: left;
-        }
-
-        .carousel-indicators {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            left: 0;
-            width: 100%;
-            z-index: 15;
-            margin: 0;
-            padding: 0 25px 25px 0;
-            text-align: right;
-        }
-
-        .carousel-control.left,
-        .carousel-control.right {
-            background-image: none;
-        }
-
-        /* ------------------- Section Styling - Not needed for carousel styling ------------------- */
-
-        .section-white {
-            padding: 10px 0;
-        }
-
-        .section-white {
-            background-color: #fff;
-            color: #555;
-        }
-
-        @media screen and (min-width: 768px) {
-            .section-white {
-                padding: 1.5em 0;
-            }
-        }
-
-        @media screen and (min-width: 992px) {
-            .container {
-                max-width: 930px;
-            }
-        }
-    </style>
-
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
 </head>
 <body>
-<nav class="navbar navbar-default">
-    <div class="container">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#navbar-collapse-2">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#"><img style="height: 47px; width: 47px"
-                                                  src="https://d30y9cdsu7xlg0.cloudfront.net/png/445033-200.png"></a>
-        </div>
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="navbar-collapse-2">
-            <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <div class="dropdown">
-                        <a class="menu-big-viewport" href="/player/list"><button class="dropbtn">Players</button></a>
-                        <button style="display: none" class="dropbtn menu-small-viewport">Players</button>
-                        <div class="dropdown-content">
-                            <a href="/player/new">New Player</a>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="dropdown">
-                        <a class="menu-big-viewport" href="/match/list"><button class="dropbtn">Matches</button></a>
-                        <button style="display: none" class="dropbtn menu-small-viewport">Matches</button>
-                        <div class="dropdown-content">
-                            <a href="/match/new">New Match</a>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="dropdown">
-                        <a class="menu-big-viewport" href="/season/list"><button class="dropbtn">Season</button></a>
-                        <button style="display: none" class="dropbtn menu-small-viewport">Season</button>
-                        <div class="dropdown-content">
-                            <a href="/season/new">New Season</a>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="dropdown">
-                        <a class="menu-big-viewport" href="/stats"><button class="dropbtn">Statistics</button></a>
-                        <button style="display: none" class="dropbtn menu-small-viewport">Statistics</button>
-                    </div>
-                </li>
-                <li>
-                    <a class="btn btn-default btn-outline btn-circle collapsed" data-toggle="collapse"
-                       href="#nav-collapse2" aria-expanded="false" aria-controls="nav-collapse2">Sign in</a>
-                </li>
-            </ul>
-            <div class="collapse nav navbar-nav nav-collapse slide-down" id="nav-collapse2">
-                <form class="navbar-form navbar-right form-inline" role="form">
-                    <div class="form-group">
-                        <label class="sr-only" for="Email">Email</label>
-                        <input type="email" class="form-control" id="Email" placeholder="Email" autofocus required/>
-                    </div>
-                    <div class="form-group">
-                        <label class="sr-only" for="Password">Password</label>
-                        <input type="password" class="form-control" id="Password" placeholder="Password" required/>
-                    </div>
-                    <button type="submit" class="btn btn-success">Sign in</button>
-                </form>
-            </div>
-        </div><!-- /.navbar-collapse -->
-    </div><!-- /.container -->
-</nav><!-- /.navbar -->
-
-<div id="content" class="container">
+<div id="menu" class="menu-container">
+    #include("/views/menu.vm")
+</div>
+<div id="content" class="content-container">
     $!bodyContent##
 </div>
 </body>

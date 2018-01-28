@@ -1,13 +1,14 @@
-/********************************/
-/*       Fade Bs-carousel       */
-/********************************/
 .fade-carousel {
     position: relative;
-    height: 100vh;
+    height: 94vh;
 }
 .fade-carousel .carousel-inner .item {
-    height: 100vh;
+    height: 94vh;
 }
+.fade-carousel .carousel-indicators{
+    z-index: 2;
+}
+
 .fade-carousel .carousel-indicators > li {
     margin: 0 2px;
     background-color: #008854;
@@ -20,9 +21,6 @@
     opacity: 1;
 }
 
-/********************************/
-/*          Hero Headers        */
-/********************************/
 .hero {
     position: absolute;
     top: 50%;
@@ -62,9 +60,6 @@
     transition: 2s all ease-in-out .1s;
 }
 
-/********************************/
-/*            Overlay           */
-/********************************/
 .overlay {
     position: absolute;
     width: 100%;
@@ -74,9 +69,6 @@
     opacity: .7;
 }
 
-/********************************/
-/*       Slides backgrounds     */
-/********************************/
 .fade-carousel .slides .slide-1,
 .fade-carousel .slides .slide-2,
 .fade-carousel .slides .slide-3 {
@@ -86,18 +78,15 @@
     background-repeat: no-repeat;
 }
 .fade-carousel .slides .slide-1 {
-    background-image: url(https://www.heiku.de/media/image/4f/f5/c5/1156020_Kickerspielfeld_Champ_Soccer_1_1280x1280@2x.jpg);
+    background-image: url(/images/chalkboard-background.jpg);
 }
 .fade-carousel .slides .slide-2 {
-    background-image: url(https://www.heiku.de/media/image/4f/f5/c5/1156020_Kickerspielfeld_Champ_Soccer_1_1280x1280@2x.jpg);
+    background-image: url(/images/chalkboard-background.jpg);
 }
 .fade-carousel .slides .slide-3 {
-    background-image: url(https://www.heiku.de/media/image/4f/f5/c5/1156020_Kickerspielfeld_Champ_Soccer_1_1280x1280@2x.jpg);
+    background-image: url(/images/chalkboard-background.jpg);
 }
 
-/********************************/
-/*          Media Queries       */
-/********************************/
 @media screen and (min-width: 980px){
     .hero { width: 980px; }
 }

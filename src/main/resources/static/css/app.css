@@ -1,5 +1,4 @@
 body {
-    height: 100%;
     background-image: url("/images/chalkboard-background.jpg");
     background-color: #404040;
     background-blend-mode: overlay;
@@ -7,6 +6,19 @@ body {
     color: #008854;
     margin: 0;
 }
+
+.content-container{
+    padding-top: 56px;
+}
+
+.border-shadow-upper-lower{
+    box-shadow: 3px 1px 16px 0px rgba(0, 0, 0, 0.2);
+}
+
+input:focus, a:focus, button:focus{
+    outline: none;
+}
+
 
 .container-aa {
     margin-top: 15px;
@@ -36,15 +48,6 @@ body {
 .panel {
     background-color: transparent;
 }
-
-/*select[multiple], select[size] {
-    height: auto;
-    background-color: transparent;
-}
-
-.form-control {
-    background-color: transparent;
-}*/
 
 .starter-template {
     padding: 40px 15px;
