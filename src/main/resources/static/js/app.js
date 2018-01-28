@@ -11,4 +11,12 @@ $(document).ready(function () {
         }
     });
 
+    $(".season-selection-box p").click(function () {
+        $(".right").click();
+    });
+
+    $(".match-type-selection-box img").click(function () {
+        $(".right").click();
+    });
+
 });

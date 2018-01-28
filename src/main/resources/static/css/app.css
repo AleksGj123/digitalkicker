@@ -2,9 +2,6 @@ body {
     background-image: url("/images/chalkboard-background.jpg");
     background-color: #404040;
     background-blend-mode: overlay;
-    /*bechtle green color code ;)*/
-    color: #008854;
-    margin: 0;
 }
 
 .content-container{
@@ -52,4 +49,32 @@ input:focus, a:focus, button:focus{
 .starter-template {
     padding: 40px 15px;
     text-align: center;
+}
+
+.match-type-selection-box img{
+    width: 250px;
+    height: auto;
+    padding: 25px;
+}
+
+
+.players-selection-box img{
+    width: 200px;
+    height: auto;
+    padding: 20px;
+}
+
+@media screen and (max-width: 767px) {
+    .match-type-selection-box img{
+        width: 100px;
+        height: auto;
+        padding: 15px;
+    }
+
+
+    .players-selection-box img{
+        width: 100px;
+        height: auto;
+        padding: 15px;
+    }
 }
