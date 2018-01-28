@@ -11,9 +11,6 @@ body {
     padding-top: 56px;
 }
 
-.border-shadow-upper-lower{
-    box-shadow: 3px 1px 16px 0px rgba(0, 0, 0, 0.2);
-}
 
 input:focus, a:focus, button:focus{
     outline: none;

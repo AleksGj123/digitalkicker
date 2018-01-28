@@ -149,10 +149,13 @@
 
     .dropdown-content {
         position: relative !important;
-        margin-bottom: 7px;
         background-color: #f9f9f9;
         width: 100%;
         text-align: center;
+    }
+
+    .dropdown-content a {
+        background-color: #ededed;
     }
 
     .menu-small-viewport {
@@ -170,5 +173,9 @@
 
     .dropdown:hover .dropdown-content {
         display: none;
+    }
+
+    .dropdown-content{
+        box-shadow: none;
     }
 }
