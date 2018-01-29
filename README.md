@@ -10,4 +10,3 @@ This program is based on the sick rules, defined by the Bechtle Webmanagment Tea
 
 **Team 2** is the **black** team
 
-
