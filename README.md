@@ -9,3 +9,5 @@ This program is based on the sick rules, defined by the Bechtle Webmanagment Tea
 **Team 1** is the **white** team
 
 **Team 2** is the **black** team
+
+test
