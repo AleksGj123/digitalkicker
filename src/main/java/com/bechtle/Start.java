@@ -106,10 +106,28 @@ public class Start {
             get("/list", PlayerController::listPlayers, velocityTemplateEngine);
             get("/new", PlayerController::getNewPlayerForm, velocityTemplateEngine);
             get("/:id", PlayerController::showPlayer, velocityTemplateEngine);
+            post("/login", PlayerController::loginPlayer, velocityTemplateEngine);
             post("/:id", PlayerController::updatePlayer, velocityTemplateEngine);
             /*delete("/remove",  (req, res) -> {
                 return "";
             });*/
+        });
+
+        get("/login", (request, response) -> {
+
+            request.session().attribute("username", "aleks");
+            return "kk";
+        });
+
+        get("/onlyloggedin", (request, response) -> {
+
+            if(request.session().attribute("username") == null){
+                response.redirect("/");
+                return "";
+            }
+            else {
+                return "yoo";
+            }
         });
 
         // statistics

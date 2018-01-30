@@ -28,6 +28,22 @@ public class PlayerController {
         return new ModelAndView(playersMap, "views/player/players.vm");
     }
 
+    public static ModelAndView loginPlayer(Request request, Response response){
+        String email = request.queryParams("email").trim();
+        String password = request.queryParams("password");
+        boolean login = playerService.login(email, password);
+
+        if (login == true){
+            request.session().attribute("loggedInEmail", email);
+            // login successful
+        }
+        else{
+            // login not successful
+        }
+
+        return new ModelAndView(new HashMap<>(), "views/player/edit_player.vm");
+    }
+
     public static ModelAndView getNewPlayerForm(Request request, Response response){
         final HashMap<String, Object> map = new HashMap<>();
 

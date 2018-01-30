@@ -25,6 +25,22 @@ public class PlayerService extends Service {
         super(em);
     }
 
+    public boolean login(String email, String password){
+        List<Player> foundPlayers = getPlayers().stream()
+                .filter(player -> player.getEmail().equals(email))
+                .collect(Collectors.toList());
+
+        if (foundPlayers.size() > 0){
+            String salt = BCrypt.gensalt(); // need to safe salt before and get it ...
+            Player player = foundPlayers.get(0);
+            String submittedPWHashed = BCrypt.hashpw(password, salt);
+
+            if(player.getPasswordHash().equals(submittedPWHashed)) return true;
+            else return false;
+        }
+        else return false;
+    }
+
     public List<Player> getPlayers(){
         final List<Player> allPlayers = em.createQuery("select p from Player as p").getResultList();
         return allPlayers;
