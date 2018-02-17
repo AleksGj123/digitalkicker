@@ -3,101 +3,31 @@ body {
     background-color: #404040;
     background-blend-mode: overlay;
 }
-
 .content-container{
     padding-top: 56px;
 }
-
-/*disable html focus border*/
-input:focus, a:focus, button:focus{
-    outline: none;
-}
-
 .container-aa {
     margin-top: 15px;
 }
-
 .container-a{
     margin-top: 10px;
     border-radius: 10px
 }
-
 .table-striped>tbody>tr:nth-of-type(odd) {
     background-color: transparent;
     background: rgba(64,64,64,0.3);
 }
-
 .table>thead>tr>th {
     vertical-align: bottom;
     border-bottom: 2px solid #e09832;
 }
-
 .table>tbody>tr>td{
     border-top: transparent;
 }
-
-
-
 .panel {
     background-color: transparent;
 }
-
 .starter-template {
     padding: 40px 15px;
     text-align: center;
-}
-
-.match-type-selection-box img{
-    width: 250px;
-    height: auto;
-    padding: 25px;
-}
-
-
-.players-selection-box img{
-    width: 200px;
-    height: auto;
-    padding: 20px;
-}
-
-@media screen and (max-width: 980px) {
-    .hero h1 {
-        font-size: 4em !important;
-    }
-    .match-type-selection-box img{
-        width: 125px;
-        height: auto;
-        padding: 8px;
-    }
-}
-
-@media screen and (max-width: 767px) {
-    .match-type-selection-box img{
-        width: 100px;
-        height: auto;
-        padding: 9px;
-    }
-
-    .modal-dialog{
-        margin-top: 30px !important;
-        z-index: 1000;
-    }
-    .modal-content{
-        height: 85% !important;
-    }
-
-    .players-selection-box img{
-        width: 75px;
-        padding: 0px;
-    }
-    /*disable to avoid missclicks*/
-    .carousel-control{
-        display: none;
-    }
-    /*enlarge indicators*/
-    .carousel-indicators li{
-        width: 25px !important;
-        height: 25px !important;
-        border-radius: 14px !important;
-    }
 }

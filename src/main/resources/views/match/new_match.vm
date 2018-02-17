@@ -15,7 +15,7 @@
                     <h1>Choose your Season</h1>
                     <div class="season-selection-box">
                         #foreach($season in $seasons)
-                            <h1 style="margin-bottom: 10px !important;" class="season-selection"><a style="border: 1px solid white; color: white";  id="$season.id">$season.name</a></h1>
+                            <h1 class="season-selection"><a id="$season.id">$season.name</a></h1>
                         #end
                     </div>
                 </hgroup>
@@ -27,9 +27,12 @@
                 <hgroup>
                     <h1>Choose your match type</h1>
                     <div class="match-type-selection-box">
-                        <img id="regular" src="https://yt3.ggpht.com/a-/AK162_7qutgNe-gMFOEau_V4Sk5GAue8N8E45Lm7EA=s900-mo-c-c0xffffffff-rj-k-no">
-                        <img id="death match" src="https://yt3.ggpht.com/a-/AK162_7qutgNe-gMFOEau_V4Sk5GAue8N8E45Lm7EA=s900-mo-c-c0xffffffff-rj-k-no">
-                        <img id="death match bo3" src="https://yt3.ggpht.com/a-/AK162_7qutgNe-gMFOEau_V4Sk5GAue8N8E45Lm7EA=s900-mo-c-c0xffffffff-rj-k-no">
+                        <img id="regular"
+                             src="https://yt3.ggpht.com/a-/AK162_7qutgNe-gMFOEau_V4Sk5GAue8N8E45Lm7EA=s900-mo-c-c0xffffffff-rj-k-no">
+                        <img id="death match"
+                             src="https://yt3.ggpht.com/a-/AK162_7qutgNe-gMFOEau_V4Sk5GAue8N8E45Lm7EA=s900-mo-c-c0xffffffff-rj-k-no">
+                        <img id="death match bo3"
+                             src="https://yt3.ggpht.com/a-/AK162_7qutgNe-gMFOEau_V4Sk5GAue8N8E45Lm7EA=s900-mo-c-c0xffffffff-rj-k-no">
                     </div>
                 </hgroup>
             </div>
@@ -39,20 +42,19 @@
             <div class="modal fade" id="selectable-player-modal" tabindex="-1" role="dialog"
                  aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content" style="height: 80%; overflow: scroll">
+                    <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title">Choose Player: <img class="modal-position-image"
-                                                                        style="width: 50px; height: auto" src=""></h5>
+                            <h5 class="modal-title">Choose Player:
+                                <img class="modal-position-image" src=""></h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="modal-body">
                             #foreach($player in $players)
-                                <div class="player-module col-xs-4 col-md-3">
-                                    <img style="width: 75px; height: auto"
-                                         src="https://www.shareicon.net/download/2015/12/03/681624_man_512x512.png">
-                                    <p style="color: black; text-align: center; word-break: break-all" id="$player.id">$player.forename</p>
+                                <div style="text-align: center" class="player-module col-xs-4 col-md-3">
+                                    <img src="https://www.shareicon.net/download/2015/12/03/681624_man_512x512.png">
+                                    <p id="$player.id">$player.forename</p>
                                 </div>
                             #end
                         </div>
@@ -63,38 +65,42 @@
                 <hgroup>
                     <h1 style="margin-bottom: 50px">Select players</h1>
                     <div class="players-selection-box">
-                        <table style="width: 100%;" class="selectable-players">
+                        <table class="selectable-players">
                             <tr>
-                                <td style="width: 25%">
-                                    <div style="text-align: center">
-                                        <img data-id="keeperTeam1" data-position="https://image.freepik.com/free-icon/goalkeeper-chasing-the-ball_318-43176.jpg"
+                                <td>
+                                    <div>
+                                        <img data-id="keeperTeam1"
+                                             data-position="https://image.freepik.com/free-icon/goalkeeper-chasing-the-ball_318-43176.jpg"
                                              data-toggle="modal" id="goalkeeper-white"
                                              src="https://image.freepik.com/free-icon/goalkeeper-chasing-the-ball_318-43176.jpg"/>
-                                        <p style="text-align: center; color: green; word-break: break-word"></p>
+                                        <p></p>
                                     </div>
                                 </td>
-                                <td style="width: 25%">
-                                    <div style="text-align: center">
-                                        <img data-id="strikerTeam1" data-position="http://downloadclipart.org/do-upload/clipart/2016-07/Football_player_icon.jpg"
+                                <td>
+                                    <div>
+                                        <img data-id="strikerTeam1"
+                                             data-position="http://downloadclipart.org/do-upload/clipart/2016-07/Football_player_icon.jpg"
                                              data-toggle="modal" id="striker-white"
                                              src="http://downloadclipart.org/do-upload/clipart/2016-07/Football_player_icon.jpg"/>
-                                        <p style="text-align: center; color: green; word-break: break-word"></p>
+                                        <p></p>
                                     </div>
                                 </td>
-                                <td style="width: 25%">
-                                    <div style="text-align: center">
-                                        <img data-id="keeperTeam2" data-position="https://image.freepik.com/free-icon/goalkeeper-chasing-the-ball_318-43176.jpg"
+                                <td>
+                                    <div>
+                                        <img data-id="keeperTeam2"
+                                             data-position="https://image.freepik.com/free-icon/goalkeeper-chasing-the-ball_318-43176.jpg"
                                              data-toggle="modal" id="goalkeeper-black"
                                              src="https://image.freepik.com/free-icon/goalkeeper-chasing-the-ball_318-43176.jpg"/>
-                                        <p style="text-align: center; color: green; word-break: break-word"></p>
+                                        <p></p>
                                     </div>
                                 </td>
-                                <td style="width: 25%">
-                                    <div style="text-align: center">
-                                        <img data-id="strikerTeam2" data-position="http://downloadclipart.org/do-upload/clipart/2016-07/Football_player_icon.jpg"
+                                <td>
+                                    <div>
+                                        <img data-id="strikerTeam2"
+                                             data-position="http://downloadclipart.org/do-upload/clipart/2016-07/Football_player_icon.jpg"
                                              data-toggle="modal" id="striker-black"
                                              src="http://downloadclipart.org/do-upload/clipart/2016-07/Football_player_icon.jpg"/>
-                                        <p style="text-align: center; color: green; word-break: break-word"></p>
+                                        <p></p>
                                     </div>
                                 </td>
                             </tr>
@@ -108,7 +114,9 @@
                         <input name="keeperTeam2" id="keeperTeam2" type="hidden" value="">
                         <input name="strikerTeam2" id="strikerTeam2" type="hidden" value="">
 
-                        <button style="width: 100%; margin-top: 40px; height: 50px; " type="submit" class="btn btn-success">Create Match</button>
+                        <button style="width: 100%; margin-top: 40px; height: 50px; " type="submit"
+                                class="btn btn-success">Create Match
+                        </button>
                     </form>
                 </hgroup>
             </div>

@@ -1,0 +1,107 @@
+/*
+################
+Styles for create-match
+################
+*/
+
+.new-match-carousel .season-selection-box h1 {
+    margin-bottom: 10px;
+}
+
+.new-match-carousel .season-selection-box a {
+    border: 1px solid white;
+    color: white;
+}
+
+.new-match-carousel .match-type-selection-box img {
+    width: 250px;
+    height: auto;
+    padding: 25px;
+}
+
+.new-match-carousel .players-selection-box img {
+    width: 200px;
+    height: auto;
+    padding: 20px;
+}
+
+.new-match-carousel .modal-content {
+    height: 80% !important;
+    overflow: scroll;
+}
+
+.new-match-carousel .modal .modal-position-image {
+    width: 50px;
+    height: auto;
+}
+
+.new-match-carousel .modal-body .player-module img {
+    width: 75px;
+    height: auto;
+}
+
+.new-match-carousel .modal-body .player-module p {
+    color: black;
+    text-align: center;
+    word-break: break-all;
+}
+
+.new-match-carousel .selectable-players {
+    width: 100%;
+}
+
+.new-match-carousel .selectable-players td {
+    width: 25%;
+}
+
+.new-match-carousel .selectable-players div {
+    text-align: center;
+}
+
+.new-match-carousel .selectable-players div p {
+    text-align: center;
+    color: white;
+    word-break: break-all;
+}
+
+@media screen and (max-width: 980px) {
+    .new-match-carousel .hero h1 {
+        font-size: 4em !important;
+    }
+
+    .new-match-carousel .match-type-selection-box img {
+        width: 125px;
+        height: auto;
+        padding: 8px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    /*58px depends on container margin*/
+    .new-match-carousel .modal-dialog {
+        margin-top: 58px !important;
+    }
+
+    .new-match-carousel .match-type-selection-box img {
+        width: 100px;
+        height: auto;
+        padding: 9px;
+    }
+
+    .new-match-carousel .players-selection-box img {
+        width: 75px;
+        padding: 0px;
+    }
+
+    /*disable carousel controls to avoid missclicks*/
+    .carousel-control {
+        display: none;
+    }
+
+    /*enlarge indicators*/
+    .new-match-carousel .carousel-indicators li {
+        width: 25px !important;
+        height: 25px !important;
+        border-radius: 14px !important;
+    }
+}
