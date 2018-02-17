@@ -8,11 +8,10 @@ body {
     padding-top: 56px;
 }
 
-
+/*disable html focus border*/
 input:focus, a:focus, button:focus{
     outline: none;
 }
-
 
 .container-aa {
     margin-top: 15px;
@@ -81,21 +80,21 @@ input:focus, a:focus, button:focus{
 
     .modal-dialog{
         margin-top: 30px !important;
+        z-index: 1000;
     }
     .modal-content{
         height: 85% !important;
     }
 
-
     .players-selection-box img{
         width: 75px;
         padding: 0px;
     }
-
+    /*disable to avoid missclicks*/
     .carousel-control{
         display: none;
     }
-
+    /*enlarge indicators*/
     .carousel-indicators li{
         width: 25px !important;
         height: 25px !important;
