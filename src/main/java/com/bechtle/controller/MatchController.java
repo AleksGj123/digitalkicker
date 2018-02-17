@@ -12,6 +12,7 @@ import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
 
+import javax.persistence.EntityManager;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -87,16 +88,24 @@ public class MatchController {
         String strikerTeam1 = request.queryParams("strikerTeam1");
         String strikerTeam2 = request.queryParams("strikerTeam2");
 
-        Season s = seasonService.getSeason(Long.parseLong(season));
-        Player kT1 = playerService.getPlayer(Long.parseLong(keeperTeam1));
-        Player kT2 = playerService.getPlayer(Long.parseLong(keeperTeam2));
+        EntityManager em = request.attribute("em");
+
+        //Season s = seasonService.getSeason(Long.parseLong(season));
+        Season s = em.find(Season.class, Long.parseLong(season));
+
+        //Player kT1 = playerService.getPlayer(Long.parseLong(keeperTeam1));
+        Player kT1 = em.find(Player.class, Long.parseLong(keeperTeam1));
+        //Player kT2 = playerService.getPlayer(Long.parseLong(keeperTeam2));
+        Player kT2 = em.find(Player.class, Long.parseLong(keeperTeam2));
 
         Long matchId = null;
 
         if (Matchtype.REGULAR.toString().equals(matchType)){
 
-            Player sT1 = playerService.getPlayer(Long.parseLong(strikerTeam1));
-            Player sT2 = playerService.getPlayer(Long.parseLong(strikerTeam2));
+            //Player sT1 = playerService.getPlayer(Long.parseLong(strikerTeam1));
+            Player sT1 = em.find(Player.class, Long.parseLong(strikerTeam1));
+            //Player sT2 = playerService.getPlayer(Long.parseLong(strikerTeam2));
+            Player sT2 = em.find(Player.class, Long.parseLong(strikerTeam2));
 
             boolean playersValid = matchService.playersValid(kT1, kT2, sT1, sT2);
 
@@ -105,7 +114,7 @@ public class MatchController {
                 return getStateAndValidation(season, matchType, keeperTeam1, keeperTeam2, strikerTeam1, strikerTeam2);
             }
 
-            matchId = matchService.createMatch(kT1,sT1,kT2,sT2,s);
+            matchId = matchService.createMatch(kT1,sT1,kT2,sT2,s,em);
         }
         else {
 
