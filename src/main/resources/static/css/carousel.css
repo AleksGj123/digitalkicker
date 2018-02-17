@@ -87,10 +87,12 @@
     background-image: url(/images/chalkboard-background.jpg);
 }
 
-@media screen and (min-width: 980px){
-    .hero { width: 980px; }
+@media screen and (min-width: 767px){
+    .hero { width: 90% }
 }
 @media screen and (max-width: 640px){
     .hero h1 { font-size: 2em; }
-    .hero {width: 100%}
+    .hero {
+        width: 90%;
+    }
 }

@@ -62,43 +62,48 @@
             <div class="hero">
                 <hgroup>
                     <h1>Select players</h1>
+                    <div class="selectable-players players-selection-box">
+                        <div class="player-selection-box--large col-xs-12">
+                            <div class="col-xs-3">
+                                <img class="player-selection-field" data-id="keeperTeam1" data-position="https://image.freepik.com/free-icon/goalkeeper-chasing-the-ball_318-43176.jpg"
+                                     data-toggle="modal" id="goalkeeper-white"
+                                     src="https://image.freepik.com/free-icon/goalkeeper-chasing-the-ball_318-43176.jpg"/>
+                            </div>
+                            <div class="col-xs-3">
+                                <img class="player-selection-field" data-id="strikerTeam2" data-position="http://downloadclipart.org/do-upload/clipart/2016-07/Football_player_icon.jpg"
+                                     data-toggle="modal" id="striker-black"
+                                     src="http://downloadclipart.org/do-upload/clipart/2016-07/Football_player_icon.jpg"/>
+                            </div>
+                            <div class="col-xs-3">
+                                <img class="player-selection-field" data-id="strikerTeam1" data-position="http://downloadclipart.org/do-upload/clipart/2016-07/Football_player_icon.jpg"
+                                     data-toggle="modal" id="striker-white"
+                                     src="http://downloadclipart.org/do-upload/clipart/2016-07/Football_player_icon.jpg"/>
+                            </div>
+                            <div class="col-xs-3">
+                                <img class="player-selection-field" data-id="keeperTeam2" data-position="https://image.freepik.com/free-icon/goalkeeper-chasing-the-ball_318-43176.jpg"
+                                     data-toggle="modal" id="goalkeeper-black"
+                                     src="https://image.freepik.com/free-icon/goalkeeper-chasing-the-ball_318-43176.jpg"/>
+                            </div>
+                        </div>
                     <div class="players-selection-box">
-                        <table style="width: 100%" class="selectable-players">
-                            <tr>
-                                <td>
-                                    <div style="text-align: center">
-                                        <img data-id="keeperTeam1" data-position="https://image.freepik.com/free-icon/goalkeeper-chasing-the-ball_318-43176.jpg"
-                                             data-toggle="modal" id="goalkeeper-white"
-                                             src="https://image.freepik.com/free-icon/goalkeeper-chasing-the-ball_318-43176.jpg"/>
-                                        <p style="text-align: center; color: green">Keeper [WHITE]</p>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div style="text-align: center">
-                                        <img data-id="strikerTeam1" data-position="http://downloadclipart.org/do-upload/clipart/2016-07/Football_player_icon.jpg"
-                                             data-toggle="modal" id="striker-white"
-                                             src="http://downloadclipart.org/do-upload/clipart/2016-07/Football_player_icon.jpg"/>
-                                        <p style="text-align: center; color: green">Striker [WHITE]</p>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div style="text-align: center">
-                                        <img data-id="keeperTeam2" data-position="https://image.freepik.com/free-icon/goalkeeper-chasing-the-ball_318-43176.jpg"
-                                             data-toggle="modal" id="goalkeeper-black"
-                                             src="https://image.freepik.com/free-icon/goalkeeper-chasing-the-ball_318-43176.jpg"/>
-                                        <p style="text-align: center; color: green">Keeper [BLACK]</p>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div style="text-align: center">
-                                        <img data-id="strikerTeam2" data-position="http://downloadclipart.org/do-upload/clipart/2016-07/Football_player_icon.jpg"
-                                             data-toggle="modal" id="striker-black"
-                                             src="http://downloadclipart.org/do-upload/clipart/2016-07/Football_player_icon.jpg"/>
-                                        <p style="text-align: center; color: green">Strikerw [BLACK]</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
+                        <div class="player-selection-box--small col-xs-12">
+                            <div class="col-xs-6">
+                                <img class="player-selection-field" data-id="keeperTeam1" data-position="https://image.freepik.com/free-icon/goalkeeper-chasing-the-ball_318-43176.jpg"
+                                     data-toggle="modal" id="goalkeeper-white"
+                                     src="https://image.freepik.com/free-icon/goalkeeper-chasing-the-ball_318-43176.jpg"/>
+                                <img class="player-selection-field" data-id="strikerTeam2" data-position="http://downloadclipart.org/do-upload/clipart/2016-07/Football_player_icon.jpg"
+                                     data-toggle="modal" id="striker-black"
+                                     src="http://downloadclipart.org/do-upload/clipart/2016-07/Football_player_icon.jpg"/>
+                            </div>
+                            <div class="col-xs-6">
+                                <img class="player-selection-field" data-id="strikerTeam1" data-position="http://downloadclipart.org/do-upload/clipart/2016-07/Football_player_icon.jpg"
+                                     data-toggle="modal" id="striker-white"
+                                     src="http://downloadclipart.org/do-upload/clipart/2016-07/Football_player_icon.jpg"/>
+                                <img class="player-selection-field" data-id="keeperTeam2" data-position="https://image.freepik.com/free-icon/goalkeeper-chasing-the-ball_318-43176.jpg"
+                                     data-toggle="modal" id="goalkeeper-black"
+                                     src="https://image.freepik.com/free-icon/goalkeeper-chasing-the-ball_318-43176.jpg"/>
+                            </div>
+                        </div>
                     </div>
                     <form class="new-match-form" action="/match/new" method="post">
                         <input name="season" id="season" type="hidden" value="">

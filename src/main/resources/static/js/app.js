@@ -31,16 +31,23 @@ $(document).ready(function () {
         $(".right").click();
     });
 
+    //Handle swipefunctions 4 small viewport
+    $(".new-match-carousel").swiperight(function() {
+        $(".right").click();
+    });
+    $(".new-match-carousel").swipeleft(function() {
+        $(".left").click();
+    });
+
     var currentSelectedPosition;
     var currentSelectedPositionId;
 
     //On click show modal with all players
-    $(".selectable-players img").click(function () {
+    $(".player-selection-field").click(function () {
+        alert("s")
         var positionToSelectId = $(this).attr("id");
         var positionImage = $(this).data("position");
         var positionId = $(this).data("id");
-        console.log(positionId);
-        console.log(positionImage);
         currentSelectedPosition = positionToSelectId;
         currentSelectedPositionId = positionId;
         $(".modal-position-image").attr("src", positionImage);

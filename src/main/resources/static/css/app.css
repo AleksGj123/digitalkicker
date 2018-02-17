@@ -61,17 +61,29 @@ input:focus, a:focus, button:focus{
     padding: 20px;
 }
 
+.player-selection-box--large{
+    display: block;
+}
+.player-selection-box--small{
+    display: none;
+}
+
 @media screen and (max-width: 767px) {
     .match-type-selection-box img{
-        width: 100px;
+        width: 125px;
+        height: auto;
+        padding: 15px;
+    }
+    .players-selection-box img{
+        width: 125px;
         height: auto;
         padding: 15px;
     }
 
-
-    .players-selection-box img{
-        width: 100px;
-        height: auto;
-        padding: 15px;
+    .player-selection-box--small{
+        display: block;
+    }
+    .player-selection-box--large{
+        display: none;
     }
 }
