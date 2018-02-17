@@ -61,17 +61,31 @@ input:focus, a:focus, button:focus{
     padding: 20px;
 }
 
+@media screen and (max-width: 980px) {
+    .hero h1 {
+        font-size: 4em !important;
+    }
+    .match-type-selection-box img{
+        width: 125px;
+        height: auto;
+        padding: 8px;
+    }
+}
+
 @media screen and (max-width: 767px) {
     .match-type-selection-box img{
         width: 100px;
         height: auto;
-        padding: 15px;
+        padding: 9px;
     }
 
 
     .players-selection-box img{
-        width: 100px;
-        height: auto;
-        padding: 15px;
+        width: 75px;
+        padding: 0px;
+    }
+
+    .carousel-control{
+        display: none;
     }
 }

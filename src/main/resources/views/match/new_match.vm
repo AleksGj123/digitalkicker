@@ -49,10 +49,10 @@
                         </div>
                         <div class="modal-body">
                             #foreach($player in $players)
-                                <div class="player-module col-xs-3">
-                                    <img style="width: 150px; height: auto"
+                                <div class="player-module col-xs-4 col-md-3">
+                                    <img style="width: 100px; height: auto"
                                          src="https://www.shareicon.net/download/2015/12/03/681624_man_512x512.png">
-                                    <p style="color: black" id="$player.id">$player.forename</p>
+                                    <p style="color: black; text-align: center" id="$player.id">$player.forename</p>
                                 </div>
                             #end
                         </div>
@@ -61,40 +61,40 @@
             </div>
             <div class="hero">
                 <hgroup>
-                    <h1>Select players</h1>
+                    <h1 style="margin-bottom: 50px">Select players</h1>
                     <div class="players-selection-box">
-                        <table style="width: 100%" class="selectable-players">
+                        <table style="width: 100%;" class="selectable-players">
                             <tr>
-                                <td>
+                                <td style="width: 25%">
                                     <div style="text-align: center">
                                         <img data-id="keeperTeam1" data-position="https://image.freepik.com/free-icon/goalkeeper-chasing-the-ball_318-43176.jpg"
                                              data-toggle="modal" id="goalkeeper-white"
                                              src="https://image.freepik.com/free-icon/goalkeeper-chasing-the-ball_318-43176.jpg"/>
-                                        <p style="text-align: center; color: green">Keeper [WHITE]</p>
+                                        <p style="text-align: center; color: green; word-break: break-word"></p>
                                     </div>
                                 </td>
-                                <td>
+                                <td style="width: 25%">
                                     <div style="text-align: center">
                                         <img data-id="strikerTeam1" data-position="http://downloadclipart.org/do-upload/clipart/2016-07/Football_player_icon.jpg"
                                              data-toggle="modal" id="striker-white"
                                              src="http://downloadclipart.org/do-upload/clipart/2016-07/Football_player_icon.jpg"/>
-                                        <p style="text-align: center; color: green">Striker [WHITE]</p>
+                                        <p style="text-align: center; color: green; word-break: break-word"></p>
                                     </div>
                                 </td>
-                                <td>
+                                <td style="width: 25%">
                                     <div style="text-align: center">
                                         <img data-id="keeperTeam2" data-position="https://image.freepik.com/free-icon/goalkeeper-chasing-the-ball_318-43176.jpg"
                                              data-toggle="modal" id="goalkeeper-black"
                                              src="https://image.freepik.com/free-icon/goalkeeper-chasing-the-ball_318-43176.jpg"/>
-                                        <p style="text-align: center; color: green">Keeper [BLACK]</p>
+                                        <p style="text-align: center; color: green; word-break: break-word"></p>
                                     </div>
                                 </td>
-                                <td>
+                                <td style="width: 25%">
                                     <div style="text-align: center">
                                         <img data-id="strikerTeam2" data-position="http://downloadclipart.org/do-upload/clipart/2016-07/Football_player_icon.jpg"
                                              data-toggle="modal" id="striker-black"
                                              src="http://downloadclipart.org/do-upload/clipart/2016-07/Football_player_icon.jpg"/>
-                                        <p style="text-align: center; color: green">Strikerw [BLACK]</p>
+                                        <p style="text-align: center; color: green; word-break: break-word"></p>
                                     </div>
                                 </td>
                             </tr>
