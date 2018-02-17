@@ -6,6 +6,10 @@ body {
 .content-container{
     padding-top: 56px;
 }
+/*disable html focus border*/
+input:focus, a:focus, button:focus{
+    outline: none;
+}
 .container-aa {
     margin-top: 15px;
 }
