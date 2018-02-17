@@ -79,6 +79,13 @@ input:focus, a:focus, button:focus{
         padding: 9px;
     }
 
+    .modal-dialog{
+        margin-top: 30px !important;
+    }
+    .modal-content{
+        height: 85% !important;
+    }
+
 
     .players-selection-box img{
         width: 75px;
@@ -90,8 +97,8 @@ input:focus, a:focus, button:focus{
     }
 
     .carousel-indicators li{
-        width: 30px !important;
-        height: 30px !important;
+        width: 25px !important;
+        height: 25px !important;
         border-radius: 14px !important;
     }
 }
