@@ -88,4 +88,10 @@ input:focus, a:focus, button:focus{
     .carousel-control{
         display: none;
     }
+
+    .carousel-indicators li{
+        width: 30px !important;
+        height: 30px !important;
+        border-radius: 14px !important;
+    }
 }

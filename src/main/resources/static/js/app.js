@@ -31,12 +31,7 @@ $(document).ready(function () {
         $(".right").click();
     });
 
-    $(".new-match-carousel").swiperight(function() {
-        $(this).carousel('right');
-    });
-    $(".new-match-carousel").swipeleft(function() {
-        $(this).carousel('left');
-    });
+
 
     var currentSelectedPosition;
     var currentSelectedPositionId;

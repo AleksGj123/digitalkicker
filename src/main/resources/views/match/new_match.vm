@@ -15,7 +15,7 @@
                     <h1>Choose your Season</h1>
                     <div class="season-selection-box">
                         #foreach($season in $seasons)
-                            <h1 class="season-selection"><a id="$season.id">$season.name</a></h1>
+                            <h1 style="margin-bottom: 10px !important;" class="season-selection"><a style="border: 1px solid white; color: white";  id="$season.id">$season.name</a></h1>
                         #end
                     </div>
                 </hgroup>
@@ -50,9 +50,9 @@
                         <div class="modal-body">
                             #foreach($player in $players)
                                 <div class="player-module col-xs-4 col-md-3">
-                                    <img style="width: 100px; height: auto"
+                                    <img style="width: 75px; height: auto"
                                          src="https://www.shareicon.net/download/2015/12/03/681624_man_512x512.png">
-                                    <p style="color: black; text-align: center" id="$player.id">$player.forename</p>
+                                    <p style="color: black; text-align: center; word-break: break-all" id="$player.id">$player.forename</p>
                                 </div>
                             #end
                         </div>
