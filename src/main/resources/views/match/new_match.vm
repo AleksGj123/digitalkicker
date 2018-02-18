@@ -65,7 +65,29 @@
                 <hgroup>
                     <h1 style="margin-bottom: 50px">Select players</h1>
                     <div class="players-selection-box">
-                        <table class="selectable-players">
+                        <table class="deathmatch-table selectable-players">
+                            <tr>
+                                <td>
+                                    <div>
+                                        <img data-id="keeperTeam1"
+                                             data-position="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Death_skull.svg/2000px-Death_skull.svg.png"
+                                             data-toggle="modal" id="goalkeeper-white"
+                                             src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Death_skull.svg/2000px-Death_skull.svg.png"/>
+                                        <p></p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <img data-id="keeperTeam2"
+                                             data-position="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Death_skull.svg/2000px-Death_skull.svg.png"
+                                             data-toggle="modal" id="goalkeeper-black"
+                                             src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Death_skull.svg/2000px-Death_skull.svg.png"/>
+                                        <p></p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <table class="selectable-players default-table">
                             <tr>
                                 <td>
                                     <div>
@@ -121,7 +143,7 @@
                 </hgroup>
             </div>
         </div>
-    </div>66
+    </div>
     <a class="carousel-control right" href="#bs-carousel" data-slide="next"></a>
 </div>
 #end

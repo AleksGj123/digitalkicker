@@ -63,6 +63,13 @@ Styles for create-match
     color: white;
     word-break: break-all;
 }
+.new-match-carousel .deathmatch-table {
+   display: none;
+}
+.new-match-carousel .deathmatch-table td {
+    width: 50% !important;
+}
+
 
 @media screen and (max-width: 980px) {
     .new-match-carousel .hero h1 {

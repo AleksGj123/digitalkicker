@@ -27,11 +27,18 @@ $(document).ready(function () {
     //On click switch to player-selection
     $(".match-type-selection-box img").click(function () {
         var selectedMatchType = $(this).attr("id");
+        //Change playerselection
+        if(selectedMatchType !== "regular") {
+            $(".deathmatch-table").show();
+            $(".default-table").hide();
+        } else {
+            $(".deathmatch-table").hide();
+            $(".default-table").show();
+        }
+
         $("#matchType").val(selectedMatchType);
         $(".right").click();
     });
-
-
 
     var currentSelectedPosition;
     var currentSelectedPositionId;
@@ -41,8 +48,6 @@ $(document).ready(function () {
         var positionToSelectId = $(this).attr("id");
         var positionImage = $(this).data("position");
         var positionId = $(this).data("id");
-        console.log(positionId);
-        console.log(positionImage);
         currentSelectedPosition = positionToSelectId;
         currentSelectedPositionId = positionId;
         $(".modal-position-image").attr("src", positionImage);
@@ -59,15 +64,12 @@ $(document).ready(function () {
         selectedPostionElement.attr("src", playerImage);
         selectedPostionElement.next("p").text(playerName);
         $("#selectable-player-modal").modal('hide');
-
-        console.log(currentSelectedPositionId);
         //refer player_id to hidden input
         $("#" + currentSelectedPositionId).val(playerId)
     });
 
     //DO form validation
     $('form .new-match-form').submit(function (e) {
-        alert("hello");
         var seasonId = $("#season").val();
         var matchType = $("#matchType").val();
         var goalkeeper1 = $("#keeperTeam1").val();
@@ -80,15 +82,8 @@ $(document).ready(function () {
         var validStriker1 = isNumber(striker1);
         var validStriker2 = isNumber(striker2);
         var validMatchType = checkNullOrEmpty(matchType);
-        console.log(validSeason);
-        console.log(validMatchType);
-        console.log(validStriker2);
-        console.log(validStriker1);
-        console.log(validKeeper2);
-        console.log(validKeeper1);
         if(!validSeason && validKeeper1 && validKeeper2 && validStriker1 && validStriker2 && validMatchType){
             e.preventDefault();
-            alert("Ooops something is missing")
         }
     });
 
