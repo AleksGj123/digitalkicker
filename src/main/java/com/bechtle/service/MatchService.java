@@ -125,10 +125,9 @@ public class MatchService {
      * @param season
      * @return
      */
-    public long createMatch(Player keeperTeam1, Player strikerTeam1, Player keeperTeam2, Player strikerTeam2, Season season) {
+    public long createMatch(Player keeperTeam1, Player strikerTeam1, Player keeperTeam2, Player strikerTeam2, Season season, EntityManager em) {
 
-        EntityManager entityManager = JPAUtil.getEntityManager();
-        entityManager.getTransaction().begin();
+        em.getTransaction().begin();
 
         Match match = new Match(keeperTeam1, strikerTeam1, keeperTeam2, strikerTeam2, REGULAR, season);
 
@@ -138,28 +137,28 @@ public class MatchService {
             match.setLoksafePlayer(loksafePlayers.get(0));
         }
 
-        Season s = entityManager.find(Season.class, season.getId());
+        Season s = em.find(Season.class, season.getId());
 
-        s.getMatches();
+        //s.getMatches();
         s.addMatch(match);
 
-        entityManager.merge(season);
-        entityManager.persist(match);
+        //entityManager.merge(season);
+        em.persist(match);
 
         keeperTeam1.addMatch(match);
-        entityManager.merge(keeperTeam1);
+        //entityManager.merge(keeperTeam1);
 
         keeperTeam2.addMatch(match);
-        entityManager.merge(keeperTeam2);
+        //entityManager.merge(keeperTeam2);
 
         strikerTeam1.addMatch(match);
-        entityManager.merge(strikerTeam1);
+        //entityManager.merge(strikerTeam1);
 
         strikerTeam2.addMatch(match);
-        entityManager.merge(strikerTeam2);
+        //entityManager.merge(strikerTeam2);
 
-        entityManager.getTransaction().commit();
-        JPAUtil.shutdown();
+        em.getTransaction().commit();
+        //JPAUtil.shutdown();
 
         return match.getId();
     }
