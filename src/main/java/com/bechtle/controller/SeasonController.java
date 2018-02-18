@@ -14,6 +14,7 @@ import spark.Request;
 import spark.Response;
 
 
+import javax.persistence.EntityManager;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -27,58 +28,65 @@ public class SeasonController {
 
     private static final FormMapping<Season> seasonForm = Forms.automatic(Season.class, "season").build();
 
-    private static final SeasonService seasonService = new SeasonService();
-
     public static ModelAndView showNewSeasonForm(Request request, Response response){
-        HashMap<String, Object> map = new HashMap<>();
+        final HashMap<String, Object> map = new HashMap<>();
 
-        FormData<Season> formData = new FormData<>(new Season(), ValidationResult.empty);
-        FormMapping<Season> filledForm = seasonForm.fill(formData);
+        final FormData<Season> formData = new FormData<>(new Season(), ValidationResult.empty);
+        final FormMapping<Season> filledForm = seasonForm.fill(formData);
 
         map.put(Constants.SEASON_FORM, filledForm);
         return new ModelAndView(map, "views/season/season.vm");
     }
 
     public static ModelAndView showSeason (Request request, Response response){
-        String id = request.params(":id");
-        Season season = seasonService.getSeason(Long.parseLong(id));
+        final EntityManager em = request.attribute("em");
+        final SeasonService seasonService = new SeasonService(em);
 
-        FormData<Season> formData = new FormData<>(season, ValidationResult.empty);
-        FormMapping<Season> filledForm = seasonForm.fill(formData);
+        final String id = request.params(":id");
+        final Season season = seasonService.getSeason(Long.parseLong(id));
 
-        HashMap<String, Object> seasonsMap = new HashMap<>();
+        final FormData<Season> formData = new FormData<>(season, ValidationResult.empty);
+        final FormMapping<Season> filledForm = seasonForm.fill(formData);
+
+        final HashMap<String, Object> seasonsMap = new HashMap<>();
         seasonsMap.put(Constants.SEASON_FORM, filledForm );
 
         return new ModelAndView(seasonsMap, "views/season/season.vm");
     }
 
     public static ModelAndView listSeasons(Request request, Response response){
-        HashMap<String, List<Season>> seasonsMap = new HashMap<>();
+        final EntityManager em = request.attribute("em");
+        final SeasonService seasonService = new SeasonService(em);
+
+        final HashMap<String, List<Season>> seasonsMap = new HashMap<>();
         seasonsMap.put("seasons", seasonService.getAllSeasons());
         return new ModelAndView(seasonsMap, "views/season/seasons.vm");
     }
 
     public static String createNewSeason(Request request, Response response){
+        final EntityManager em = request.attribute("em");
+        final SeasonService seasonService = new SeasonService(em);
+
+        /*
         List<String> collect = request.queryParams().stream()
                 .filter(p -> p.equals("season-startDate") || p.equals("season-endDate"))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
 
-        String startDateString = request.queryParams("season-startDate");
-        String endDateString = request.queryParams("season-endDate");
+        final String startDateString = request.queryParams("season-startDate");
+        final String endDateString = request.queryParams("season-endDate");
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        Instant startDateInstant = LocalDate.parse(startDateString, formatter).atStartOfDay(ZoneId.systemDefault()).toInstant();
-        Instant endDateInstant = LocalDate.parse(endDateString, formatter).atStartOfDay(ZoneId.systemDefault()).toInstant();
+        final Instant startDateInstant = LocalDate.parse(startDateString, formatter).atStartOfDay(ZoneId.systemDefault()).toInstant();
+        final Instant endDateInstant = LocalDate.parse(endDateString, formatter).atStartOfDay(ZoneId.systemDefault()).toInstant();
 
-        Date startDate = Date.from(startDateInstant);
-        Date endDate = Date.from(endDateInstant);
+        final Date startDate = Date.from(startDateInstant);
+        final Date endDate = Date.from(endDateInstant);
 
-        RequestParams params = new ServletRequestParams(request.raw());
-        FormData<Season> bind = seasonForm.bind(params);
+        final RequestParams params = new ServletRequestParams(request.raw());
+        final FormData<Season> bind = seasonForm.bind(params);
 
-
-        Season season = bind.getData();
+        final Season season = bind.getData();
 
         season.setStartDate(startDate);
         season.setEndDate(endDate);

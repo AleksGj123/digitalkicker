@@ -7,31 +7,29 @@ import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
 
+import javax.persistence.EntityManager;
 import java.util.HashMap;
 import java.util.List;
 
 public class StatisticsController {
 
-    private static final PlayerService playerService = new PlayerService();
-
     public static ModelAndView getStats(Request request, Response response){
-        HashMap<String, Object> objectHashMap = new HashMap<>();
+        final EntityManager em = request.attribute("em");
+        final PlayerService playerService = new PlayerService(em);
 
-        List<Player> players = playerService.getPlayers();
+        final HashMap<String, Object> objectHashMap = new HashMap<>();
 
+        final List<Player> players = playerService.getPlayers();
 
-        HashMap<Player, Integer> lokList = new HashMap<>();
-        HashMap<Player, Integer> numberOfGamesList = new HashMap<>();
+        final HashMap<Player, Integer> lokList = new HashMap<>();
+        final HashMap<Player, Integer> numberOfGamesList = new HashMap<>();
 
         players.stream().forEach(player -> {
-
             List<Match> lostDeathmachtesForPlayer = playerService.getLostDeathmachtesForPlayer(player);
             if (!lostDeathmachtesForPlayer.isEmpty()) {
                 lokList.put(player, lostDeathmachtesForPlayer.size());
             }
-
             numberOfGamesList.put(player, playerService.getNumberOfPlayedGamesForPlayer(player));
-
         });
 
         // Lokstats

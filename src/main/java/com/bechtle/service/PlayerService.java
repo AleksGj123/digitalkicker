@@ -4,7 +4,6 @@ import com.bechtle.model.Match;
 import com.bechtle.model.Matchtype;
 import com.bechtle.model.Player;
 import com.bechtle.util.Constants;
-import com.bechtle.util.JPAUtil;
 import net.formio.FormData;
 import net.formio.FormMapping;
 import net.formio.Forms;
@@ -16,50 +15,36 @@ import org.mindrot.jbcrypt.BCrypt;
 import javax.persistence.EntityManager;
 import java.io.Serializable;
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-public class PlayerService {
+public class PlayerService extends Service {
 
     private static final FormMapping<Player> playerForm = Forms.automatic(Player.class, "player").build();
 
+    public PlayerService(EntityManager em) {
+        super(em);
+    }
+
     public List<Player> getPlayers(){
-        EntityManager entityManager = JPAUtil.getEntityManager();
-
-        entityManager.getTransaction().begin();
-        List<Player> allPlayers = entityManager.createQuery("select p from Player as p").getResultList();
-
-        entityManager.close();
-        JPAUtil.shutdown();
+        final List<Player> allPlayers = em.createQuery("select p from Player as p").getResultList();
         return allPlayers;
     }
 
     public Player getPlayer(Long id){
-        EntityManager entityManager = JPAUtil.getEntityManager();
-        entityManager.getTransaction().begin();
-
-        Player playerForId = entityManager.find(Player.class, id);
-        entityManager.close();
-        JPAUtil.shutdown();
+        final Player playerForId = em.find(Player.class, id);
         return playerForId;
     }
 
     public long createPlayer(Player newPlayer){
-        EntityManager entityManager = JPAUtil.getEntityManager();
+        em.getTransaction().begin();
 
-        entityManager.getTransaction().begin();
-
-        String pw = newPlayer.getPassword();
-        String hashpw = BCrypt.hashpw(pw, BCrypt.gensalt());
+        final String pw = newPlayer.getPassword();
+        final String hashpw = BCrypt.hashpw(pw, BCrypt.gensalt());
 
         newPlayer.setPasswordHash(hashpw);
 
-        entityManager.persist(newPlayer);
-        entityManager.getTransaction().commit();
-
-        entityManager.close();
-        JPAUtil.shutdown();
-
+        em.persist(newPlayer);
+        em.getTransaction().commit();
         return newPlayer.getId();
     }
 
@@ -67,26 +52,26 @@ public class PlayerService {
 
         FormMapping<Player> filledForm = playerForm.fill(formData);
 
-        Player player = formData.getData();
+        final Player player = formData.getData();
 
-        String password = player.getPassword();
-        String passwordRepeat = player.getPasswordRepeat();
+        final String password = player.getPassword();
+        final String passwordRepeat = player.getPasswordRepeat();
 
         if( (password!= null && passwordRepeat!= null) && !(password.equals(passwordRepeat)) ){
 
             if (filledForm.getValidationResult().getFieldMessages().isEmpty()){
-                FormData<Player> playerFormData =
+                final FormData<Player> playerFormData =
                         new FormData<>(formData.getData(), createValidationResultForSamePassword(formData));
                 filledForm = playerForm.fill(playerFormData);
             }
             else{
 
-                Map<String, List<ConstraintViolationMessage>> fieldMessages = filledForm.getValidationResult().getFieldMessages();
-                HashMap newFieldMessages = new HashMap(fieldMessages);
+                final Map<String, List<ConstraintViolationMessage>> fieldMessages = filledForm.getValidationResult().getFieldMessages();
+                final HashMap newFieldMessages = new HashMap(fieldMessages);
                 newFieldMessages.put("player-passwordRepeat", getConstraintViolationMessage());
                 newFieldMessages.put("player-password", getConstraintViolationMessage());
-                ValidationResult validationResult = new ValidationResult(newFieldMessages, filledForm.getValidationResult().getGlobalMessages());
-                FormData<Player> newPlayerFormData = new FormData<>(formData.getData(), validationResult);
+                final ValidationResult validationResult = new ValidationResult(newFieldMessages, filledForm.getValidationResult().getGlobalMessages());
+                final FormData<Player> newPlayerFormData = new FormData<>(formData.getData(), validationResult);
                 filledForm = playerForm.fill(newPlayerFormData);
             }
 
@@ -104,7 +89,7 @@ public class PlayerService {
     }
 
     private ValidationResult createValidationResultForSamePassword(FormData formData){
-        Map<String, List<ConstraintViolationMessage>> fieldMessages = new HashMap<>();
+        final Map<String, List<ConstraintViolationMessage>> fieldMessages = new HashMap<>();
 
         fieldMessages.put("player-passwordRepeat", getConstraintViolationMessage());
         fieldMessages.put("player-password", getConstraintViolationMessage());
@@ -113,72 +98,51 @@ public class PlayerService {
     }
 
     private ArrayList<ConstraintViolationMessage> getConstraintViolationMessage(){
-        LinkedHashMap<String, Serializable> msgArgs = new LinkedHashMap<>();
+        final LinkedHashMap<String, Serializable> msgArgs = new LinkedHashMap<>();
 
         msgArgs.put("groups", "");
         msgArgs.put("value", "{constraints.PasswordNotEqual.message}");
         msgArgs.put("hash", "");
 
-        ConstraintViolationMessage  violationMessage =  new ConstraintViolationMessage(Severity.ERROR,
+        final ConstraintViolationMessage violationMessage =  new ConstraintViolationMessage(Severity.ERROR,
                 "constraints.PasswordNotEqual.message", "constraints.PasswordNotEqual.message", msgArgs);;
 
-        ArrayList<ConstraintViolationMessage> constraintViolationMessages = new ArrayList<>();
+        final ArrayList<ConstraintViolationMessage> constraintViolationMessages = new ArrayList<>();
         constraintViolationMessages.add(violationMessage);
         return constraintViolationMessages;
     }
 
 
     public List<Match> getLostDeathmachtesForPlayer(Player player){
-        //EntityManager entityManager = JPAUtil.getEntityManager();
 
-        List<Match> matches = player.getMatches();
-        List<Match> lostDeatmatches = matches.stream()
+        final List<Match> matches = player.getMatches();
+        final List<Match> lostDeatmatches = matches.stream()
                 .filter(match -> match.getMatchtype().equals(Matchtype.DEATH_MATCH))
                 .filter(match -> playerHasLost(match, player.getId()))
                 .collect(Collectors.toList());
 
-        List<Match> lostDeatmatchesBo3 = matches.stream()
+        final List<Match> lostDeatmatchesBo3 = matches.stream()
                 .filter(match -> match.getMatchtype().equals(Matchtype.DEATH_MATCH_BO3))
                 .filter(match -> playerHasLost(match, player.getId()))
                 .collect(Collectors.toList());
 
         lostDeatmatches.addAll(lostDeatmatchesBo3);
 
-        //entityManager.merge(playerToUpdate);
-        //entityManager.getTransaction().commit();
-
-        //JPAUtil.shutdown();
-
         return lostDeatmatches;
     }
 
     private boolean playerHasLost(Match match, long playerId){
+        final long idPlayer1 = match.getKeeperTeam1().getId();
 
-        long idPlayer1 = match.getKeeperTeam1().getId();
-
-        int goalsTeam1 = match.getGoalsTeam1();
-        int goalsTeam2 = match.getGoalsTeam2();
+        final int goalsTeam1 = match.getGoalsTeam1();
+        final int goalsTeam2 = match.getGoalsTeam2();
 
         // player was in team 1
         if(playerId == idPlayer1){
-            if(goalsTeam1 < goalsTeam2)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return goalsTeam1 < goalsTeam2;
         }
         else {
-            if(goalsTeam1 > goalsTeam2)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return goalsTeam1 > goalsTeam2;
         }
     }
 
@@ -189,21 +153,13 @@ public class PlayerService {
     }
 
     public void updatePlayer(Player player){
-
-        EntityManager entityManager = JPAUtil.getEntityManager();
-
-        entityManager.getTransaction().begin();
+        em.getTransaction().begin();
         //Player playerToUpdate = entityManager.find(Player.class, player.getId());
-
-        entityManager.merge(player);
-        entityManager.getTransaction().commit();
-        entityManager.close();
-        JPAUtil.shutdown();
+        em.merge(player);
+        em.getTransaction().commit();
     }
 
     public void deletePlayer(Player player){
-
     }
-
 
 }

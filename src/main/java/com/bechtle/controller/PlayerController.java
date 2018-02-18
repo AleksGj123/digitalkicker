@@ -11,6 +11,7 @@ import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
 
+import javax.persistence.EntityManager;
 import java.util.HashMap;
 import java.util.List;
 
@@ -18,10 +19,17 @@ public class PlayerController {
 
     private static final FormMapping<Player> playerForm = Forms.automatic(Player.class, "player").build();
 
-    private static final PlayerService playerService = new PlayerService();
+    public static ModelAndView listPlayers(Request request, Response response){
+        final EntityManager em = request.attribute("em");
+        final PlayerService playerService = new PlayerService(em);
+
+        final HashMap<String, List<Player>> playersMap = new HashMap<>();
+        playersMap.put("players", playerService.getPlayers());
+        return new ModelAndView(playersMap, "views/player/players.vm");
+    }
 
     public static ModelAndView getNewPlayerForm(Request request, Response response){
-        HashMap<String, Object> map = new HashMap<>();
+        final HashMap<String, Object> map = new HashMap<>();
 
         /*FormData<Player> formData = new FormData<>(new Player(), ValidationResult.empty);
         FormMapping<Player> filledForm = playerForm.fill(formData);*/
@@ -33,14 +41,17 @@ public class PlayerController {
     }
 
     public static ModelAndView showPlayer(Request request, Response response){
-        String id = request.params(":id");
+        final EntityManager em = request.attribute("em");
+        final PlayerService playerService = new PlayerService(em);
 
-        Player player = playerService.getPlayer(Long.parseLong(id));
+        final String id = request.params(":id");
 
-        HashMap<String, Object> map = new HashMap<>();
+        final Player player = playerService.getPlayer(Long.parseLong(id));
 
-        FormData<Player> formData = new FormData<>(player, ValidationResult.empty);
-        FormMapping<Player> filledForm = playerForm.fill(formData);
+        final HashMap<String, Object> map = new HashMap<>();
+
+        final FormData<Player> formData = new FormData<>(player, ValidationResult.empty);
+        final FormMapping<Player> filledForm = playerForm.fill(formData);
         map.put(Constants.PLAYER_FORM, filledForm);
         map.put(Constants.LOKSAFE, player.getLokSafe());
         map.put(Constants.PLAYER, player);
@@ -50,8 +61,10 @@ public class PlayerController {
 
     public static ModelAndView createNewPlayer(Request request, Response response){
 
-        HashMap<String, Object> map  = new HashMap<>();
+        final EntityManager em = request.attribute("em");
+        final PlayerService playerService = new PlayerService(em);
 
+        final HashMap<String, Object> map  = new HashMap<>();
 
         /*RequestParams params = new ServletRequestParams(request.raw());
         FormData<Player> bind = playerForm.bind(params);
@@ -74,8 +87,8 @@ public class PlayerController {
         ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages");
         stringFormMappingHashMap.put("messages", bundle);*/
 
-        Player player = getPlayerFromParams(request, null);
-        List<String> nullFields = player.getNullAndEmptyFields();
+        final Player player = getPlayerFromParams(request, null);
+        final List<String> nullFields = player.getNullAndEmptyFields();
         if (!nullFields.isEmpty()){
             map.put(Constants.VALIDATION_EMPTY, nullFields);
         }
@@ -93,11 +106,13 @@ public class PlayerController {
     }
 
     public static ModelAndView updatePlayer(Request request, Response response){
+        final EntityManager em = request.attribute("em");
+        final PlayerService playerService = new PlayerService(em);
 
         final long playerId = Long.parseLong(request.params(":id"));
         final Player playerFromDB = playerService.getPlayer(playerId);
 
-        Player player = getPlayerFromParams(request, playerFromDB);
+        final Player player = getPlayerFromParams(request, playerFromDB);
 
         playerService.updatePlayer(player);
         response.redirect("/player/list");
@@ -121,8 +136,6 @@ public class PlayerController {
         final String biography = request.queryParams("biography");
         final boolean loksafe = Boolean.parseBoolean(request.queryParams("loksafe"));
 
-
-
         player.setForename(forename);
         player.setSurname(surname);
         player.setNickname(nickname);
@@ -135,9 +148,4 @@ public class PlayerController {
         return player;
     }
 
-    public static ModelAndView listPlayers(){
-        HashMap<String, List<Player>> playersMap = new HashMap<>();
-        playersMap.put("players", playerService.getPlayers());
-        return new ModelAndView(playersMap, "views/player/players.vm");
-    }
 }
