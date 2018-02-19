@@ -2,13 +2,13 @@
 <div class="new-match-carousel carousel fade-carousel slide" data-ride="carousel" data-interval=false id="bs-carousel">
 
     <ol class="carousel-indicators">
-        <li data-target="#bs-carousel" data-slide-to="0" class="active"></li>
+        <li data-target="#bs-carousel" data-slide-to="0"></li>
         <li data-target="#bs-carousel" data-slide-to="1"></li>
-        <li data-target="#bs-carousel" data-slide-to="2"></li>
+        <li data-target="#bs-carousel" data-slide-to="2" class="active"></li>
     </ol>
 
     <div class="carousel-inner">
-        <div class="item slides active">
+        <div class="item slides">
             <div class="slide-1"></div>
             <div class="hero">
                 <hgroup>
@@ -37,7 +37,7 @@
                 </hgroup>
             </div>
         </div>
-        <div class="item slides">
+        <div class="item slides active">
             <div class="slide-3"></div>
             <div class="modal fade" id="selectable-player-modal" tabindex="-1" role="dialog"
                  aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -129,13 +129,13 @@
                         </table>
                     </div>
                     <form class="new-match-form" action="/match/new" method="post">
-                        <input name="season" id="season" type="hidden" value="">
-                        <input name="matchType" id="matchType" type="hidden" value="">
+##                        TODO 16 must be dynamic.
+                        <input name="season" id="season" type="hidden" value="16">
+                        <input name="matchType" id="matchType" type="hidden" value="regular">
                         <input name="keeperTeam1" id="keeperTeam1" type="hidden" value="">
                         <input name="strikerTeam1" id="strikerTeam1" type="hidden" value="">
                         <input name="keeperTeam2" id="keeperTeam2" type="hidden" value="">
                         <input name="strikerTeam2" id="strikerTeam2" type="hidden" value="">
-
                         <button style="width: 100%; margin-top: 40px; height: 50px; " type="submit"
                                 class="btn btn-success">Create Match
                         </button>
