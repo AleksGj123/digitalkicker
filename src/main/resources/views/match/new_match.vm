@@ -71,7 +71,7 @@
                                     <div>
                                         <img data-id="keeperTeam1"
                                              data-position="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Death_skull.svg/2000px-Death_skull.svg.png"
-                                             data-toggle="modal" id="goalkeeper-white"
+                                             data-toggle="modal" id="goalkeeper-white-dm"
                                              src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Death_skull.svg/2000px-Death_skull.svg.png"/>
                                         <p></p>
                                     </div>
@@ -80,7 +80,7 @@
                                     <div>
                                         <img data-id="keeperTeam2"
                                              data-position="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Death_skull.svg/2000px-Death_skull.svg.png"
-                                             data-toggle="modal" id="goalkeeper-black"
+                                             data-toggle="modal" id="goalkeeper-black-dm"
                                              src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Death_skull.svg/2000px-Death_skull.svg.png"/>
                                         <p></p>
                                     </div>
