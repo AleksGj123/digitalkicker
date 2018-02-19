@@ -1,12 +1,15 @@
 #@mainLayout()
 <script>
-    $(function() {
+    $(function () {
         ///////////////
         // Websockets//
         ///////////////
 
         var webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/update");
-        webSocket.onmessage = function (msg) { updateMatch(msg); };
+        webSocket.onmessage = function (msg) {
+            updateMatch(msg);
+        };
+
         //webSocket.onclose = function () { alert("WebSocket connection closed") };
 
         function updateMatch(msg) {
@@ -17,7 +20,7 @@
             $("#goalsTeam1").text(g1);
             $("#goalsTeam2").text(g2);
 
-            checkAndSubmit(g1,g2, false);
+            checkAndSubmit(g1, g2, false);
         }
 
         ////////////////
@@ -27,7 +30,7 @@
         var gt1 = parseInt($("#goalsTeam1").text());
         var gt2 = parseInt($("#goalsTeam2").text());
 
-        if( (gt1 == 5) || (gt2 == 5) ){
+        if ((gt1 == 5) || (gt2 == 5)) {
             $("#finishDiv").show();
         }
         else {
@@ -43,29 +46,29 @@
             var goals1 = parseInt(goalsTeam1);
             var goals2 = parseInt(goalsTeam2);
 
-            if(team == "team1"){
-                if(addorRemove == "add"){
-                    goals1 = goals1 +1;
+            if (team == "team1") {
+                if (addorRemove == "add") {
+                    goals1 = goals1 + 1;
 
                 }
-                else if(addorRemove == "remove"){
-                    goals1 = goals1 -1;
+                else if (addorRemove == "remove") {
+                    goals1 = goals1 - 1;
                 }
             }
-            else if(team == "team2"){
-                if(addorRemove == "add"){
-                    goals2 = goals2 +1;
+            else if (team == "team2") {
+                if (addorRemove == "add") {
+                    goals2 = goals2 + 1;
                 }
-                else if(addorRemove == "remove"){
-                    goals2 = goals2 -1;
+                else if (addorRemove == "remove") {
+                    goals2 = goals2 - 1;
                 }
             }
 
             checkAndSubmit(goals1, goals2, true)
         }
 
-        function updateMatch(goals1, goals2,submit) {
-            if(submit){
+        function updateMatch(goals1, goals2, submit) {
+            if (submit) {
                 $.ajax({
                     url: '/match',
                     type: 'PUT',
@@ -80,12 +83,12 @@
         }
 
         function checkAndSubmit(goals1, goals2, submit) {
-            if( matchtype == "regular" ){
-                if( (goals1 <= 5) && (goals2 <= 5) && (goals1 >= 0) && (goals2 >= 0) ) {
+            if (matchtype == "regular") {
+                if ((goals1 <= 5) && (goals2 <= 5) && (goals1 >= 0) && (goals2 >= 0)) {
                     $("#goalsTeam1").text("" + goals1);
                     $("#goalsTeam2").text("" + goals2);
 
-                    if(goals1 == 5 || goals2 == 5){
+                    if (goals1 == 5 || goals2 == 5) {
                         $("#finishDiv").show();
                     }
                     else {
@@ -93,58 +96,58 @@
                     }
                     updateMatch(goals1, goals2, submit);
                 }
-                else{
+                else {
                     alert("Min or max goal limit reached");
                 }
             }
-            else if(matchtype == "death match"){
-                if( (goals1 <= 1) && (goals2 <= 1) && (goals1 >= 0) && (goals2 >= 0)) {
+            else if (matchtype == "death match") {
+                if ((goals1 <= 1) && (goals2 <= 1) && (goals1 >= 0) && (goals2 >= 0)) {
                     $("#goalsTeam1").text("" + goals1);
                     $("#goalsTeam2").text("" + goals2);
-                    if(goals1 == 1 || goals2 == 1) {
+                    if (goals1 == 1 || goals2 == 1) {
                         $("#finishDiv").show();
                     }
-                    else{
+                    else {
                         $("#finishDiv").hide();
                     }
                     updateMatch(goals1, goals2, submit);
                 }
-                else{
+                else {
                     alert("Min or max goal limit reached");
                 }
 
             }
-            else if(matchtype == "death match bo3"){
-                if( (goals1 <= 2) && (goals2 <= 2) && (goals1 >= 0) && (goals2 >= 0)) {
+            else if (matchtype == "death match bo3") {
+                if ((goals1 <= 2) && (goals2 <= 2) && (goals1 >= 0) && (goals2 >= 0)) {
                     $("#goalsTeam1").text("" + goals1);
                     $("#goalsTeam2").text("" + goals2);
-                    if(goals1 == 2 || goals2 == 2) {
+                    if (goals1 == 2 || goals2 == 2) {
                         $("#finishDiv").show();
                     }
-                    else{
+                    else {
                         $("#finishDiv").hide();
                     }
                     updateMatch(goals1, goals2, submit);
                 }
-                else{
+                else {
                     alert("Min or max goal limit reached");
                 }
             }
         }
 
-        $("#addGoalTeam1").click(function() {
+        $("#addGoalTeam1").click(function () {
             addOrRemoveGoal("team1", "add");
         });
 
-        $( "#removeGoalTeam1" ).click(function() {
+        $("#removeGoalTeam1").click(function () {
             addOrRemoveGoal("team1", "remove");
         });
 
-        $( "#addGoalTeam2" ).click(function() {
+        $("#addGoalTeam2").click(function () {
             addOrRemoveGoal("team2", "add");
         });
 
-        $( "#removeGoalTeam2" ).click(function() {
+        $("#removeGoalTeam2").click(function () {
             addOrRemoveGoal("team2", "remove");
         });
 
@@ -165,10 +168,10 @@
                 type: 'PUT',
                 data: "matchId=$match.id",
                 success: function (data) {
-                    if(data != "null"){
-                        window.location = "/match/"+data;
+                    if (data != "null") {
+                        window.location = "/match/" + data;
                     }
-                    else{
+                    else {
                         window.location = "/match/new";
                     }
                 }
@@ -185,10 +188,10 @@
                 type: 'PUT',
                 data: "matchId=$match.id&goalsTeam1=" + igt1 + "&goalsTeam2=" + igt2,
                 success: function (data) {
-                    if(data != "null"){
-                        window.location = "/match/"+data;
+                    if (data != "null") {
+                        window.location = "/match/" + data;
                     }
-                    else{
+                    else {
                         window.location = "/match/new";
                     }
                 }
@@ -203,62 +206,75 @@
     #if($match.getStatus().name() == "STARTED")
     <div>
         #if($match.matchtype.toString() == "regular")
-            <div class="panel panel-info">
+        <div class="panel panel-info">
         #else
-            <div class="panel panel-danger">
+        <div class="panel panel-danger">
         #end
-            <div class="panel-heading">
-                <h3 class="panel-title">Current Match | $match.id | <b>$match.matchtype.toString()</b></h3>
-            </div>
-            <div class="panel-body">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-2"><center>Team 1 (White)</center></div>
-                        <div class="col-md-1"></div>
-                        <div class="col-md-2"><center>Team 2 (Black)</center></div>
+        <div class="panel-heading">
+            <h3 class="panel-title">Current Match | $match.id | <b>$match.matchtype.toString()</b></h3>
+        </div>
+        <div class="panel-body">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-2">
+                        <center>Team 1 (White)</center>
+                    </div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2">
+                        <center>Team 2 (Black)</center>
                     </div>
                 </div>
+            </div>
 
-                <div class="">
-                    <table class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th>Keeper</th>
-                            <th>Striker</th>
-                            <th style="text-align: center">Standing</th>
-                            <th>Keeper</th>
-                            <th>Striker</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>$match.keeperTeam1.forename</td>
-                            #if($match.strikerTeam1.forename)
-                                <td>$match.strikerTeam1.forename</td>
-                            #else
-                                <td></td>
-                            #end
-                            <td style="text-align: center"><b style="color: floralwhite">
-                                <div style="display: initial" id="goalsTeam1">$match.goalsTeam1</div> :
-                                <div style="display: initial" id="goalsTeam2">$match.goalsTeam2</div>
-                            </td>
-                            <td>$match.keeperTeam2.forename</td>
-                            #if($match.strikerTeam2.forename)
-                                <td>$match.strikerTeam2.forename</td>
-                            #else
-                                <td></td>
-                            #end
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
+            <div class="">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Keeper</th>
+                        <th>Striker</th>
+                        <th style="text-align: center">Standing</th>
+                        <th>Keeper</th>
+                        <th>Striker</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>$match.keeperTeam1.forename</td>
+                        #if($match.strikerTeam1.forename)
+                            <td>$match.strikerTeam1.forename</td>
+                        #else
+                            <td></td>
+                        #end
+                        <td style="text-align: center"><b style="color: floralwhite">
+                            <div style="display: initial" id="goalsTeam1">$match.goalsTeam1</div>
+                            :
+                            <div style="display: initial" id="goalsTeam2">$match.goalsTeam2</div>
+                        </td>
+                        <td>$match.keeperTeam2.forename</td>
+                        #if($match.strikerTeam2.forename)
+                            <td>$match.strikerTeam2.forename</td>
+                        #else
+                            <td></td>
+                        #end
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
+    </div>
         <div class="row">
-            <div class="col-md-3 text-center"><button id="addGoalTeam1" type="submit" class="btn btn-primary">+1 Goal Team 1</button></div>
-            <div class="col-md-3 text-center"><button id="removeGoalTeam1" type="submit" class="btn btn-danger">-1 Goal Team 1</button></div>
-            <div class="col-md-3 text-center"><button id="addGoalTeam2" type="submit" class="btn btn-primary">+1 Goal Team 2</button></div>
-            <div class="col-md-3 text-center"><button id="removeGoalTeam2" type="submit" class="btn btn-danger">-1 Goal Team 2</button></div>
+            <div class="col-md-3 text-center">
+                <button id="addGoalTeam1" type="submit" class="btn btn-primary">+1 Goal Team 1</button>
+            </div>
+            <div class="col-md-3 text-center">
+                <button id="removeGoalTeam1" type="submit" class="btn btn-danger">-1 Goal Team 1</button>
+            </div>
+            <div class="col-md-3 text-center">
+                <button id="addGoalTeam2" type="submit" class="btn btn-primary">+1 Goal Team 2</button>
+            </div>
+            <div class="col-md-3 text-center">
+                <button id="removeGoalTeam2" type="submit" class="btn btn-danger">-1 Goal Team 2</button>
+            </div>
         </div>
 
     </div>
@@ -268,50 +284,55 @@
         #else
         <div class="panel panel-danger">
         #end
-            <div class="panel-heading">
-                <h3 class="panel-title">Finshed Match | $match.id | <b>$match.matchtype.toString()</b></h3>
-            </div>
-            <div class="panel-body">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-2"><center>Team 1 (White)</center></div>
-                        <div class="col-md-1"></div>
-                        <div class="col-md-2"><center>Team 2 (Black)</center></div>
+        <div class="panel-heading">
+            <h3 class="panel-title">Finshed Match | $match.id | <b>$match.matchtype.toString()</b></h3>
+        </div>
+        <div class="panel-body">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-2">
+                        <center>Team 1 (White)</center>
+                    </div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2">
+                        <center>Team 2 (Black)</center>
                     </div>
                 </div>
+            </div>
 
-                <div class="">
-                    <table class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th>Keeper</th>
-                            <th>Striker</th>
-                            <th style="text-align: center">Result</th>
-                            <th>Keeper</th>
-                            <th>Striker</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>$match.keeperTeam1.forename</td>
-                            #if($match.strikerTeam1.forename)
-                                <td>$match.strikerTeam1.forename</td>
-                            #else
-                                <td></td>
-                            #end
-                            <td style="text-align: center"><b style="color: floralwhite">$match.goalsTeam1 : $match.goalsTeam2</td>
-                            <td>$match.keeperTeam2.forename</td>
-                            #if($match.strikerTeam2.forename)
-                                <td>$match.strikerTeam2.forename</td>
-                            #else
-                                <td></td>
-                            #end
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
+            <div class="">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Keeper</th>
+                        <th>Striker</th>
+                        <th style="text-align: center">Result</th>
+                        <th>Keeper</th>
+                        <th>Striker</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>$match.keeperTeam1.forename</td>
+                        #if($match.strikerTeam1.forename)
+                            <td>$match.strikerTeam1.forename</td>
+                        #else
+                            <td></td>
+                        #end
+                        <td style="text-align: center"><b style="color: floralwhite">$match.goalsTeam1
+                            : $match.goalsTeam2</td>
+                        <td>$match.keeperTeam2.forename</td>
+                        #if($match.strikerTeam2.forename)
+                            <td>$match.strikerTeam2.forename</td>
+                        #else
+                            <td></td>
+                        #end
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
+    </div>
     #end
     <div class="row" style="margin-top: 50px">
         <div id="delteDiv" class="col-md-4">
@@ -321,7 +342,8 @@
             <button id="finishButton" type="submit" class="btn btn-default">finish Match</button>
         </div>
         <div id="instant" class="col-md-4">
-            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">Instant finish</button>
+            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">Instant finish
+            </button>
         </div>
     </div>
     <!-- Modal -->
@@ -331,14 +353,18 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Modal Header</h4>
+                    <h4 style="text-align: center" class="modal-title">Type in the result</h4>
                 </div>
-                <div class="modal-body">
-                    <p>Type in the result</p>
+                <div class="modal-body col-xs-12">
                     <form>
-                        <label for="instantGoalsTeam1">Result:</label>
-                        <input type="text" id="instantGoalsTeam1">
-                        <input type="text" id="instantGoalsTeam2">
+                        <div class="col-xs-6 form-group">
+                            <input placeholder="Result: TEAM WHITE" class="form-control" type="text" id="instantGoalsTeam1">
+                            <p>Enter Result Team White</p>
+                        </div>
+                        <div class="col-xs-6 form-group">
+                            <input placeholder="Result: TEAM BLACK" class="form-control" type="text" id="instantGoalsTeam2">
+                            <p>Enter Result Team Black</p>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
