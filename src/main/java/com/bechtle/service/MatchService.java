@@ -45,6 +45,8 @@ public class MatchService extends Service {
      */
     public boolean deleteMatch(Long matchId){
 
+        em.getTransaction().begin();
+
         final Match match = em.find(Match.class, matchId);
         final Season season = match.getSeason();
         final Player keeperTeam1 = match.getKeeperTeam1();
