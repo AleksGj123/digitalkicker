@@ -1,6 +1,8 @@
 package com.bechtle.service;
 
 import com.bechtle.model.*;
+import org.hibernate.Session;
+
 import javax.persistence.EntityManager;
 import java.util.Arrays;
 import java.util.List;
@@ -119,6 +121,8 @@ public class MatchService extends Service {
 
         final Season s = em.find(Season.class, season.getId());
 
+        //Session session = em.unwrap(Session.class);
+
         //s.getMatches();
         s.addMatch(match);
 
@@ -126,6 +130,7 @@ public class MatchService extends Service {
         em.persist(match);
 
         keeperTeam1.addMatch(match);
+        //session.saveOrUpdate(keeperTeam1);
         //entityManager.merge(keeperTeam1);
 
         keeperTeam2.addMatch(match);

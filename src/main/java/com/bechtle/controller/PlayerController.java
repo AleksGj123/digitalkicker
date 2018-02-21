@@ -31,6 +31,9 @@ public class PlayerController {
     public static ModelAndView loginPlayer(Request request, Response response){
         String email = request.queryParams("email").trim();
         String password = request.queryParams("password");
+        final EntityManager em = request.attribute("em");
+        final PlayerService playerService = new PlayerService(em);
+
         boolean login = playerService.login(email, password);
 
         if (login == true){

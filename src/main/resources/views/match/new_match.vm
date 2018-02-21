@@ -129,8 +129,8 @@
                         </table>
                     </div>
                     <form class="new-match-form" action="/match/new" method="post">
-##                        TODO 16 must be dynamic.
-                        <input name="season" id="season" type="hidden" value="16">
+##                        TODO $seasons.get(0).id must be changed to something selectable ... agj.
+                        <input name="season" id="season" type="hidden" value="$seasons.get(0).id">
                         <input name="matchType" id="matchType" type="hidden" value="regular">
                         <input name="keeperTeam1" id="keeperTeam1" type="hidden" value="">
                         <input name="strikerTeam1" id="strikerTeam1" type="hidden" value="">

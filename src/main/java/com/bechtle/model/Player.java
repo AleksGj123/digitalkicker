@@ -44,11 +44,16 @@ public class Player {
     // field for NFC Card ID
     //private String nfcId;
 
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name="Player_Matches",
             joinColumns=@JoinColumn(name="player_id", referencedColumnName="id", unique = false),
-            inverseJoinColumns=@JoinColumn(name="match_id", referencedColumnName="id", unique = false))
+            inverseJoinColumns=@JoinColumn(name="match_id", referencedColumnName="id", unique = false),
+            indexes = {
+                    @Index(name = "idx_player_matechs_player_id", columnList = "player_id"),
+                    @Index(name = "idx_player_matechs_match_id", columnList = "match_id")
+            })
     private List<Match> matches = new ArrayList<>();
 
     // ---------------- constructors ------------------
