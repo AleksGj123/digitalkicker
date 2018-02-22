@@ -131,7 +131,7 @@ public class PlayerService extends Service {
 
     public List<Match> getLostDeathmachtesForPlayer(Player player){
 
-        final List<Match> matches = player.getMatches();
+        final Set<Match> matches = player.getMatches();
         final List<Match> lostDeatmatches = matches.stream()
                 .filter(match -> match.getMatchtype().equals(Matchtype.DEATH_MATCH))
                 .filter(match -> playerHasLost(match, player.getId()))

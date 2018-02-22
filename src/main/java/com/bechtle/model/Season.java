@@ -24,7 +24,7 @@ public class Season {
     @NotEmpty
     private Date endDate;
 
-    @ManyToMany(targetEntity = Match.class)
+    @OneToMany(mappedBy = "season")
     private List<Match> matches = new ArrayList<>();
 
     // ---------------- constructors ------------------

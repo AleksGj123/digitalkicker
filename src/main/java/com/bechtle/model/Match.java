@@ -42,6 +42,7 @@ public class Match {
     private Matchtype matchtype;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "season_id")
     private Season season;
 
     // ---------------- constructors ------------------

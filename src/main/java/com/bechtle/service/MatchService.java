@@ -119,12 +119,12 @@ public class MatchService extends Service {
             match.setLoksafePlayer(loksafePlayers.get(0));
         }
 
-        final Season s = em.find(Season.class, season.getId());
+        //final Season s = em.find(Season.class, season.getId());
 
         //Session session = em.unwrap(Session.class);
 
         //s.getMatches();
-        s.addMatch(match);
+        //s.addMatch(match);
 
         //entityManager.merge(season);
         em.persist(match);

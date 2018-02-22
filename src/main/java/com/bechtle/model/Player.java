@@ -8,7 +8,9 @@ import javax.persistence.*;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
@@ -45,16 +47,16 @@ public class Player {
     //private String nfcId;
 
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(
             name="Player_Matches",
             joinColumns=@JoinColumn(name="player_id", referencedColumnName="id", unique = false),
             inverseJoinColumns=@JoinColumn(name="match_id", referencedColumnName="id", unique = false),
             indexes = {
-                    @Index(name = "idx_player_matechs_player_id", columnList = "player_id"),
-                    @Index(name = "idx_player_matechs_match_id", columnList = "match_id")
+                    @Index(name = "idx_player_matches_player_id", columnList = "player_id"),
+                    @Index(name = "idx_player_matches_match_id", columnList = "match_id")
             })
-    private List<Match> matches = new ArrayList<>();
+    private Set<Match> matches = new HashSet<>();
 
     // ---------------- constructors ------------------
 
@@ -157,7 +159,7 @@ public class Player {
     }
 
     @Ignored
-    public List<Match> getMatches() {
+    public Set<Match> getMatches() {
         return matches;
     }
 
