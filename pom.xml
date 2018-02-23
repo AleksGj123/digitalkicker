@@ -58,6 +58,12 @@
             <artifactId>jbcrypt</artifactId>
             <version>0.4</version>
         </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-c3p0</artifactId>
+            <version>LATEST</version>
+        </dependency>
+
 
 
         <dependency>
