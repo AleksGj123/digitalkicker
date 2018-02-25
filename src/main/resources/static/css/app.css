@@ -1,6 +1,7 @@
 body {
     background-image: url("/images/chalkboard-background.jpg");
     background-color: #404040;
+    color: #ccc !important;
 }
 .content-container{
     padding-top: 56px;
