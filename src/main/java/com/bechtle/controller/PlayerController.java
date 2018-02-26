@@ -12,6 +12,7 @@ import spark.Request;
 import spark.Response;
 
 import javax.persistence.EntityManager;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -24,7 +25,10 @@ public class PlayerController {
         final PlayerService playerService = new PlayerService(em);
 
         final HashMap<String, List<Player>> playersMap = new HashMap<>();
-        playersMap.put("players", playerService.getPlayers());
+        List<Player> players = playerService.getPlayers();
+        players.sort(Comparator.comparing(Player::getForename));
+
+        playersMap.put("players", players);
         return new ModelAndView(playersMap, "views/player/players.vm");
     }
 

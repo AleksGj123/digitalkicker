@@ -13,6 +13,7 @@ import spark.Request;
 import spark.Response;
 
 import javax.persistence.EntityManager;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -203,6 +204,7 @@ public class MatchController {
 
         // now get all players
         final List<Player> players = playerService.getPlayers();
+        players.sort(Comparator.comparing(Player::getForename));
 
         // ... get all seasons
         final List<Season> allSeasons = seasonService.getAllSeasons();
