@@ -358,11 +358,11 @@
                 <div class="modal-body col-xs-12">
                     <form>
                         <div class="col-xs-6 form-group">
-                            <input placeholder="Result: TEAM WHITE" class="form-control" type="text" id="instantGoalsTeam1">
+                            <input placeholder="Result: TEAM WHITE" class="form-control" type="number" id="instantGoalsTeam1">
                             <p>Enter Result Team White</p>
                         </div>
                         <div class="col-xs-6 form-group">
-                            <input placeholder="Result: TEAM BLACK" class="form-control" type="text" id="instantGoalsTeam2">
+                            <input placeholder="Result: TEAM BLACK" class="form-control" type="number" id="instantGoalsTeam2">
                             <p>Enter Result Team Black</p>
                         </div>
                     </form>
