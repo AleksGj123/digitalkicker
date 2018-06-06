@@ -1,5 +1,7 @@
 package com.bechtle;
 
+import com.bechtle.api.Router;
+import com.bechtle.api.service.PlayerService;
 import com.bechtle.controller.*;
 import com.bechtle.util.WebSocketUpdateHandler;
 import org.slf4j.Logger;
@@ -7,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
 import spark.ModelAndView;
-
 import spark.template.velocity.VelocityTemplateEngine;
 
 import javax.persistence.EntityManager;
@@ -28,10 +29,11 @@ public class Start {
     public final static EntityManagerFactory factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
 
     public static void main(String[] args) {
-        System.out.println("Ich bins");
         System.setProperty("hibernate.dialect.storage_engine", "myisam");
         port(4444);
         staticFileLocation("/static");
+
+        new Router(new PlayerService());
 
         webSocket("/update", WebSocketUpdateHandler.class);
 

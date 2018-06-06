@@ -1,11 +1,7 @@
 package com.bechtle.model;
 
-import net.formio.binding.Ignored;
-import net.formio.validation.constraints.Email;
-import net.formio.validation.constraints.NotEmpty;
 
 import javax.persistence.*;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -20,19 +16,14 @@ public class Player {
     @GeneratedValue(strategy= GenerationType.SEQUENCE)
     private long id;
 
-    @NotEmpty
     private String forename;
 
-    @NotEmpty
     private String surname;
 
-    @Email
     private String email;
 
-    @Transient
     private String password;
 
-    @Transient
     private String passwordRepeat;
 
     private String passwordHash;
@@ -48,7 +39,7 @@ public class Player {
 
 
     @ManyToMany
-    @JoinTable(
+    transient @JoinTable(
             name="Player_Matches",
             joinColumns=@JoinColumn(name="player_id", referencedColumnName="id", unique = false),
             inverseJoinColumns=@JoinColumn(name="match_id", referencedColumnName="id", unique = false),
@@ -158,7 +149,6 @@ public class Player {
         this.lokSafe = lokSafe;
     }
 
-    @Ignored
     public Set<Match> getMatches() {
         return matches;
     }
