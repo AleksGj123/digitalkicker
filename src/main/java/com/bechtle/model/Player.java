@@ -1,5 +1,6 @@
 package com.bechtle.model;
 
+import com.google.gson.annotations.Expose;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -10,43 +11,42 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
+@Table(name = "player")
 public class Player {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.SEQUENCE)
+    @Expose
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @Column(name = "id")
     private long id;
-
+    @Expose
     private String forename;
-
+    @Expose
     private String surname;
-
+    @Expose
     private String email;
-
+    @Expose
     private String password;
-
+    @Expose
     private String passwordRepeat;
-
+    @Expose
     private String passwordHash;
-
+    @Expose
     private String biography;
-
+    @Expose
     private String nickname;
-
+    @Expose
     private Boolean lokSafe;
+    @Expose
+    private Boolean inactive;
 
-    // field for NFC Card ID
-    //private String nfcId;
 
-
-    @ManyToMany
-    transient @JoinTable(
-            name="Player_Matches",
-            joinColumns=@JoinColumn(name="player_id", referencedColumnName="id", unique = false),
-            inverseJoinColumns=@JoinColumn(name="match_id", referencedColumnName="id", unique = false),
-            indexes = {
-                    @Index(name = "idx_player_matches_player_id", columnList = "player_id"),
-                    @Index(name = "idx_player_matches_match_id", columnList = "match_id")
-            })
+    @ManyToMany(fetch= FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name="player_matches",
+            joinColumns=@JoinColumn(name="player_id"),
+            inverseJoinColumns=@JoinColumn(name="matches_id")
+    )
     private Set<Match> matches = new HashSet<>();
 
     // ---------------- constructors ------------------
@@ -147,6 +147,14 @@ public class Player {
 
     public void setLokSafe(Boolean lokSafe) {
         this.lokSafe = lokSafe;
+    }
+
+    public Boolean getInactive() {
+        return inactive;
+    }
+
+    public void setInactive(Boolean inactive) {
+        this.inactive = inactive;
     }
 
     public Set<Match> getMatches() {

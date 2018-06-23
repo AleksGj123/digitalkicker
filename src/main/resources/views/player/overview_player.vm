@@ -1,6 +1,0 @@
-#@mainLayout()
-<div class="container">
-    <a href="/player/list">Player List</a>
-    <a href="/player/new">New Player</a>
-</div>
-#end

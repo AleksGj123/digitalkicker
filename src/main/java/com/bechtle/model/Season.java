@@ -1,5 +1,6 @@
 package com.bechtle.model;
 
+import com.google.gson.annotations.Expose;
 import net.formio.binding.Ignored;
 import net.formio.validation.constraints.NotEmpty;
 
@@ -12,16 +13,20 @@ import java.util.List;
 public class Season {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Expose
     private Long id;
 
     @NotEmpty
+    @Expose
     private String name;
 
     @NotEmpty
+    @Expose
     private Date startDate;
 
     @NotEmpty
+    @Expose
     private Date endDate;
 
     @OneToMany(mappedBy = "season")

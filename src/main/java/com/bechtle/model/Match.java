@@ -1,79 +1,110 @@
 package com.bechtle.model;
 
 import com.bechtle.util.MatchtypeConverter;
+import com.google.gson.annotations.Expose;
 import net.formio.validation.constraints.NotEmpty;
 
 import javax.persistence.*;
-import java.util.Date;
+import javax.validation.Payload;
+import java.util.*;
 
-@Entity(name = "Matches")
+@Entity
+@Table(name = "matches")
 public class Match {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.SEQUENCE)
-    private long id;
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @Expose
+    private long id = 0L;
 
+    @Expose
     private Date timestamp;
 
-    @NotEmpty
-    private Status status;
+    @Expose
+    private int resultWhite;
 
-    private int goalsTeam1;
-
-    private int goalsTeam2;
-
-    // a recorded Match contains max one loksafe player
-    @ManyToOne
-    private Player loksafePlayer;
+    @Expose
+    private int resultBlack;
 
     @ManyToOne(optional = false)
-    private Player keeperTeam1;
-
-    @ManyToOne
-    private Player strikerTeam1;
+    @Expose
+    private Player keeperWhite;
 
     @ManyToOne(optional = false)
-    private Player keeperTeam2;
+    @Expose
+    private Player strikerWhite;
 
     @ManyToOne
-    private Player strikerTeam2;
+    @Expose
+    private Player keeperBlack;
+
+    @ManyToOne
+    @Expose
+    private Player strikerBlack;
 
     @Convert(converter = MatchtypeConverter.class)
+    @Expose
     private Matchtype matchtype;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "season_id")
+    @Expose
     private Season season;
 
-    // ---------------- constructors ------------------
-
-    public Match(Player keeperTeam1, Player strikerTeam1, Player keeperTeam2, Player strikerTeam2, Matchtype matchtype,
-                 Season season) {
-        this.keeperTeam1 = keeperTeam1;
-        this.strikerTeam1 = strikerTeam1;
-        this.keeperTeam2 = keeperTeam2;
-        this.strikerTeam2 = strikerTeam2;
+    /**Constructor for regular match*/
+    public Match(
+            Player keeperWhite,
+            Player strikerWhite,
+            Player keeperBlack,
+            Player strikerBlack,
+            int resultTeamWhite,
+            int resultTeamBlack,
+            Matchtype matchtype,
+            Season season) {
+        this.keeperWhite = keeperWhite;
+        this.strikerWhite = strikerWhite;
+        this.keeperBlack = keeperBlack;
+        this.strikerBlack = strikerBlack;
+        this.resultWhite = resultTeamWhite;
+        this.resultBlack = resultTeamBlack;
         this.matchtype = matchtype;
         this.season = season;
         this.timestamp = new Date();
-        this.status = Status.STARTED;
     }
 
-    public Match(Player player1, Player player2, Matchtype matchtype, Season season) {
-        this.keeperTeam1 = player1;
-        this.keeperTeam2 = player2;
+    /**Constructor for deathmatch*/
+    public Match(
+            Player player1,
+            Player player2,
+            int resultWhite,
+            int resultBlack,
+            Matchtype matchtype,
+            Season season) {
+        this.keeperWhite = player1;
+        this.strikerWhite = player2;
+        this.resultWhite = resultWhite;
+        this.resultBlack = resultBlack;
         this.matchtype = matchtype;
         this.season = season;
         this.timestamp = new Date();
-        this.status = Status.STARTED;
     }
 
     public Match() {
+
     }
 
+    public List<Player> getPlayers(){
+        List<Player> players = new ArrayList<>();
+        if(this.keeperBlack != null && this.strikerBlack != null) {
+            players.add(this.keeperBlack);
+            players.add(this.strikerBlack);
+        }
+        players.add(this.keeperWhite);
+        players.add(this.strikerWhite);
+        return players;
+    }
 
-    // ---------------- getters and setters ------------------
-
+    /**Getter and Setter*/
 
     public long getId() {
         return id;
@@ -83,60 +114,60 @@ public class Match {
         this.id = id;
     }
 
-    public Status getStatus() {
-        return status;
+    public Date getTimestamp() {
+        return timestamp;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
     }
 
-    public int getGoalsTeam1() {
-        return goalsTeam1;
+    public int getResultWhite() {
+        return resultWhite;
     }
 
-    public void setGoalsTeam1(int goalsTeam1) {
-        this.goalsTeam1 = goalsTeam1;
+    public void setResultWhite(int resultWhite) {
+        this.resultWhite = resultWhite;
     }
 
-    public int getGoalsTeam2() {
-        return goalsTeam2;
+    public int getResultBlack() {
+        return resultBlack;
     }
 
-    public void setGoalsTeam2(int goalsTeam2) {
-        this.goalsTeam2 = goalsTeam2;
+    public void setResultBlack(int resultBlack) {
+        this.resultBlack = resultBlack;
     }
 
-    public Player getKeeperTeam1() {
-        return keeperTeam1;
+    public Player getKeeperWhite() {
+        return keeperWhite;
     }
 
-    public void setKeeperTeam1(Player keeperTeam1) {
-        this.keeperTeam1 = keeperTeam1;
+    public void setKeeperWhite(Player keeperWhite) {
+        this.keeperWhite = keeperWhite;
     }
 
-    public Player getStrikerTeam1() {
-        return strikerTeam1;
+    public Player getStrikerWhite() {
+        return strikerWhite;
     }
 
-    public void setStrikerTeam1(Player strikerTeam1) {
-        this.strikerTeam1 = strikerTeam1;
+    public void setStrikerWhite(Player strikerWhite) {
+        this.strikerWhite = strikerWhite;
     }
 
-    public Player getKeeperTeam2() {
-        return keeperTeam2;
+    public Player getKeeperBlack() {
+        return keeperBlack;
     }
 
-    public void setKeeperTeam2(Player keeperTeam2) {
-        this.keeperTeam2 = keeperTeam2;
+    public void setKeeperBlack(Player keeperBlack) {
+        this.keeperBlack = keeperBlack;
     }
 
-    public Player getStrikerTeam2() {
-        return strikerTeam2;
+    public Player getStrikerBlack() {
+        return strikerBlack;
     }
 
-    public void setStrikerTeam2(Player strikerTeam2) {
-        this.strikerTeam2 = strikerTeam2;
+    public void setStrikerBlack(Player strikerBlack) {
+        this.strikerBlack = strikerBlack;
     }
 
     public Matchtype getMatchtype() {
@@ -153,21 +184,5 @@ public class Match {
 
     public void setSeason(Season season) {
         this.season = season;
-    }
-
-    public Date getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public Player getLoksafePlayer() {
-        return loksafePlayer;
-    }
-
-    public void setLoksafePlayer(Player loksafePlayer) {
-        this.loksafePlayer = loksafePlayer;
     }
 }
