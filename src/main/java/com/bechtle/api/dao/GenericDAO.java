@@ -5,11 +5,24 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.util.List;
 
-public class Service <MODEL> {
+
+//TODO Class als generischer Typ + besseres Errorhandling
+public class GenericDAO <MODEL>{
 
     private final String PERSISTENCE_UNIT_NAME = "KickerPersistence";
     private final EntityManagerFactory factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
 
+
+    /** findById
+     * @return Result_MODEL
+     * */
+    public MODEL findById(Long id, Class<MODEL> modelClass){
+        EntityManager db = factory.createEntityManager();
+        db.getTransaction().begin();
+        final MODEL result = db.find(modelClass, id);
+        db.close();
+        return result;
+    }
 
     /** findBy SQL Query
      * @param sqlQuery
@@ -29,11 +42,6 @@ public class Service <MODEL> {
      * @return Saved_MODEL
      * */
     public MODEL saveOrUpdate(Long id, MODEL model) {
-        if(id == 0){
-
-        } else {
-
-        }
         EntityManager db = factory.createEntityManager();
         db.getTransaction().begin();
         final MODEL result = db.merge(model);
@@ -43,13 +51,15 @@ public class Service <MODEL> {
     }
 
     /** delete MODEL with ID
-     * @param model
+     * @param id
+     * @param modelClass
      * @return Boolean
      * */
-    public Boolean delete(MODEL model){
+    public Boolean delete(Long id, Class<MODEL> modelClass){
+        MODEL model2Remove = this.findById(id, modelClass);
         EntityManager db = factory.createEntityManager();
         db.getTransaction().begin();
-        db.remove(model);
+        db.remove(model2Remove);
         db.getTransaction().commit();
         db.close();
         return true;
