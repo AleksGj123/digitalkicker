@@ -45,8 +45,8 @@ public class GenericDAO <MODEL>{
         db.getTransaction().begin();
 
         //This query is getting results with the aid of ctx
-        CriteriaQuery<MODEL> criteriaQuery = getCriteraByCTX(db, criteriaBuilder, ctx);
-        final List<MODEL> result =  db.createQuery(criteriaQuery).getResultList();
+        TypedQuery<MODEL> typedQuery = getCriteraByCTX(db, criteriaBuilder, ctx);
+        final List<MODEL> result =  typedQuery.getResultList();
 
         //This query is getting the count
         CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
@@ -95,7 +95,7 @@ public class GenericDAO <MODEL>{
         return true;
     }
 
-    private CriteriaQuery<MODEL> getCriteraByCTX(EntityManager db, CriteriaBuilder criteriaBuilder, SearchCTX ctx){
+    private TypedQuery<MODEL> getCriteraByCTX(EntityManager db, CriteriaBuilder criteriaBuilder, SearchCTX ctx){
 
         Map<String, String[]> filters = ctx.getFilter();
         Map<String, String[]> sortings = ctx.getSorting();
@@ -105,15 +105,18 @@ public class GenericDAO <MODEL>{
         Root<MODEL> root = criteria.from(modelClass);
         CriteriaQuery<MODEL> criteriaQuery = criteria.select(root);
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(criteriaBuilder.equal(root.get("name"), "Max"));
-        predicates.add(criteriaBuilder.equal(root.get("lastname"), "Test"));
+        for(Map.Entry<String, String[]> filter: filters.entrySet()){
+            for(String value: filter.getValue()){
+                predicates.add(criteriaBuilder.equal(root.get(filter.getKey()), value));
+            }
+        }
         criteria.select(root).where(predicates.toArray(new Predicate[]{}));
 
         //ADD PaginationInfos
         TypedQuery<MODEL> typedQuery = db.createQuery(criteriaQuery);
-        typedQuery.setFirstResult(ctx.getSize());
-        typedQuery.setMaxResults(ctx.getPage());
+        typedQuery.setFirstResult(0);
+        typedQuery.setMaxResults(ctx.getSize());
 
-        return criteria;
+        return typedQuery;
     }
 }
