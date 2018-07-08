@@ -15,7 +15,7 @@ public class Season {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Expose
-    private Long id;
+    private long id;
 
     @NotEmpty
     @Expose

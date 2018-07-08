@@ -4,10 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 /**
- * Converter
+ * JSONConverter
  */
 
-public class Converter {
+public class JSONConverter {
 
     /** convert MODEL to JSON*/
     public static String toJSON(Object obj){

@@ -1,4 +1,4 @@
-package com.bechtle.api.util;
+package com.bechtle.api.dto;
 
 import com.google.gson.annotations.Expose;
 

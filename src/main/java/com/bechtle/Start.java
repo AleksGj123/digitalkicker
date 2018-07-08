@@ -46,8 +46,8 @@ public class Start {
             get("/seasons", SeasonController::findBy);
             get("/seasons/:id", SeasonController::get);
             post("/seasons", SeasonController::create);
-            put("/matches", MatchController::update);
-            delete("/matches/:id", MatchController::delete);
+            put("/seasons", SeasonController::update);
+            delete("/seasons/:id", SeasonController::delete);
 
             get("/statistics/lokcount", SeasonController::findBy);
             get("/statistics/lokcount/:id", SeasonController::findBy);

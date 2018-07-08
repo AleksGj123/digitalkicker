@@ -1,10 +1,10 @@
 package com.bechtle.api.controller;
 import com.bechtle.api.dao.GenericDAO;
 import com.bechtle.api.dto.MatchDTO;
-import com.bechtle.api.service.Converter;
+import com.bechtle.api.service.JSONConverter;
 import com.bechtle.api.service.ErrorHandler;
 import com.bechtle.api.service.UrlParser;
-import com.bechtle.api.util.ResultWithPagination;
+import com.bechtle.api.dto.ResultWithPagination;
 import com.bechtle.api.util.SearchCTX;
 import com.bechtle.api.model.Match;
 import com.bechtle.api.model.Matchtype;
@@ -23,7 +23,7 @@ public class MatchController {
         SearchCTX ctx = UrlParser.getSearchCTX(req);
         ResultWithPagination result = dao.findBy(ctx);
         if(result != null){
-            return Converter.toJSON(result);
+            return JSONConverter.toJSON(result);
         }
         res.status(400);
         return new ErrorHandler("No user with id '%s' found").getMessage();
@@ -35,7 +35,7 @@ public class MatchController {
 
     public static String create(Request req, Response res){
         //Convert DTO to model
-        List<Match> matches2Create = Converter.toModel(req.body(), MatchDTO.class).convertToModels();
+        List<Match> matches2Create = JSONConverter.toModel(req.body(), MatchDTO.class).convertToModels();
         List<Match> createdMatches = new ArrayList<>();
 
         for(Match match : matches2Create) {
@@ -61,7 +61,7 @@ public class MatchController {
             dao.saveOrUpdate(createdMatch.getId(), createdMatch);
             createdMatches.add(createdMatch);
         }
-        return Converter.toJSON(createdMatches);
+        return JSONConverter.toJSON(createdMatches);
     }
 
     public static String update(Request req, Response res){

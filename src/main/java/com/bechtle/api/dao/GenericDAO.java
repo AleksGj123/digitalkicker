@@ -1,6 +1,6 @@
 package com.bechtle.api.dao;
 
-import com.bechtle.api.util.ResultWithPagination;
+import com.bechtle.api.dto.ResultWithPagination;
 import com.bechtle.api.util.SearchCTX;
 
 import javax.persistence.*;
