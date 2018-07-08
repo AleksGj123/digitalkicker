@@ -3,6 +3,9 @@ import com.bechtle.api.dao.GenericDAO;
 import com.bechtle.api.dto.MatchDTO;
 import com.bechtle.api.service.Converter;
 import com.bechtle.api.service.ErrorHandler;
+import com.bechtle.api.service.UrlParser;
+import com.bechtle.api.util.ResultWithPagination;
+import com.bechtle.api.util.SearchCTX;
 import com.bechtle.model.Match;
 import com.bechtle.model.Matchtype;
 import com.bechtle.model.Player;
@@ -14,11 +17,11 @@ import java.util.List;
 
 public class MatchController {
 
-    private static final GenericDAO<Match> dao = new GenericDAO<>();
+    private static final GenericDAO<Match> dao = new GenericDAO<>(Match.class);
 
     public static String getAll(Request req, Response res){
-
-        List<Match> result = dao.findBy("select m from Matches as m");
+        SearchCTX ctx = UrlParser.getSearchCTX(req);
+        ResultWithPagination result = dao.findBy(ctx);
         if(result != null){
             return Converter.toJSON(result);
         }

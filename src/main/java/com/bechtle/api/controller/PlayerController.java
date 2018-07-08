@@ -3,17 +3,19 @@ import com.bechtle.api.dao.GenericDAO;
 import com.bechtle.api.service.Converter;
 import com.bechtle.api.service.ErrorHandler;
 import com.bechtle.api.service.UrlParser;
+import com.bechtle.api.util.ResultWithPagination;
+import com.bechtle.api.util.SearchCTX;
 import com.bechtle.model.Player;
 import spark.Request;
 import spark.Response;
-import java.util.List;
 
 public class PlayerController{
 
-    private static final GenericDAO<Player> dao = new GenericDAO<>();
+    private static final GenericDAO<Player> dao = new GenericDAO<>(Player.class);
 
     public static String getAll(Request req, Response res){
-        final List<Player> result = dao.findBy("select p from Player as p");
+        SearchCTX ctx = UrlParser.getSearchCTX(req);
+        final ResultWithPagination result = dao.findBy(ctx);
         return Converter.toJSON(result);
     }
 

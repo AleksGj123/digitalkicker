@@ -39,7 +39,7 @@ public class Start {
         path("/api", () -> {
             before("/*", (request, response) -> {
                 System.out.println("API Call ...");
-                UrlParser.getFilters(request);
+                UrlParser.getSearchCTX(request);
             });
 
             get("/players", PlayerController::getAll);

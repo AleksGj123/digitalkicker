@@ -15,8 +15,6 @@ public class Test {
         p.setEmail("Gj");
         p.setPassword("Gj");
 
-            System.out.println(p.getNullAndEmptyFields());
-
 
         JSONObject jsonObject = new JSONObject();
 
