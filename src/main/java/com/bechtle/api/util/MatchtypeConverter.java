@@ -1,6 +1,6 @@
-package com.bechtle.util;
+package com.bechtle.api.util;
 
-import com.bechtle.model.Matchtype;
+import com.bechtle.api.model.Matchtype;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

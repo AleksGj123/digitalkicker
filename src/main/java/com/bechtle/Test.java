@@ -1,6 +1,6 @@
 package com.bechtle;
 
-import com.bechtle.model.Player;
+import com.bechtle.api.model.Player;
 import org.json.JSONObject;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;

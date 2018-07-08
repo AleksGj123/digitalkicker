@@ -1,10 +1,10 @@
 package com.bechtle.api.dto;
 
 import com.bechtle.api.dao.GenericDAO;
-import com.bechtle.model.Match;
-import com.bechtle.model.Matchtype;
-import com.bechtle.model.Player;
-import com.bechtle.model.Season;
+import com.bechtle.api.model.Match;
+import com.bechtle.api.model.Matchtype;
+import com.bechtle.api.model.Player;
+import com.bechtle.api.model.Season;
 
 import java.util.ArrayList;
 import java.util.List;

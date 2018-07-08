@@ -6,9 +6,9 @@ import com.bechtle.api.service.ErrorHandler;
 import com.bechtle.api.service.UrlParser;
 import com.bechtle.api.util.ResultWithPagination;
 import com.bechtle.api.util.SearchCTX;
-import com.bechtle.model.Match;
-import com.bechtle.model.Matchtype;
-import com.bechtle.model.Player;
+import com.bechtle.api.model.Match;
+import com.bechtle.api.model.Matchtype;
+import com.bechtle.api.model.Player;
 import spark.Request;
 import spark.Response;
 

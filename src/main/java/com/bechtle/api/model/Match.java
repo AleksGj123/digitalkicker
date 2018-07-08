@@ -1,6 +1,6 @@
-package com.bechtle.model;
+package com.bechtle.api.model;
 
-import com.bechtle.util.MatchtypeConverter;
+import com.bechtle.api.util.MatchtypeConverter;
 import com.google.gson.annotations.Expose;
 
 import javax.persistence.*;

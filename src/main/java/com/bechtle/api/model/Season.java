@@ -1,4 +1,4 @@
-package com.bechtle.model;
+package com.bechtle.api.model;
 
 import com.google.gson.annotations.Expose;
 import net.formio.binding.Ignored;

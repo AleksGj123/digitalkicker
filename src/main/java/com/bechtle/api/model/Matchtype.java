@@ -1,4 +1,4 @@
-package com.bechtle.model;
+package com.bechtle.api.model;
 
 public enum  Matchtype {
 
