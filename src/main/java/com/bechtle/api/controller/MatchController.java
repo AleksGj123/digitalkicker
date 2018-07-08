@@ -19,7 +19,7 @@ public class MatchController {
 
     private static final GenericDAO<Match> dao = new GenericDAO<>(Match.class);
 
-    public static String getAll(Request req, Response res){
+    public static String findBy(Request req, Response res){
         SearchCTX ctx = UrlParser.getSearchCTX(req);
         ResultWithPagination result = dao.findBy(ctx);
         if(result != null){

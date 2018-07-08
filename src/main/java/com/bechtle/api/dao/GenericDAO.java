@@ -109,7 +109,7 @@ public class GenericDAO <MODEL>{
         predicates.add(criteriaBuilder.equal(root.get("lastname"), "Test"));
         criteria.select(root).where(predicates.toArray(new Predicate[]{}));
 
-        //ADD ResultWithPagination.java
+        //ADD PaginationInfos
         TypedQuery<MODEL> typedQuery = db.createQuery(criteriaQuery);
         typedQuery.setFirstResult(ctx.getSize());
         typedQuery.setMaxResults(ctx.getPage());

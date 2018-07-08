@@ -26,8 +26,8 @@ public class MatchDTO {
     private int dResultBlack;
 
     public List<Match> convertToModels(){
-        final GenericDAO<Player> playerDAO = new GenericDAO<>();
-        final GenericDAO<Season> seasonDAO = new GenericDAO<>();
+        final GenericDAO<Player> playerDAO = new GenericDAO<>(Player.class);
+        final GenericDAO<Season> seasonDAO = new GenericDAO<>(Season.class);
         List<Match> matches2Create = new ArrayList<>();
         Player keeperWhite = playerDAO.findById(this.keeperWhite, Player.class);
         Player keeperBlack = playerDAO.findById(this.keeperBlack, Player.class);

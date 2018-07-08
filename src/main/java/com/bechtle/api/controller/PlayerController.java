@@ -13,7 +13,7 @@ public class PlayerController{
 
     private static final GenericDAO<Player> dao = new GenericDAO<>(Player.class);
 
-    public static String getAll(Request req, Response res){
+    public static String findBy(Request req, Response res){
         SearchCTX ctx = UrlParser.getSearchCTX(req);
         final ResultWithPagination result = dao.findBy(ctx);
         return Converter.toJSON(result);

@@ -4,18 +4,19 @@ import com.bechtle.api.dao.GenericDAO;
 import com.bechtle.api.service.Converter;
 import com.bechtle.api.service.ErrorHandler;
 import com.bechtle.api.service.UrlParser;
+import com.bechtle.api.util.ResultWithPagination;
+import com.bechtle.api.util.SearchCTX;
 import com.bechtle.model.Player;
 import com.bechtle.model.Season;
 import spark.Request;
 import spark.Response;
 
-import java.util.List;
-
 public class SeasonController {
-    private static final GenericDAO<Season> dao = new GenericDAO<>();
+    private static final GenericDAO<Season> dao = new GenericDAO<>(Season.class);
 
-    public static String getAll(Request req, Response res){
-        final List<Season> result = dao.findBy("select s from Season as s");
+    public static String findBy(Request req, Response res){
+        SearchCTX ctx = UrlParser.getSearchCTX(req);
+        final ResultWithPagination result = dao.findBy(ctx);
         return Converter.toJSON(result);
     }
 
