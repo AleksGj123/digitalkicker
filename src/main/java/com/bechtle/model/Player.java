@@ -1,23 +1,15 @@
 package com.bechtle.model;
-
 import com.google.gson.annotations.Expose;
-
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "player")
+@Table(name = "Players")
 public class Player {
 
     @Id
     @Expose
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    @Column(name = "id")
     private long id;
     @Expose
     private String forename;
@@ -28,10 +20,6 @@ public class Player {
     @Expose
     private String password;
     @Expose
-    private String passwordRepeat;
-    @Expose
-    private String passwordHash;
-    @Expose
     private String biography;
     @Expose
     private String nickname;
@@ -40,24 +28,18 @@ public class Player {
     @Expose
     private Boolean inactive;
 
+    /**Relation to players*/
+    @ManyToMany(mappedBy = "players")
+    private Set<Match> matches;
 
-    @ManyToMany(fetch= FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(
-            name="player_matches",
-            joinColumns=@JoinColumn(name="player_id"),
-            inverseJoinColumns=@JoinColumn(name="matches_id")
-    )
-    private Set<Match> matches = new HashSet<>();
 
-    // ---------------- constructors ------------------
-
+    /**Constructors*/
     public Player(String forename, String surname, String email, String password, String passwordRepeat,
                   String biography, String nickname) {
         this.forename = forename;
         this.surname = surname;
         this.email = email;
         this.password = password;
-        this.passwordRepeat = passwordRepeat;
         this.biography = biography;
         this.nickname = nickname;
         this.lokSafe = true;
@@ -66,23 +48,13 @@ public class Player {
     public Player() {
     }
 
-    // ---------------- getters and setters ------------------
-
-
+    /**Getter and setter*/
     public long getId() {
         return id;
     }
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public String getPasswordHash() {
-        return passwordHash;
-    }
-
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
     }
 
     public String getNickname() {
@@ -133,14 +105,6 @@ public class Player {
         this.password = password;
     }
 
-    public String getPasswordRepeat() {
-        return passwordRepeat;
-    }
-
-    public void setPasswordRepeat(String passwordRepeat) {
-        this.passwordRepeat = passwordRepeat;
-    }
-
     public Boolean getLokSafe() {
         return lokSafe;
     }
@@ -161,35 +125,12 @@ public class Player {
         return matches;
     }
 
+    public void setMatches(Set<Match> matches) {
+        this.matches = matches;
+    }
+
     public void addMatch(Match match){
         matches.add(match);
     }
 
-    /*
-    public void setMatches(List<Match> matches) {
-        this.matches = matches;
-    }*/
-
-    /**
-     * Checks if there is a Field that is null for an instance of Player
-     * @return List of field names that are empty
-     */
-    public List<String> getNullAndEmptyFields(){
-        ArrayList<String> missingFields = new ArrayList<>();
-
-        List<String> m = Arrays.stream(getClass().getDeclaredFields())
-                .filter(field -> field.getName() != "passwordHash")
-                .filter(field -> {
-                    try {
-                        if (field.get(this) == null || field.get(this).equals("")) return true;
-                    } catch (IllegalAccessException e) {
-                        return false;
-                    }
-                    return false;
-                })
-                .map(field -> field.getName()).collect(Collectors.toList());
-
-
-        return m;
-    }
 }

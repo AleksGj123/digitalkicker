@@ -4,6 +4,7 @@ import com.bechtle.api.dto.MatchDTO;
 import com.bechtle.api.service.Converter;
 import com.bechtle.api.service.ErrorHandler;
 import com.bechtle.model.Match;
+import com.bechtle.model.Matchtype;
 import com.bechtle.model.Player;
 import spark.Request;
 import spark.Response;
@@ -14,7 +15,6 @@ import java.util.List;
 public class MatchController {
 
     private static final GenericDAO<Match> dao = new GenericDAO<>();
-    private static final GenericDAO<Player> daoPlayer = new GenericDAO<>();
 
     public static String getAll(Request req, Response res){
 
@@ -31,18 +31,32 @@ public class MatchController {
     }
 
     public static String create(Request req, Response res){
+        //Convert DTO to model
         List<Match> matches2Create = Converter.toModel(req.body(), MatchDTO.class).convertToModels();
         List<Match> createdMatches = new ArrayList<>();
+
         for(Match match : matches2Create) {
+            Matchtype matchType = match.getMatchtype();
             Match createdMatch = dao.saveOrUpdate(0L, match);
-            createdMatches.add(createdMatch);
-        }
-        for(Match createdMatch : createdMatches){
-            List<Player> players = createdMatch.getPlayers();
-            for(Player player : players){
-                player.addMatch(createdMatch);
-                daoPlayer.saveOrUpdate(player.getId(), player);
+
+            //Handle relation to players
+            if(matchType != Matchtype.DEATH_MATCH){
+                Player keeperBlack = createdMatch.getKeeperBlack();
+                Player keeperWhite = createdMatch.getKeeperWhite();
+                Player strikerBlack = createdMatch.getStrikerBlack();
+                Player strikerWhite = createdMatch.getStrikerWhite();
+                createdMatch.addPlayer(keeperBlack);
+                createdMatch.addPlayer(keeperWhite);
+                createdMatch.addPlayer(strikerBlack);
+                createdMatch.addPlayer(strikerWhite);
+            } else {
+                Player dPlayerOne = createdMatch.getKeeperWhite();
+                Player dPlayerTwo = createdMatch.getStrikerWhite();
+                createdMatch.addPlayer(dPlayerOne);
+                createdMatch.addPlayer(dPlayerTwo);
             }
+            dao.saveOrUpdate(createdMatch.getId(), createdMatch);
+            createdMatches.add(createdMatch);
         }
         return Converter.toJSON(createdMatches);
     }

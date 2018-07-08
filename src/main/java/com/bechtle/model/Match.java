@@ -2,14 +2,12 @@ package com.bechtle.model;
 
 import com.bechtle.util.MatchtypeConverter;
 import com.google.gson.annotations.Expose;
-import net.formio.validation.constraints.NotEmpty;
 
 import javax.persistence.*;
-import javax.validation.Payload;
 import java.util.*;
 
 @Entity
-@Table(name = "matches")
+@Table(name = "Matches")
 public class Match {
 
     @Id
@@ -28,10 +26,12 @@ public class Match {
 
     @ManyToOne(optional = false)
     @Expose
+    /**In case of deathmatch --> represent one player*/
     private Player keeperWhite;
 
     @ManyToOne(optional = false)
     @Expose
+    /**In case of deathmatch --> represent one player*/
     private Player strikerWhite;
 
     @ManyToOne
@@ -50,6 +50,14 @@ public class Match {
     @JoinColumn(name = "season_id")
     @Expose
     private Season season;
+
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "Players_Matches",
+            joinColumns = { @JoinColumn(name = "match_id", referencedColumnName = "id") },
+            inverseJoinColumns = { @JoinColumn(name = "player_id", referencedColumnName = "id") }
+    )
+    private Set<Player> players = new HashSet<>();
 
     /**Constructor for regular match*/
     public Match(
@@ -91,17 +99,6 @@ public class Match {
 
     public Match() {
 
-    }
-
-    public List<Player> getPlayers(){
-        List<Player> players = new ArrayList<>();
-        if(this.keeperBlack != null && this.strikerBlack != null) {
-            players.add(this.keeperBlack);
-            players.add(this.strikerBlack);
-        }
-        players.add(this.keeperWhite);
-        players.add(this.strikerWhite);
-        return players;
     }
 
     /**Getter and Setter*/
@@ -185,4 +182,16 @@ public class Match {
     public void setSeason(Season season) {
         this.season = season;
     }
+
+    public Set<Player> getPlayers() {
+        return players;
+    }
+
+    public void setPlayers(Set<Player> players) {
+        this.players = players;
+    }
+
+    public void addPlayer(Player player){players.add(player);}
+
 }
+

@@ -14,7 +14,6 @@ public class Test {
         //p.setNickname("Gj");
         p.setEmail("Gj");
         p.setPassword("Gj");
-        p.setPasswordRepeat("Gj");
 
             System.out.println(p.getNullAndEmptyFields());
 

@@ -1,5 +1,8 @@
 package com.bechtle.api.dao;
 
+import com.bechtle.model.Match;
+import com.bechtle.model.Player;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -7,6 +10,7 @@ import java.util.List;
 
 
 //TODO Class als generischer Typ + besseres Errorhandling
+//TODO Nochmal prüfen wie ein DAO korrekt aufgebaut werden sollte
 public class GenericDAO <MODEL>{
 
     private final String PERSISTENCE_UNIT_NAME = "KickerPersistence";
@@ -44,9 +48,13 @@ public class GenericDAO <MODEL>{
     public MODEL saveOrUpdate(Long id, MODEL model) {
         EntityManager db = factory.createEntityManager();
         db.getTransaction().begin();
-        final MODEL result = db.merge(model);
+        MODEL result = model;
+        if(id != 0L){
+            result = db.merge(model);
+        } else {
+            db.persist(model);
+        }
         db.getTransaction().commit();
-        db.close();
         return result;
     }
 
@@ -65,4 +73,11 @@ public class GenericDAO <MODEL>{
         return true;
     }
 
+    public Boolean updateManyToMany(Match match){
+        EntityManager db = factory.createEntityManager();
+        db.getTransaction().begin();
+
+        db.close();
+        return true;
+    }
 }

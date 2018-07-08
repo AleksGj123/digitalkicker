@@ -2,6 +2,10 @@ package com.bechtle;
 import com.bechtle.api.controller.MatchController;
 import com.bechtle.api.controller.PlayerController;
 import com.bechtle.api.controller.SeasonController;
+import com.bechtle.api.service.UrlParser;
+import com.bechtle.config.Pac4JConfig;
+import org.pac4j.core.config.Config;
+import org.pac4j.sparkjava.SecurityFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
@@ -33,6 +37,10 @@ public class Start {
          * Routes for API Calls
          */
         path("/api", () -> {
+            before("/*", (request, response) -> {
+                System.out.println("API Call ...");
+                UrlParser.getFilters(request);
+            });
 
             get("/players", PlayerController::getAll);
             get("/players/:id", PlayerController::get);
@@ -62,22 +70,6 @@ public class Start {
         });
 
 
-        get("/login", (request, response) -> {
-
-            request.session().attribute("username", "aleks");
-            return "kk";
-        });
-
-        get("/onlyloggedin", (request, response) -> {
-
-            if(request.session().attribute("username") == null){
-                response.redirect("/");
-                return "";
-            }
-            else {
-                return "yoo";
-            }
-        });
 
         Jedis jSubscriber = new Jedis();
 
