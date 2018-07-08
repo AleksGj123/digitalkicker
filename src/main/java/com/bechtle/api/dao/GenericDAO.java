@@ -100,17 +100,29 @@ public class GenericDAO <MODEL>{
         Map<String, String[]> filters = ctx.getFilter();
         Map<String, String[]> sortings = ctx.getSorting();
 
-        //Sort and filter
+        //Sort and filtering
         CriteriaQuery<MODEL> criteria = criteriaBuilder.createQuery(modelClass);
         Root<MODEL> root = criteria.from(modelClass);
         CriteriaQuery<MODEL> criteriaQuery = criteria.select(root);
         List<Predicate> predicates = new ArrayList<>();
+        //Filtering
         for(Map.Entry<String, String[]> filter: filters.entrySet()){
             for(String value: filter.getValue()){
                 predicates.add(criteriaBuilder.equal(root.get(filter.getKey()), value));
             }
         }
         criteria.select(root).where(predicates.toArray(new Predicate[]{}));
+        //Sorting
+        for(Map.Entry<String, String[]> sorting: sortings.entrySet()){
+            for(String value: sorting.getValue()){
+                if(value.equals("DESC")){
+                    criteriaQuery.orderBy(criteriaBuilder.desc(root.get(value)));
+                } else {
+                    criteriaQuery.orderBy(criteriaBuilder.asc(root.get(value)));
+                }
+
+            }
+        }
 
         //ADD PaginationInfos
         TypedQuery<MODEL> typedQuery = db.createQuery(criteriaQuery);
