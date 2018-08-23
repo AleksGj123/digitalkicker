@@ -112,13 +112,16 @@ public class GenericDAO <MODEL>{
             }
         }
         criteria.select(root).where(predicates.toArray(new Predicate[]{}));
-        String column = ctx.getSorting().entrySet().iterator().next().getKey();
-        String value = ctx.getSorting().entrySet().iterator().next().getValue()[0];
-        if(value.equals("DESC")){
-            criteria.orderBy(criteriaBuilder.desc(root.get(column)));
-        } else {
-            criteria.orderBy(criteriaBuilder.asc(root.get(column)));
+        if(!sortings.isEmpty()){
+            String column = sortings.entrySet().iterator().next().getKey();
+            String value = sortings.entrySet().iterator().next().getValue()[0];
+            if(value.equals("desc")){
+                criteria.orderBy(criteriaBuilder.desc(root.get(column)));
+            } else {
+                criteria.orderBy(criteriaBuilder.asc(root.get(column)));
+            }
         }
+
 
         //ADD PaginationInfos
         TypedQuery<MODEL> typedQuery = db.createQuery(criteriaQuery);
