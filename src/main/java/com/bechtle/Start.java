@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
 import spark.ModelAndView;
-
 import spark.template.velocity.VelocityTemplateEngine;
 
 import javax.persistence.EntityManager;
@@ -42,14 +41,14 @@ public class Start {
         });
 
         after((request, response) -> {
-            EntityManager session = (EntityManager)request.attribute("em");
+            EntityManager session = (EntityManager) request.attribute("em");
             //logger.info("after -> close: " + session.hashCode());
             session.close();
 
         });
 
         internalServerError((request, response) -> {
-            EntityManager session = (EntityManager)request.attribute("em");
+            EntityManager session = (EntityManager) request.attribute("em");
             //logger.info("after -> close: " + session.hashCode());
             session.close();
             return "uuups";
@@ -121,11 +120,10 @@ public class Start {
 
         get("/onlyloggedin", (request, response) -> {
 
-            if(request.session().attribute("username") == null){
+            if (request.session().attribute("username") == null) {
                 response.redirect("/");
                 return "";
-            }
-            else {
+            } else {
                 return "yoo";
             }
         });
@@ -141,12 +139,7 @@ public class Start {
             @Override
             public void onPMessage(String pattern, String channel, String message) {
                 super.onPMessage(pattern, channel, message);
-                if(channel.equals("event.goal")){
-                    WebSocketUpdateHandler.broadcastMessage("updateMatch", message);
-                }
-                else if(channel.equals("event.start")){
-
-                }
+                WebSocketUpdateHandler.broadcastMessage(channel, message);
             }
         }, "event.*");
     }

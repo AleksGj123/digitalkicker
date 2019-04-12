@@ -1,9 +1,6 @@
 package com.bechtle.controller;
 
-import com.bechtle.model.Match;
-import com.bechtle.model.Matchtype;
-import com.bechtle.model.Player;
-import com.bechtle.model.Season;
+import com.bechtle.model.*;
 import com.bechtle.service.MatchService;
 import com.bechtle.service.PlayerService;
 import com.bechtle.service.SeasonService;
@@ -18,6 +15,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class MatchController {
 
@@ -57,8 +55,12 @@ public class MatchController {
 
         final List<Match> allMatches = matchService.getAllMatches();
 
+        final List<Match> filteredMatches = allMatches.stream()
+                .filter(match -> match.getStatus() == Status.FINISHED)
+                .collect(Collectors.toList());
+
         final HashMap<String, List<Match>> matchesMap = new HashMap<>();
-        matchesMap.put("matches", allMatches);
+        matchesMap.put("matches", filteredMatches);
 
         return new ModelAndView(matchesMap, "views/match/matches.vm");
     }
@@ -154,7 +156,8 @@ public class MatchController {
             }
         }
 
-        response.redirect("/match/"+matchId);
+//        response.redirect("/match/"+matchId);
+        response.redirect("/match/dashboard");
         // you never get to this state because of the redirect before ... but it is necessary
         return new ModelAndView(new HashMap<>(), "views/player/new_match.vm");
     }

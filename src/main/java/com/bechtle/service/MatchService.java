@@ -28,7 +28,7 @@ public class MatchService extends Service {
     }
 
     public Match getCurrentMatch(){
-        final List<Match> activeMatches = em.createQuery("select m from Matches as m where m.status = '0'").getResultList();
+        final List<Match> activeMatches = em.createQuery("select m from Matches as m where m.status = '0' or m.status = '2'").getResultList();
 
         if (activeMatches.isEmpty()){
             //SELECT * FROM Matches ORDER BY timestamp DESC LIMIT 1;
@@ -172,6 +172,26 @@ public class MatchService extends Service {
 
         player2.addMatch(m);
         em.merge(player2);
+
+        em.getTransaction().commit();
+
+        return m.getId();
+    }
+
+    public long createPreMatch(Player lonelyRider, Matchtype matchtype, Season season) {
+        em.getTransaction().begin();
+
+        final Match m = new Match(lonelyRider, matchtype, season);
+
+        final Season s = em.find(Season.class, season.getId());
+
+        s.getMatches();
+        s.addMatch(m);
+
+        em.persist(m);
+
+        lonelyRider.addMatch(m);
+        em.merge(lonelyRider);
 
         em.getTransaction().commit();
 

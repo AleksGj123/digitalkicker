@@ -26,13 +26,13 @@ public class Match {
     @ManyToOne
     private Player loksafePlayer;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     private Player keeperTeam1;
 
     @ManyToOne
     private Player strikerTeam1;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     private Player keeperTeam2;
 
     @ManyToOne
@@ -66,6 +66,14 @@ public class Match {
         this.season = season;
         this.timestamp = new Date();
         this.status = Status.STARTED;
+    }
+
+    public Match(Player lonelyRider, Matchtype matchtype, Season season) {
+        this.keeperTeam1 = lonelyRider;
+        this.matchtype = matchtype;
+        this.season = season;
+        this.timestamp = new Date();
+        this.status = Status.PREMATCH;
     }
 
     public Match() {
