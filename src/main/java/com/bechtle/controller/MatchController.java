@@ -10,11 +10,7 @@ import spark.Request;
 import spark.Response;
 
 import javax.persistence.EntityManager;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class MatchController {
@@ -22,18 +18,6 @@ public class MatchController {
 //    private static final MatchService matchService = new MatchService();
 //    private static final SeasonService seasonService = new SeasonService();
 //    private static final PlayerService playerService = new PlayerService();
-
-    public static ModelAndView showDashboard(Request request, Response Request){
-        final EntityManager em = request.attribute("em");
-        final MatchService matchService = new MatchService(em);
-
-        final Match currentMatch = matchService.getCurrentMatch();
-
-        final HashMap<String, Match> matchesMap = new HashMap<>();
-        matchesMap.put("match", currentMatch);
-
-        return new ModelAndView(matchesMap, "views/match/dashboard_match.vm");
-    }
 
     public static ModelAndView showPlayer(Request request, Response response){
         final String matchId = request.params(":id");
@@ -84,8 +68,8 @@ public class MatchController {
         final MatchService matchService = new MatchService(em);
 
         final Long matchId = Long.parseLong(request.queryParams("matchId"));
-        final Long newMatchId = matchService.finishMatch(matchId);
-        return ""+newMatchId;
+        final Optional<Match> newMatchOpt = matchService.finishMatch(matchId);
+        return ""+newMatchOpt.map(m -> m.getId()).orElse(null);
     }
 
     public static String instantFinish(Request request, Response response){
@@ -121,7 +105,7 @@ public class MatchController {
         final Player kT2 = playerService.getPlayer(Long.parseLong(keeperTeam2));
         //Player kT2 = em.find(Player.class, Long.parseLong(keeperTeam2));
 
-        Long matchId = null;
+        Match newMatch = null;
 
         if (Matchtype.REGULAR.toString().equals(matchType)){
 
@@ -136,7 +120,7 @@ public class MatchController {
                 return getStateAndValidation(em, season, matchType, keeperTeam1, keeperTeam2, strikerTeam1, strikerTeam2);
             }
 
-            matchId = matchService.createMatch(kT1,sT1,kT2,sT2,s);
+            newMatch = matchService.createMatch(kT1,sT1,kT2,sT2,s);
         }
         else {
             if (Matchtype.DEATH_MATCH.toString().equals(matchType)){
@@ -144,7 +128,7 @@ public class MatchController {
                 if(playersValid == false){
                     return getStateAndValidation(em, season, matchType, keeperTeam1, keeperTeam2, strikerTeam1, strikerTeam2);
                 }
-                matchId = matchService.createMatch(kT1, kT2, Matchtype.DEATH_MATCH, s);
+                newMatch = matchService.createMatch(kT1, kT2, Matchtype.DEATH_MATCH, s);
             }
             else if(Matchtype.DEATH_MATCH_BO3.toString().equals(matchType))
             {
@@ -152,11 +136,11 @@ public class MatchController {
                 if(playersValid == false){
                     return getStateAndValidation(em, season, matchType, keeperTeam1, keeperTeam2, strikerTeam1, strikerTeam2);
                 }
-                matchId = matchService.createMatch(kT1, kT2, Matchtype.DEATH_MATCH_BO3, s);
+                newMatch = matchService.createMatch(kT1, kT2, Matchtype.DEATH_MATCH_BO3, s);
             }
         }
 
-//        response.redirect("/match/"+matchId);
+//        response.redirect("/match/"+newMatch.getId());
         response.redirect("/match/dashboard");
         // you never get to this state because of the redirect before ... but it is necessary
         return new ModelAndView(new HashMap<>(), "views/player/new_match.vm");

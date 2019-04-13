@@ -43,7 +43,7 @@ public class Player {
     //private String nfcId;
 
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name="Player_Matches",
             joinColumns=@JoinColumn(name="player_id", referencedColumnName="id", unique = false),

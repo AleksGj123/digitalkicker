@@ -12,6 +12,7 @@ import spark.template.velocity.VelocityTemplateEngine;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.io.File;
 import java.util.HashMap;
 
 import static spark.Spark.*;
@@ -30,7 +31,7 @@ public class Start {
         System.out.println("Ich bins");
         System.setProperty("hibernate.dialect.storage_engine", "myisam");
         port(4444);
-        staticFileLocation("/static");
+        staticFiles.location("/static");
 
         webSocket("/update", WebSocketUpdateHandler.class);
 
@@ -68,13 +69,20 @@ public class Start {
             put("/finish", MatchController::finishMatch);
             put("/instant", MatchController::instantFinish);
             delete("/:id", MatchController::deleteMatch);
-            get("/dashboard", MatchController::showDashboard, velocityTemplateEngine);
             get("/list", MatchController::listMatches, velocityTemplateEngine);
             get("/new", MatchController::showNewMatchFrom, velocityTemplateEngine);
             get("/:id", MatchController::showPlayer, velocityTemplateEngine);
             /*delete("/remove",  (req, res) -> {
                 return "";
             });*/
+        });
+
+        path("/dashboard", () -> {
+            before("/*", (q, a) -> System.out.println("Dashboard ..."));
+            get("", DashboardController::showDashboard, velocityTemplateEngine);
+            get("/controller", DashboardController::showController, velocityTemplateEngine);
+            put("/controller", DashboardController::putControl);
+
         });
 
         // seasons
@@ -101,6 +109,8 @@ public class Start {
         path("/player", () -> {
             before("/*", (q, a) -> System.out.println("Player ..."));
 
+            get("/uploadImage", PlayerController::getUploadImage, velocityTemplateEngine);
+            post("/uploadImage", PlayerController::postUploadImage, velocityTemplateEngine);
             post("/new", PlayerController::createNewPlayer, velocityTemplateEngine);
             get("/list", PlayerController::listPlayers, velocityTemplateEngine);
             get("/new", PlayerController::getNewPlayerForm, velocityTemplateEngine);

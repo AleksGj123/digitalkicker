@@ -12,6 +12,13 @@ import spark.Request;
 import spark.Response;
 
 import javax.persistence.EntityManager;
+import javax.servlet.MultipartConfigElement;
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +27,7 @@ public class PlayerController {
 
     private static final FormMapping<Player> playerForm = Forms.automatic(Player.class, "player").build();
 
-    public static ModelAndView listPlayers(Request request, Response response){
+    public static ModelAndView listPlayers(Request request, Response response) {
         final EntityManager em = request.attribute("em");
         final PlayerService playerService = new PlayerService(em);
 
@@ -32,7 +39,7 @@ public class PlayerController {
         return new ModelAndView(playersMap, "views/player/players.vm");
     }
 
-    public static ModelAndView loginPlayer(Request request, Response response){
+    public static ModelAndView loginPlayer(Request request, Response response) {
         String email = request.queryParams("email").trim();
         String password = request.queryParams("password");
         final EntityManager em = request.attribute("em");
@@ -40,18 +47,17 @@ public class PlayerController {
 
         boolean login = playerService.login(email, password);
 
-        if (login == true){
+        if (login == true) {
             request.session().attribute("loggedInEmail", email);
             // login successful
-        }
-        else{
+        } else {
             // login not successful
         }
 
         return new ModelAndView(new HashMap<>(), "views/player/edit_player.vm");
     }
 
-    public static ModelAndView getNewPlayerForm(Request request, Response response){
+    public static ModelAndView getNewPlayerForm(Request request, Response response) {
         final HashMap<String, Object> map = new HashMap<>();
 
         /*FormData<Player> formData = new FormData<>(new Player(), ValidationResult.empty);
@@ -63,7 +69,7 @@ public class PlayerController {
         return new ModelAndView(map, "views/player/new_player.vm");
     }
 
-    public static ModelAndView showPlayer(Request request, Response response){
+    public static ModelAndView showPlayer(Request request, Response response) {
         final EntityManager em = request.attribute("em");
         final PlayerService playerService = new PlayerService(em);
 
@@ -82,12 +88,12 @@ public class PlayerController {
         return new ModelAndView(map, "views/player/edit_player.vm");
     }
 
-    public static ModelAndView createNewPlayer(Request request, Response response){
+    public static ModelAndView createNewPlayer(Request request, Response response) {
 
         final EntityManager em = request.attribute("em");
         final PlayerService playerService = new PlayerService(em);
 
-        final HashMap<String, Object> map  = new HashMap<>();
+        final HashMap<String, Object> map = new HashMap<>();
 
         /*RequestParams params = new ServletRequestParams(request.raw());
         FormData<Player> bind = playerForm.bind(params);
@@ -112,13 +118,12 @@ public class PlayerController {
 
         final Player player = getPlayerFromParams(request, null);
         final List<String> nullFields = player.getNullAndEmptyFields();
-        if (!nullFields.isEmpty()){
+        if (!nullFields.isEmpty()) {
             map.put(Constants.VALIDATION_EMPTY, nullFields);
         }
-        if( !player.getPassword().equals(player.getPasswordRepeat()) ){
+        if (!player.getPassword().equals(player.getPasswordRepeat())) {
             map.put(Constants.VALIDATION_NOT_EQUAL, true);
-        }
-        else{
+        } else {
             playerService.createPlayer(player);
             //response.redirect("/player/" + player.getId());
             response.redirect("/player/list");
@@ -128,7 +133,7 @@ public class PlayerController {
         return new ModelAndView(map, "views/player/new_player.vm");
     }
 
-    public static ModelAndView updatePlayer(Request request, Response response){
+    public static ModelAndView updatePlayer(Request request, Response response) {
         final EntityManager em = request.attribute("em");
         final PlayerService playerService = new PlayerService(em);
 
@@ -144,9 +149,9 @@ public class PlayerController {
     }
 
     // helper
-    private static Player getPlayerFromParams(Request request, Player player){
+    private static Player getPlayerFromParams(Request request, Player player) {
 
-        if(player == null){
+        if (player == null) {
             player = new Player();
         }
 
@@ -171,4 +176,49 @@ public class PlayerController {
         return player;
     }
 
+    public static ModelAndView getUploadImage(Request request, Response response) {
+        final EntityManager em = request.attribute("em");
+        final PlayerService playerService = new PlayerService(em);
+
+        final HashMap<String, List<Player>> playersMap = new HashMap<>();
+        List<Player> players = playerService.getPlayers();
+        players.sort(Comparator.comparing(Player::getId));
+
+        playersMap.put("players", players);
+        return new ModelAndView(playersMap, "views/player/uploadImage.vm");
+    }
+
+    public static ModelAndView postUploadImage(Request request, Response response) {
+        File uploadDir = new File("target/classes/static/uploads");
+        uploadDir.mkdir(); // create the upload directory if it doesn't exist
+
+        try {
+            Path tempFile = Files.createTempFile(uploadDir.toPath(), "", "");
+            request.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
+            InputStream input = request.raw().getPart("uploaded_file").getInputStream(); //) { // getPart needs to use same "name" as input field in form
+            Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
+
+            if (Files.size(tempFile) == 0) {
+                Files.delete(tempFile);
+            } else {
+                Path finalFile = Paths.get(uploadDir.toString()
+                        , request.queryParams("player") + ".jpg");
+                Files.copy(tempFile, finalFile, StandardCopyOption.REPLACE_EXISTING);
+                Files.delete(tempFile);
+            }
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+
+        final EntityManager em = request.attribute("em");
+        final PlayerService playerService = new PlayerService(em);
+
+        final HashMap<String, List<Player>> playersMap = new HashMap<>();
+        List<Player> players = playerService.getPlayers();
+        players.sort(Comparator.comparing(Player::getId));
+
+        playersMap.put("players", players);
+
+        return new ModelAndView(playersMap, "views/player/uploadImage.vm");
+    }
 }

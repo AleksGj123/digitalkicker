@@ -14,8 +14,10 @@ import org.json.JSONObject;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 
@@ -23,8 +25,6 @@ import java.util.stream.Collectors;
 public class WebSocketUpdateHandler {
 
     private static final Queue<Session> sessions = new ConcurrentLinkedQueue<>();
-
-    static Map<Session, String> listeners = new ConcurrentHashMap<>();
 
     @OnWebSocketConnect
     public void connected(Session session) {
@@ -49,13 +49,12 @@ public class WebSocketUpdateHandler {
         try {
             em = Start.factory.createEntityManager();
 
-
             switch (channel) {
                 case WebSocketChannels.RUNNING_EVENT:
                     processRunningEvent(message, em);
                     break;
                 case WebSocketChannels.EVENT_CONTROL:
-                    processEventControll(message, em);
+                    processEventControl(message, em);
                     break;
             }
 
@@ -66,9 +65,57 @@ public class WebSocketUpdateHandler {
         }
     }
 
-    private static void processEventControll(String message, EntityManager em) {
+    private static void processRunningEvent(String message, EntityManager em) {
         final MatchService matchService = new MatchService(em);
-        final Match currentMatch = matchService.getCurrentMatch();
+        final Optional<Match> currentMatchOpt = matchService.getCurrentMatch();
+        final Match currentMatch = currentMatchOpt.orElseGet(() -> createPrematch(em));
+
+        // only process running match event, if really did already begin
+        switch (currentMatch.getStatus()) {
+            case STARTED:
+                int g1 = currentMatch.getGoalsTeam1();
+                int g2 = currentMatch.getGoalsTeam2();
+                switch (message) {
+                    case WebSocketMessages.GOAL_1_UP:
+                        if (g1 < getMaxGoalCount(currentMatch) && g2 < getMaxGoalCount(currentMatch)) {
+                            g1++;
+                        }
+                        break;
+                    case WebSocketMessages.GOAL_1_DOWN:
+                        if (g1 > 0) {
+                            g1--;
+                        }
+                        break;
+                    case WebSocketMessages.GOAL_2_UP:
+                        if (g1 < getMaxGoalCount(currentMatch) && g2 < getMaxGoalCount(currentMatch)) {
+                            g2++;
+                        }
+                        break;
+                    case WebSocketMessages.GOAL_2_DOWN:
+                        if (g2 > 0) {
+                            g2--;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+                currentMatch.setGoalsTeam1(g1);
+                currentMatch.setGoalsTeam2(g2);
+                matchService.updateMatch(currentMatch.getId(), currentMatch.getGoalsTeam1(), currentMatch.getGoalsTeam2());
+
+                sendDataToClient(currentMatch);
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    private static void processEventControl(String message, EntityManager em) {
+        final MatchService matchService = new MatchService(em);
+        final Optional<Match> currentMatchOpt = matchService.getCurrentMatch();
+        final Match currentMatch = currentMatchOpt.orElseGet(() -> createPrematch(em));
 
         switch (currentMatch.getStatus()) {
             case PREMATCH:
@@ -77,74 +124,34 @@ public class WebSocketUpdateHandler {
             case STARTED:
                 processStarted(message, currentMatch, em);
                 break;
-            case FINISHED:
+            case CANCEL_REQUEST:
+                processCancelRequest(message, currentMatch, em);
                 break;
             default:
                 break;
         }
-    }
-
-    private static void processStarted(String message, Match currentMatch, EntityManager em) {
-        final MatchService matchService = new MatchService(em);
-        final PlayerService playerService = new PlayerService(em);
-        final Season currentSeason = getCurrentSeason(em);
-
-        switch (message) {
-            case WebSocketMessages.BTN_OK:
-
-                if (matchIsFinishable(currentMatch)) {
-
-                    matchService.finishMatch(currentMatch.getId());
-
-                    final Player startPlayer = playerService.getPlayers().stream()
-                            .sorted(Comparator.comparing(Player::getId))
-                            .findFirst()
-                            .get();
-
-                    matchService.createPreMatch(startPlayer, Matchtype.REGULAR, currentSeason);
-                    final Match newlyCurrentMatch = matchService.getCurrentMatch();
-
-                    sendDataToClient(newlyCurrentMatch);
-                }
-                break;
-            default:
-                break;
-        }
-    }
-
-    private static boolean matchIsFinishable(Match match) {
-        int g1 = match.getGoalsTeam1();
-        int g2 = match.getGoalsTeam2();
-        return g1 >= getMaxGoalCount(match) || g2 >= getMaxGoalCount(match);
-
     }
 
     private static void processPrematch(String message, Match currentMatch, EntityManager em) {
-        final MatchService matchService = new MatchService(em);
         final PlayerService playerService = new PlayerService(em);
-        final Season currentSeason = getCurrentSeason(em);
-        final List<Player> allPlayers = playerService.getSelectablePlayers(currentMatch);
+        final List<Player> selectablePlayers = playerService.getSelectablePlayers(currentMatch);
 
-        // get Player to change
-        Player isThereAnyPlayer = getCurrentPlayerToChange(currentMatch);
-
+        // get Player to change, fail safe so look for first one and create if it isn't already created
+        Player isThereAnyPlayer = getPlayerOfCurrentSlot(currentMatch);
         if (isThereAnyPlayer == null) {
             isThereAnyPlayer = playerService.getPlayers().stream()
                     .sorted(Comparator.comparing(Player::getId))
                     .findFirst()
                     .get();
-
             saveNextFreeSlot(currentMatch, isThereAnyPlayer, em);
         }
-
         final Player currentPlayerToChange = isThereAnyPlayer;
 
 
         switch (message) {
             case WebSocketMessages.BTN_NXT:
-
                 // iter player next
-                List<Player> sortedPlayers = allPlayers.stream()
+                List<Player> sortedPlayers = selectablePlayers.stream()
                         .sorted(Comparator.comparing(Player::getId))
                         .collect(Collectors.toList());
 
@@ -156,13 +163,12 @@ public class WebSocketUpdateHandler {
                 final Player nextPlayer = nextPlayerOpt.orElse(baseNextPlayer);
 
                 // set new current player
-                saveCurrentPlayerToChange(currentMatch, nextPlayer, em);
+                saveCurrentSlot(currentMatch, nextPlayer, em);
                 break;
 
             case WebSocketMessages.BTN_PRVS:
-
-                // iter player next
-                List<Player> reverseSortedPlayers = allPlayers.stream()
+                // iter player previous
+                List<Player> reverseSortedPlayers = selectablePlayers.stream()
                         .sorted(Comparator.comparing(Player::getId).reversed())
                         .collect(Collectors.toList());
 
@@ -174,14 +180,12 @@ public class WebSocketUpdateHandler {
                 final Player previousPlayer = previousPlayerOpt.orElse(basePreviousPlayer);
 
                 // set new current player
-                saveCurrentPlayerToChange(currentMatch, previousPlayer, em);
+                saveCurrentSlot(currentMatch, previousPlayer, em);
                 break;
 
             case WebSocketMessages.BTN_OK:
-
-                if (currentMatch.getKeeperTeam1() != null && currentMatch.getStrikerTeam1() != null && currentMatch.getKeeperTeam2() != null && currentMatch.getStrikerTeam2() != null) {
+                if (allPlayersSet(currentMatch)) {
                     currentMatch.setStatus(Status.STARTED);
-
                     // in any case update the match
                     em.getTransaction().begin();
                     em.merge(currentMatch);
@@ -195,22 +199,95 @@ public class WebSocketUpdateHandler {
                     saveNextFreeSlot(currentMatch, startPlayer, em);
                 }
                 break;
+
+            case WebSocketMessages.BTN_CANCEL:
+                saveCurrentSlot(currentMatch, null, em);
+                break;
+
+            default:
+                break;
         }
 
         sendDataToClient(currentMatch);
     }
 
+    private static void processStarted(String message, Match currentMatch, EntityManager em) {
+        final MatchService matchService = new MatchService(em);
+
+        switch (message) {
+            case WebSocketMessages.BTN_OK:
+
+                if (matchIsFinishable(currentMatch)) {
+                    final Optional<Match> followUp = matchService.finishMatch(currentMatch.getId());
+                    sendDataToClient(followUp.orElseGet(() -> createPrematch(em)));
+                }
+                break;
+
+            case WebSocketMessages.BTN_CANCEL:
+                if (Matchtype.REGULAR.equals(currentMatch.getMatchtype())) {
+                    currentMatch.setStatus(Status.CANCEL_REQUEST);
+                    // in any case update the match
+                    em.getTransaction().begin();
+                    em.merge(currentMatch);
+                    em.getTransaction().commit();
+                    sendDataToClient(currentMatch);
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    private static void processCancelRequest(String message, Match currentMatch, EntityManager em) {
+        final MatchService matchService = new MatchService(em);
+        switch (message) {
+            case WebSocketMessages.BTN_OK:
+                currentMatch.setStatus(Status.PREMATCH);
+                currentMatch.setGoalsTeam1(0);
+                currentMatch.setGoalsTeam2(0);
+                // in any case update the match
+                em.getTransaction().begin();
+                em.merge(currentMatch);
+                em.getTransaction().commit();
+                sendDataToClient(currentMatch);
+                break;
+
+            case WebSocketMessages.BTN_CANCEL:
+                currentMatch.setStatus(Status.STARTED);
+                // in any case update the match
+                em.getTransaction().begin();
+                em.merge(currentMatch);
+                em.getTransaction().commit();
+                sendDataToClient(currentMatch);
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    private static boolean matchIsFinishable(Match match) {
+        int g1 = match.getGoalsTeam1();
+        int g2 = match.getGoalsTeam2();
+        return Status.STARTED.equals(match.getStatus())
+                && (g1 >= getMaxGoalCount(match)
+                || g2 >= getMaxGoalCount(match));
+
+    }
+
+    private static boolean allPlayersSet(Match match) {
+        return match.getKeeperTeam1() != null
+                && match.getStrikerTeam1() != null
+                && match.getKeeperTeam2() != null
+                && match.getStrikerTeam2() != null;
+    }
+
     private static void sendDataToClient(Match currentMatch) {
-        final Player t1p1 = currentMatch.getKeeperTeam1();
-        final Player t1p2 = currentMatch.getStrikerTeam1();
-        final Player t2p1 = currentMatch.getKeeperTeam2();
-        final Player t2p2 = currentMatch.getStrikerTeam2();
-
-        final String t1p1String = t1p1 != null ? t1p1.getForename() + " (" + t1p1.getNickname() + ") " + t1p1.getSurname() : "";
-        final String t1p2String = t1p2 != null ? t1p2.getForename() + " (" + t1p2.getNickname() + ") " + t1p2.getSurname() : "";
-        final String t2p1String = t2p1 != null ? t2p1.getForename() + " (" + t2p1.getNickname() + ") " + t2p1.getSurname() : "";
-        final String t2p2String = t2p2 != null ? t2p2.getForename() + " (" + t2p2.getNickname() + ") " + t2p2.getSurname() : "";
-
+        final Player kt1 = currentMatch.getKeeperTeam1();
+        final Player st1 = currentMatch.getStrikerTeam1();
+        final Player kt2 = currentMatch.getKeeperTeam2();
+        final Player st2 = currentMatch.getStrikerTeam2();
 
         // send to websocket
         sessions.stream().filter(Session::isOpen).forEach(session -> {
@@ -219,16 +296,34 @@ public class WebSocketUpdateHandler {
                         String.valueOf(new JSONObject()
                                 .put("goalsTeam1", currentMatch.getGoalsTeam1())
                                 .put("goalsTeam2", currentMatch.getGoalsTeam2())
-                                .put("t1p1", t1p1String)
-                                .put("t1p2", t1p2String)
-                                .put("t2p1", t2p1String)
-                                .put("t2p2", t2p2String)
+                                .put("keeperTeam1", createPlayerJson(kt1))
+                                .put("strikerTeam1", createPlayerJson(st1))
+                                .put("keeperTeam2", createPlayerJson(kt2))
+                                .put("strikerTeam2", createPlayerJson(st2))
+                                .put("status", currentMatch.getStatus().toString())
+                                .put("matchtype", currentMatch.getMatchtype().name())
                         )
                 );
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
+    }
+
+    private static JSONObject createPlayerJson(Player player) {
+        if (player == null) {
+            return new JSONObject()
+                    .put("forename", "")
+                    .put("nickname", "")
+                    .put("surname", "")
+                    .put("id", "");
+        } else {
+            return new JSONObject()
+                    .put("forename", player.getForename())
+                    .put("nickname", player.getNickname())
+                    .put("surname", player.getSurname())
+                    .put("id", player.getId());
+        }
     }
 
     private static void saveNextFreeSlot(Match currentMatch, Player nextPlayer, EntityManager em) {
@@ -238,64 +333,80 @@ public class WebSocketUpdateHandler {
         } else if (currentMatch.getStrikerTeam1() == null) {
             currentMatch.setStrikerTeam1(nextPlayer);
             nextPlayer.getMatches().add(currentMatch);
-        } else if (currentMatch.getKeeperTeam2() == null) {
-            currentMatch.setKeeperTeam2(nextPlayer);
-            nextPlayer.getMatches().add(currentMatch);
         } else if (currentMatch.getStrikerTeam2() == null) {
             currentMatch.setStrikerTeam2(nextPlayer);
             nextPlayer.getMatches().add(currentMatch);
-        }
-
-        // in any case update the match
-        em.getTransaction().begin();
-        em.merge(currentMatch);
-        em.merge(nextPlayer);
-        em.getTransaction().commit();
-    }
-
-    private static void saveCurrentPlayerToChange(Match currentMatch, Player nextPlayer, EntityManager em) {
-        Player previousPlayer;
-
-        if (currentMatch.getStrikerTeam2() != null) {
-            previousPlayer = currentMatch.getStrikerTeam2();
-            previousPlayer.getMatches().remove(currentMatch);
-            currentMatch.setStrikerTeam2(nextPlayer);
-            nextPlayer.getMatches().add(currentMatch);
-        } else if (currentMatch.getKeeperTeam2() != null) {
-            previousPlayer = currentMatch.getKeeperTeam2();
-            previousPlayer.getMatches().remove(currentMatch);
+        } else if (currentMatch.getKeeperTeam2() == null) {
             currentMatch.setKeeperTeam2(nextPlayer);
             nextPlayer.getMatches().add(currentMatch);
-        } else if (currentMatch.getStrikerTeam1() != null) {
-            previousPlayer = currentMatch.getStrikerTeam1();
-            previousPlayer.getMatches().remove(currentMatch);
-            currentMatch.setStrikerTeam1(nextPlayer);
-            nextPlayer.getMatches().add(currentMatch);
-        } else {
-            previousPlayer = currentMatch.getKeeperTeam1();
-            previousPlayer.getMatches().remove(currentMatch);
-            currentMatch.setKeeperTeam1(nextPlayer);
-            nextPlayer.getMatches().add(currentMatch);
         }
 
         // in any case update the match
         em.getTransaction().begin();
         em.merge(currentMatch);
-        em.merge(previousPlayer);
         em.merge(nextPlayer);
         em.getTransaction().commit();
     }
 
-    private static Player getCurrentPlayerToChange(Match currentMatch) {
-        if (currentMatch.getStrikerTeam2() != null) {
-            return currentMatch.getStrikerTeam2();
-        } else if (currentMatch.getKeeperTeam2() != null) {
+    private static void saveCurrentSlot(Match currentMatch, Player currentPlayer, EntityManager em) {
+        Player previousPlayer = null;
+
+        if (currentMatch.getKeeperTeam2() != null) {
+            previousPlayer = currentMatch.getKeeperTeam2();
+            currentMatch.setKeeperTeam2(currentPlayer);
+        } else if (currentMatch.getStrikerTeam2() != null) {
+            previousPlayer = currentMatch.getStrikerTeam2();
+            currentMatch.setStrikerTeam2(currentPlayer);
+        } else if (currentMatch.getStrikerTeam1() != null) {
+            previousPlayer = currentMatch.getStrikerTeam1();
+            currentMatch.setStrikerTeam1(currentPlayer);
+        } else if (currentPlayer != null) {
+            // you can set the first slot but cannot unset it with the cancel button
+            previousPlayer = currentMatch.getKeeperTeam1();
+            currentMatch.setKeeperTeam1(currentPlayer);
+        }
+
+        if (previousPlayer != null) {
+            previousPlayer.getMatches().remove(currentMatch);
+        }
+        if (currentPlayer != null) {
+            currentPlayer.getMatches().add(currentMatch);
+        }
+
+        // in any case update the match
+        em.getTransaction().begin();
+        em.merge(currentMatch);
+        if (previousPlayer != null) {
+            em.merge(previousPlayer);
+        }
+        if (currentPlayer != null) {
+            em.merge(currentPlayer);
+        }
+        em.getTransaction().commit();
+    }
+
+    private static Player getPlayerOfCurrentSlot(Match currentMatch) {
+        if (currentMatch.getKeeperTeam2() != null) {
             return currentMatch.getKeeperTeam2();
+        } else if (currentMatch.getStrikerTeam2() != null) {
+            return currentMatch.getStrikerTeam2();
         } else if (currentMatch.getStrikerTeam1() != null) {
             return currentMatch.getStrikerTeam1();
         } else {
             return currentMatch.getKeeperTeam1();
         }
+    }
+
+    private static Match createPrematch(EntityManager em) {
+        final MatchService matchService = new MatchService(em);
+        final PlayerService playerService = new PlayerService(em);
+
+        final Player startPlayer = playerService.getPlayers().stream()
+                .sorted(Comparator.comparing(Player::getId))
+                .findFirst()
+                .get();
+
+        return matchService.createPreMatch(startPlayer, Matchtype.REGULAR, getCurrentSeason(em));
     }
 
     private static Season getCurrentSeason(EntityManager em) {
@@ -306,57 +417,6 @@ public class WebSocketUpdateHandler {
                 .sorted(Comparator.comparing(Season::getEndDate))
                 .skip(count - 1).findFirst().get();
         return currentSeason;
-    }
-
-    private static void processRunningEvent(String message, EntityManager em) {
-        final MatchService matchService = new MatchService(em);
-        final Match currentMatch = matchService.getCurrentMatch();
-
-        int g1 = currentMatch.getGoalsTeam1();
-        int g2 = currentMatch.getGoalsTeam2();
-        if (currentMatch.getStatus() == Status.STARTED) {
-            switch (message) {
-                case WebSocketMessages.GOAL_1_UP:
-                    if (g1 < getMaxGoalCount(currentMatch)) {
-                        g1++;
-                    }
-                    break;
-                case WebSocketMessages.GOAL_1_DOWN:
-                    if (g1 > 0) {
-                        g1--;
-                    }
-                    break;
-                case WebSocketMessages.GOAL_2_UP:
-                    if (g2 < getMaxGoalCount(currentMatch)) {
-                        g2++;
-                    }
-                    break;
-                case WebSocketMessages.GOAL_2_DOWN:
-                    if (g2 > 0) {
-                        g2--;
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        currentMatch.setGoalsTeam1(g1);
-        currentMatch.setGoalsTeam2(g2);
-        matchService.updateMatch(currentMatch.getId(), currentMatch.getGoalsTeam1(), currentMatch.getGoalsTeam2());
-
-        sessions.stream().filter(Session::isOpen).forEach(session -> {
-            try {
-                session.getRemote().sendString(
-                        String.valueOf(new JSONObject()
-                                .put("goalsTeam1", currentMatch.getGoalsTeam1())
-                                .put("goalsTeam2", currentMatch.getGoalsTeam2()))
-                );
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-
     }
 
     private static int getMaxGoalCount(Match match) {

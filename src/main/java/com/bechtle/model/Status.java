@@ -1,7 +1,7 @@
 package com.bechtle.model;
 
 public enum Status  {
-        STARTED, FINISHED, PREMATCH;
+        STARTED, FINISHED, PREMATCH, CANCEL_REQUEST;
 
         @Override
         public String toString() {

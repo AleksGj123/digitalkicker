@@ -24,7 +24,7 @@ public class Season {
     @NotEmpty
     private Date endDate;
 
-    @OneToMany(mappedBy = "season")
+    @OneToMany(mappedBy = "season", fetch = FetchType.LAZY)
     private List<Match> matches = new ArrayList<>();
 
     // ---------------- constructors ------------------

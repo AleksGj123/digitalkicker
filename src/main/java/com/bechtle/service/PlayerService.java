@@ -47,11 +47,23 @@ public class PlayerService extends Service {
 
 
     public List<Player> getSelectablePlayers(Match match) {
-        final List<Player> allPlayers = em.createQuery("select p from Player as p").getResultList();
+        final Set<Long> idSet = new HashSet<>();
+        if (match.getKeeperTeam1() != null) {
+            idSet.add(match.getKeeperTeam1().getId());
+        }
+        if (match.getStrikerTeam1() != null) {
+            idSet.add(match.getStrikerTeam1().getId());
+        }
+        if (match.getKeeperTeam2() != null) {
+            idSet.add(match.getKeeperTeam2().getId());
+        }
+        if (match.getStrikerTeam2() != null) {
+            idSet.add(match.getStrikerTeam2().getId());
+        }
 
-        return allPlayers.stream()
-                .filter(player -> !player.equals(match.getKeeperTeam1()) && !player.equals(match.getStrikerTeam1()) && !player.equals(match.getKeeperTeam2()) && !player.equals(match.getStrikerTeam2()))
-                .collect(Collectors.toList());
+        return em.createQuery("select p from Player as p where p.id not in :idList")
+                .setParameter("idList", idSet)
+                .getResultList();
     }
 
 

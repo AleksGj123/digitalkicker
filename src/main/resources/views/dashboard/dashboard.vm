@@ -1,0 +1,224 @@
+#@strippedLayout()
+
+<script>
+    $(function () {
+        var webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/update");
+        webSocket.onmessage = function (msg) {
+            updateMatch(msg);
+        };
+
+        //webSocket.onclose = function () { alert("WebSocket connection closed") };
+
+        function updateMatch(msg) {
+            var data = JSON.parse(msg.data);
+            var g1 = data.goalsTeam1;
+            var g2 = data.goalsTeam2;
+
+            var kt1 = data.keeperTeam1;
+            var st1 = data.strikerTeam1;
+            var kt2 = data.keeperTeam2;
+            var st2 = data.strikerTeam2;
+
+            var status = data.status;
+            var matchtype = data.matchtype;
+
+            $("#goalsTeam1").text(g1);
+            $("#goalsTeam2").text(g2);
+
+            updatePlayer("kt1", kt1);
+            updatePlayer("st1", st1);
+            updatePlayer("kt2", kt2);
+            updatePlayer("st2", st2);
+
+            updateStatus(status, matchtype);
+        }
+
+        function updatePlayer(id, player) {
+            $("#" + id + " .avatar").attr("src", "/uploads/" + player.id + ".jpg");
+            if (playerExists(player)) {
+                $("#" + id + " .avatar").removeClass("invisible");
+            } else {
+                $("#" + id + " .avatar").addClass("invisible");
+            }
+            $("#" + id + " .name .fore").text(player.forename);
+            $("#" + id + " .name .nick").text(player.nickname);
+            if (playerExists(player)) {
+                $("#" + id + " .name .nick").removeClass("invisible");
+            } else {
+                $("#" + id + " .name .nick").addClass("invisible");
+            }
+            $("#" + id + " .name .sur").text(player.surname);
+        }
+
+        function updateStatus(status, matchtype) {
+            console.log(matchtype);
+            switch (status) {
+                case "started":
+                    setFullOpacity();
+                    $("#messages span").text("");
+                    $("#messages img").addClass("d-none");
+                    $("#messages #" + matchtype).removeClass("d-none");
+                    $("#messages").removeClass("blink");
+                    $("#match-result").fadeTo("fast", 1);
+                    break;
+                case "prematch":
+                    calculateOpacity()
+                    $("#messages span").text("Select players");
+                    $("#messages img").addClass("d-none");
+                    $("#messages").addClass("blink");
+                    $("#match-result").fadeTo("fast", 0);
+                    break;
+                case "cancel_request":
+                    $("#messages span").text("Cancel match? Press OK to cancel");
+                    $("#messages img").addClass("d-none");
+                    $("#messages").addClass("blink");
+                    $("#match-result").fadeTo("fast", 0.5);
+                    break;
+                default:
+            }
+
+        }
+
+        function setFullOpacity() {
+            $("#kt1").fadeTo("fast", 1.0);
+            $("#st1").fadeTo("fast", 1.0);
+            $("#kt2").fadeTo("fast", 1.0);
+            $("#st2").fadeTo("fast", 1.0);
+        }
+
+        function calculateOpacity() {
+            if (!$("#kt2 .avatar").hasClass("invisible")) {
+                $("#kt2").fadeTo("fast", 1.0);
+                $("#st2").fadeTo("fast", 0.3);
+                $("#st1").fadeTo("fast", 0.3);
+                $("#kt1").fadeTo("fast", 0.3);
+            } else if (!$("#st2 .avatar").hasClass("invisible")) {
+                $("#kt2").fadeTo("fast", 1.0);
+                $("#st2").fadeTo("fast", 1.0);
+                $("#st1").fadeTo("fast", 0.3);
+                $("#kt1").fadeTo("fast", 0.3);
+            } else if (!$("#st1 .avatar").hasClass("invisible")) {
+                $("#kt2").fadeTo("fast", 1.0);
+                $("#st2").fadeTo("fast", 1.0);
+                $("#st1").fadeTo("fast", 1.0);
+                $("#kt1").fadeTo("fast", 0.3);
+            } else {
+                $("#kt2").fadeTo("fast", 1.0);
+                $("#st2").fadeTo("fast", 1.0);
+                $("#st1").fadeTo("fast", 1.0);
+                $("#kt1").fadeTo("fast", 1.0);
+            }
+        }
+
+        function playerExists(player) {
+            return player && (player.forename || player.surname || player.nickname)
+        }
+
+        updateStatus("$match.status", "$matchtype");
+    });
+</script>
+
+<div class="background-container">
+    <div class="white-tile"></div>
+</div>
+
+<div class="container">
+
+    <div id="messages" class="live-message text-center highlight-text">
+        <span></span>
+        <img id="REGULAR" class="d-none"
+             src="/images/creatematchimages/default.png">
+        <img id="DEATH_MATCH_BO3" class="d-none"
+             src="/images/creatematchimages/fluffy.png">
+        <img id="DEATH_MATCH" class="d-none"
+             src="/images/creatematchimages/deathmatch.png">
+    </div>
+    <div id="match-result" class="live result" style="opacity: 0;">
+        <div class="background-container">
+            <div class="white-tile"></div>
+        </div>
+        <div class="text">
+            <span id="goalsTeam2" class="goals-black">$match.goalsTeam2</span> <span class="highlight-text">:</span> <span id="goalsTeam1"
+                                                                                                                           class="goals-white">$match.goalsTeam1</span>
+        </div>
+    </div>
+    <div class="team black">
+        <div class="live-player" id="kt2">
+            #if($match.keeperTeam2)
+                <img class="avatar" src="/uploads/${match.keeperTeam2.id}.jpg"
+                     onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
+                <div class="name">
+                    <span class="fore">$match.keeperTeam2.forename</span>
+                    <span class="nick">$match.keeperTeam2.nickname</span>
+                    <span class="sur">$match.keeperTeam2.surname</span>
+                </div>
+            #else
+                <img class="avatar invisible" src="/images/player.jpg" onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
+                <div class="name">
+                    <span class="fore"></span>
+                    <span class="nick invisible"></span>
+                    <span class="sur"></span>
+                </div>
+            #end
+        </div>
+        <div class="live-player" id="st2">
+            #if($match.strikerTeam2)
+                <img class="avatar" src="/uploads/${match.strikerTeam2.id}.jpg"
+                     onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
+                <div class="name">
+                    <span class="fore">$match.strikerTeam2.forename</span>
+                    <span class="nick">$match.strikerTeam2.nickname</span>
+                    <span class="sur">$match.strikerTeam2.surname</span>
+                </div>
+            #else
+                <img class="avatar invisible" src="/images/player.jpg" onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
+                <div class="name">
+                    <span class="fore"></span>
+                    <span class="nick invisible"></span>
+                    <span class="sur"></span>
+                </div>
+            #end
+        </div>
+    </div>
+    <img class="live-background" src="/images/table.png"/>
+    <div class="team white">
+        <div class="live-player" id="st1">
+            #if($match.strikerTeam1)
+                <img class="avatar" src="/uploads/${match.strikerTeam1.id}.jpg"
+                     onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
+                <div class="name">
+                    <span class="fore">$match.strikerTeam1.forename</span>
+                    <span class="nick">$match.strikerTeam1.nickname</span>
+                    <span class="sur">$match.strikerTeam1.surname</span>
+                </div>
+            #else
+                <img class="avatar invisible" src="/images/player.jpg" onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
+                <div class="name">
+                    <span class="fore"></span>
+                    <span class="nick invisible"></span>
+                    <span class="sur"></span>
+                </div>
+            #end
+        </div>
+        <div class="live-player" id="kt1">
+            #if($match.keeperTeam1)
+                <img class="avatar" src="/uploads/${match.keeperTeam1.id}.jpg"
+                     onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
+                <div class="name">
+                    <span class="fore">$match.keeperTeam1.forename</span>
+                    <span class="nick">$match.keeperTeam1.nickname</span>
+                    <span class="sur">$match.keeperTeam1.surname</span>
+                </div>
+            #else
+                <img class="avatar invisible" src="/images/player.jpg" onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
+                <div class="name">
+                    <span class="fore"></span>
+                    <span class="nick invisible"></span>
+                    <span class="sur"></span>
+                </div>
+            #end
+        </div>
+
+    </div>
+</div>
+#end

@@ -1,3 +1,7 @@
+.d-none {
+    display: none;
+}
+
 .result {
     font-size: 4em;
     text-align: center;
@@ -11,10 +15,10 @@
     left: 0;
     right: 0;
     margin: auto;
-    width: 800px;
-    height: 400px;
-    font-size: 20em;
-    line-height: 400px;
+    width: 100%;
+    height: 250px;
+    font-size: 16em;
+    line-height: 250px;
     z-index: 10;
     overflow: hidden;
 }
@@ -23,11 +27,14 @@
     position: absolute;
     left: 0;
     right: 0;
-    bottom: 300px;
-    height: 50px;
-    font-size: 2em;
+    top: 20px;
+    font-size: 4em;
     text-align: center;
     z-index: 10;
+}
+
+.live-message img {
+    max-width: 300px;
 }
 
 .message {
@@ -40,9 +47,15 @@
     height: 100%;
     margin: auto;
     display: block;
-    opacity: 0.5;
     z-index: 0;
     transform: rotate(-90deg);
+    margin-top: 60px;
+}
+
+.avatar {
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 50%;
 }
 
 .team {
@@ -57,18 +70,22 @@
 .team.black {
     left: 0;
     text-align: right;
-    padding-right: 450px;
+    padding-right: 400px;
+    padding-left: 100px;
 }
 
 .team.white {
     right: 0;
-    padding-left: 450px;
+    padding-left: 400px;
+    padding-right: 100px;
+    color: #202020;
 }
 
 .live-player {
     height: 50%;
-    padding-top: 33%;
+    padding-top: 30%;
     box-sizing: border-box;
+    text-align: center;
 }
 
 .live-player .name {
@@ -77,7 +94,7 @@
 }
 
 .name .nick {
-    color: gray;
+    color: gold;
     letter-spacing: 1px;
     /*text-transform: uppercase;*/
 }
@@ -85,6 +102,75 @@
 .nick:before {
     content: open-quote;
 }
+
 .nick:after {
     content: close-quote;
+}
+
+.background-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding-left: 50%;
+    overflow: hidden;
+    background-image: linear-gradient(to top right, #101010, #202020);
+}
+
+.background-container .white-tile {
+    width: 120%;
+    height: 120%;
+    margin-top: -10%;
+    background-color: #a0a0a0;
+    transform: rotate(10deg);
+    background-image: linear-gradient(to top right, #707070, #e0e0e0);
+}
+
+.result .background-container {
+    background-image: none;
+    background-color: #202020;
+    opacity: 0.9;
+}
+
+.result .background-container .white-tile {
+    background-image: none;
+    background-color: #c0c0c0;
+    margin-top: 0;
+    height: 180%;
+    margin-top: -8%;
+}
+
+.result .text {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.highlight-text {
+    color: gold;
+}
+
+.goals-black {
+    color: #c0c0c0;
+}
+
+.goals-white {
+    color: #202020;
+}
+
+@keyframes blink {
+    from {
+        opacity: 1.0;
+    }
+    to {
+        opacity: 0.2;
+    }
+}
+
+.blink {
+    animation-name: blink;
+    animation-iteration-count: infinite;
+    animation-timing-function: cubic-bezier(1.0, 0, 0, 1.0);
+    animation-duration: 800ms;
 }
