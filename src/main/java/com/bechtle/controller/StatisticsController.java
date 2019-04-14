@@ -1,6 +1,5 @@
 package com.bechtle.controller;
 
-import com.bechtle.model.Match;
 import com.bechtle.model.Player;
 import com.bechtle.service.PlayerService;
 import spark.ModelAndView;
@@ -13,7 +12,7 @@ import java.util.List;
 
 public class StatisticsController {
 
-    public static ModelAndView getStats(Request request, Response response){
+    public static ModelAndView getStats(Request request, Response response) {
         final EntityManager em = request.attribute("em");
         final PlayerService playerService = new PlayerService(em);
 
@@ -21,14 +20,11 @@ public class StatisticsController {
 
         final List<Player> players = playerService.getPlayers();
 
-        final HashMap<Player, Integer> lokList = new HashMap<>();
-        final HashMap<Player, Integer> numberOfGamesList = new HashMap<>();
+        final HashMap<Player, Long> lokList = new HashMap<>();
+        final HashMap<Player, Long> numberOfGamesList = new HashMap<>();
 
         players.stream().forEach(player -> {
-            List<Match> lostDeathmachtesForPlayer = playerService.getLostDeathmachtesForPlayer(player);
-            if (!lostDeathmachtesForPlayer.isEmpty()) {
-                lokList.put(player, lostDeathmachtesForPlayer.size());
-            }
+            lokList.put(player, (long) playerService.getLostDeathmachtesForPlayer(player).size());
             numberOfGamesList.put(player, playerService.getNumberOfPlayedGamesForPlayer(player));
         });
 

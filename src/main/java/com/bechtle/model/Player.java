@@ -42,18 +42,6 @@ public class Player {
     // field for NFC Card ID
     //private String nfcId;
 
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name="Player_Matches",
-            joinColumns=@JoinColumn(name="player_id", referencedColumnName="id", unique = false),
-            inverseJoinColumns=@JoinColumn(name="match_id", referencedColumnName="id", unique = false),
-            indexes = {
-                    @Index(name = "idx_player_matches_player_id", columnList = "player_id"),
-                    @Index(name = "idx_player_matches_match_id", columnList = "match_id")
-            })
-    private Set<Match> matches = new HashSet<>();
-
     // ---------------- constructors ------------------
 
     public Player(String forename, String surname, String email, String password, String passwordRepeat,
@@ -164,15 +152,6 @@ public class Player {
 
     public void setLokSafe(Boolean lokSafe) {
         this.lokSafe = lokSafe;
-    }
-
-    @Ignored
-    public Set<Match> getMatches() {
-        return matches;
-    }
-
-    public void addMatch(Match match){
-        matches.add(match);
     }
 
     /*

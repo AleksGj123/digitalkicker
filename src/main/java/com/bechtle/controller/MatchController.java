@@ -141,7 +141,7 @@ public class MatchController {
         }
 
 //        response.redirect("/match/"+newMatch.getId());
-        response.redirect("/match/dashboard");
+        response.redirect("/dashboard");
         // you never get to this state because of the redirect before ... but it is necessary
         return new ModelAndView(new HashMap<>(), "views/player/new_match.vm");
     }

@@ -140,7 +140,7 @@ public class WebSocketUpdateHandler {
         Player isThereAnyPlayer = getPlayerOfCurrentSlot(currentMatch);
         if (isThereAnyPlayer == null) {
             isThereAnyPlayer = playerService.getPlayers().stream()
-                    .sorted(Comparator.comparing(Player::getId))
+                    .sorted(Comparator.comparing(Player::getForename))
                     .findFirst()
                     .get();
             saveNextFreeSlot(currentMatch, isThereAnyPlayer, em);
@@ -152,11 +152,11 @@ public class WebSocketUpdateHandler {
             case WebSocketMessages.BTN_NXT:
                 // iter player next
                 List<Player> sortedPlayers = selectablePlayers.stream()
-                        .sorted(Comparator.comparing(Player::getId))
+                        .sorted(Comparator.comparing(Player::getForename))
                         .collect(Collectors.toList());
 
                 final Optional<Player> nextPlayerOpt = sortedPlayers.stream()
-                        .filter(player -> player.getId() > currentPlayerToChange.getId())
+                        .filter(player -> player.getForename().compareTo(currentPlayerToChange.getForename()) > 0)
                         .findFirst();
 
                 final Player baseNextPlayer = sortedPlayers.size() > 0 ? sortedPlayers.get(0) : currentPlayerToChange;
@@ -169,11 +169,11 @@ public class WebSocketUpdateHandler {
             case WebSocketMessages.BTN_PRVS:
                 // iter player previous
                 List<Player> reverseSortedPlayers = selectablePlayers.stream()
-                        .sorted(Comparator.comparing(Player::getId).reversed())
+                        .sorted(Comparator.comparing(Player::getForename).reversed())
                         .collect(Collectors.toList());
 
                 final Optional<Player> previousPlayerOpt = reverseSortedPlayers.stream()
-                        .filter(player -> player.getId() < currentPlayerToChange.getId())
+                        .filter(player -> player.getForename().compareTo(currentPlayerToChange.getForename()) < 0)
                         .findFirst();
 
                 final Player basePreviousPlayer = reverseSortedPlayers.size() > 0 ? reverseSortedPlayers.get(0) : currentPlayerToChange;
@@ -192,7 +192,7 @@ public class WebSocketUpdateHandler {
                     em.getTransaction().commit();
                 } else {
                     final Player startPlayer = playerService.getSelectablePlayers(currentMatch).stream()
-                            .sorted(Comparator.comparing(Player::getId))
+                            .sorted(Comparator.comparing(Player::getForename))
                             .findFirst()
                             .get();
 
@@ -329,16 +329,12 @@ public class WebSocketUpdateHandler {
     private static void saveNextFreeSlot(Match currentMatch, Player nextPlayer, EntityManager em) {
         if (currentMatch.getKeeperTeam1() == null) {
             currentMatch.setKeeperTeam1(nextPlayer);
-            nextPlayer.getMatches().add(currentMatch);
         } else if (currentMatch.getStrikerTeam1() == null) {
             currentMatch.setStrikerTeam1(nextPlayer);
-            nextPlayer.getMatches().add(currentMatch);
         } else if (currentMatch.getStrikerTeam2() == null) {
             currentMatch.setStrikerTeam2(nextPlayer);
-            nextPlayer.getMatches().add(currentMatch);
         } else if (currentMatch.getKeeperTeam2() == null) {
             currentMatch.setKeeperTeam2(nextPlayer);
-            nextPlayer.getMatches().add(currentMatch);
         }
 
         // in any case update the match
@@ -349,39 +345,20 @@ public class WebSocketUpdateHandler {
     }
 
     private static void saveCurrentSlot(Match currentMatch, Player currentPlayer, EntityManager em) {
-        Player previousPlayer = null;
-
         if (currentMatch.getKeeperTeam2() != null) {
-            previousPlayer = currentMatch.getKeeperTeam2();
             currentMatch.setKeeperTeam2(currentPlayer);
         } else if (currentMatch.getStrikerTeam2() != null) {
-            previousPlayer = currentMatch.getStrikerTeam2();
             currentMatch.setStrikerTeam2(currentPlayer);
         } else if (currentMatch.getStrikerTeam1() != null) {
-            previousPlayer = currentMatch.getStrikerTeam1();
             currentMatch.setStrikerTeam1(currentPlayer);
         } else if (currentPlayer != null) {
             // you can set the first slot but cannot unset it with the cancel button
-            previousPlayer = currentMatch.getKeeperTeam1();
             currentMatch.setKeeperTeam1(currentPlayer);
-        }
-
-        if (previousPlayer != null) {
-            previousPlayer.getMatches().remove(currentMatch);
-        }
-        if (currentPlayer != null) {
-            currentPlayer.getMatches().add(currentMatch);
         }
 
         // in any case update the match
         em.getTransaction().begin();
         em.merge(currentMatch);
-        if (previousPlayer != null) {
-            em.merge(previousPlayer);
-        }
-        if (currentPlayer != null) {
-            em.merge(currentPlayer);
-        }
         em.getTransaction().commit();
     }
 
@@ -402,7 +379,7 @@ public class WebSocketUpdateHandler {
         final PlayerService playerService = new PlayerService(em);
 
         final Player startPlayer = playerService.getPlayers().stream()
-                .sorted(Comparator.comparing(Player::getId))
+                .sorted(Comparator.comparing(Player::getForename))
                 .findFirst()
                 .get();
 

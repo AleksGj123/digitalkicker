@@ -151,20 +151,14 @@ public class PlayerService extends Service {
 
     public List<Match> getLostDeathmachtesForPlayer(Player player) {
 
-        final Set<Match> matches = player.getMatches();
-        final List<Match> lostDeatmatches = matches.stream()
-                .filter(match -> match.getMatchtype().equals(Matchtype.DEATH_MATCH))
-                .filter(match -> playerHasLost(match, player.getId()))
-                .collect(Collectors.toList());
-
-        final List<Match> lostDeatmatchesBo3 = matches.stream()
-                .filter(match -> match.getMatchtype().equals(Matchtype.DEATH_MATCH_BO3))
-                .filter(match -> playerHasLost(match, player.getId()))
-                .collect(Collectors.toList());
-
-        lostDeatmatches.addAll(lostDeatmatchesBo3);
-
-        return lostDeatmatches;
+        return em.createQuery("select m from Matches as m where m.matchtype in :matchTypes" +
+                " and (" +
+                "(m.keeperTeam1 = :playerId and m.goalsTeam1 < m.goalsTeam2)" +
+                " or (m.keeperTeam2 = :playerId and m.goalsTeam1 > m.goalsTeam2)" +
+                ")")
+                .setParameter("matchTypes", new HashSet<>(Arrays.asList(Matchtype.DEATH_MATCH, Matchtype.DEATH_MATCH_BO3)))
+                .setParameter("playerId", player)
+                .getResultList();
     }
 
     private boolean playerHasLost(Match match, long playerId) {
@@ -181,10 +175,12 @@ public class PlayerService extends Service {
         }
     }
 
-    public int getNumberOfPlayedGamesForPlayer(Player player) {
-        return player.getMatches().stream()
-                .filter(match -> match.getMatchtype() == Matchtype.REGULAR)
-                .collect(Collectors.toList()).size();
+    public long getNumberOfPlayedGamesForPlayer(Player player) {
+        return (Long) em.createQuery("select count(m) from Matches as m where m.matchtype = :matchType" +
+                " and (m.keeperTeam1 = :playerId or m.strikerTeam1 = :playerId or m.keeperTeam2 = :playerId or m.strikerTeam2 = :playerId)")
+                .setParameter("matchType", Matchtype.REGULAR)
+                .setParameter("playerId", player)
+                .getSingleResult();
     }
 
     public void updatePlayer(Player player) {

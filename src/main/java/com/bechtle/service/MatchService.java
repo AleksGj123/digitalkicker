@@ -40,35 +40,8 @@ public class MatchService extends Service {
     public boolean deleteMatch(Long matchId) {
 
         em.getTransaction().begin();
-
         final Match match = em.find(Match.class, matchId);
-        final Season season = match.getSeason();
-        final Player keeperTeam1 = match.getKeeperTeam1();
-        final Player keeperTeam2 = match.getKeeperTeam2();
-        final Player strikerTeam1 = match.getStrikerTeam1();
-        final Player strikerTeam2 = match.getStrikerTeam2();
-
-        keeperTeam1.getMatches().removeIf(m -> m.getId() == matchId);
-        keeperTeam2.getMatches().removeIf(m -> m.getId() == matchId);
-
-        season.getMatches().removeIf(m -> m.getId() == matchId);
-
-        em.merge(season);
-        em.merge(keeperTeam1);
-        em.merge(keeperTeam2);
-
-        // only relevant for death match and death match bo3
-        if (strikerTeam1 != null) {
-            strikerTeam1.getMatches().removeIf(m -> m.getId() == matchId);
-            em.merge(strikerTeam1);
-        }
-        if (strikerTeam2 != null) {
-            strikerTeam2.getMatches().removeIf(m -> m.getId() == matchId);
-            em.merge(strikerTeam2);
-        }
-
         em.remove(match);
-
         em.getTransaction().commit();
 
         return true;
@@ -121,19 +94,6 @@ public class MatchService extends Service {
         //entityManager.merge(season);
         em.persist(match);
 
-        keeperTeam1.addMatch(match);
-        //session.saveOrUpdate(keeperTeam1);
-        //entityManager.merge(keeperTeam1);
-
-        keeperTeam2.addMatch(match);
-        //entityManager.merge(keeperTeam2);
-
-        strikerTeam1.addMatch(match);
-        //entityManager.merge(strikerTeam1);
-
-        strikerTeam2.addMatch(match);
-        //entityManager.merge(strikerTeam2);
-
         em.getTransaction().commit();
         //JPAUtil.shutdown();
 
@@ -158,12 +118,6 @@ public class MatchService extends Service {
 
         em.persist(m);
 
-        player1.addMatch(m);
-        em.merge(player1);
-
-        player2.addMatch(m);
-        em.merge(player2);
-
         em.getTransaction().commit();
 
         return m;
@@ -180,9 +134,6 @@ public class MatchService extends Service {
         s.addMatch(m);
 
         em.persist(m);
-
-        startPlayer.addMatch(m);
-        em.merge(startPlayer);
 
         em.getTransaction().commit();
 
@@ -248,7 +199,7 @@ public class MatchService extends Service {
 
     private List<Player> checkIfPlayerIsLoksafe(List<Player> playerList) {
         final List<Player> playersLockSafe = playerList.stream()
-                .filter(player -> player.getLokSafe() == true)
+                .filter(player -> Boolean.TRUE.equals(player.getLokSafe()))
                 .collect(Collectors.toList());
         return playersLockSafe;
     }
@@ -262,7 +213,8 @@ public class MatchService extends Service {
     }
 
     public boolean teamIsLokSafe(Player player1, Player player2) {
-        return player1.getLokSafe() || player2.getLokSafe();
+        return Boolean.TRUE.equals(player1.getLokSafe())
+                || Boolean.TRUE.equals(player2.getLokSafe());
     }
 
 }
