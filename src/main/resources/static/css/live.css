@@ -83,7 +83,7 @@
 
 .live-player {
     height: 50%;
-    padding-top: 30%;
+    padding-top: 33%;
     box-sizing: border-box;
     text-align: center;
 }
@@ -129,7 +129,7 @@
 
 .result .background-container {
     background-image: none;
-    background-color: #202020;
+    background-color: #101010;
     opacity: 0.9;
 }
 
