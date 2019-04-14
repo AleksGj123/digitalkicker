@@ -16,7 +16,21 @@
             <ul class="nav navbar-nav navbar-right">
                 <li>
                     <div class="dropdown">
-                        <a class="menu-big-viewport" href="/player/list"><button class="dropbtn">Players</button></a>
+                        <a class="menu-big-viewport" href="/dashboard">
+                            <button class="dropbtn">Dashboard</button>
+                        </a>
+                        <button style="display: none" class="dropbtn menu-small-viewport">Dashboard</button>
+                        <div class="dropdown-content">
+                            <a class="menu-small-viewport" href="/dashboard">Show Dashboard</a>
+                            <a href="/dashboard/controller">Controller</a>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="dropdown">
+                        <a class="menu-big-viewport" href="/player/list">
+                            <button class="dropbtn">Players</button>
+                        </a>
                         <button style="display: none" class="dropbtn menu-small-viewport">Players</button>
                         <div class="dropdown-content">
                             <a class="menu-small-viewport" href="/player/list">Show players</a>
@@ -27,7 +41,9 @@
                 </li>
                 <li>
                     <div class="dropdown">
-                        <a class="menu-big-viewport" href="/match/list"><button class="dropbtn">Matches</button></a>
+                        <a class="menu-big-viewport" href="/match/list">
+                            <button class="dropbtn">Matches</button>
+                        </a>
                         <button style="display: none" class="dropbtn menu-small-viewport">Matches</button>
                         <div class="dropdown-content">
                             <a class="menu-small-viewport" href="/match/list">Show matches</a>
@@ -37,7 +53,9 @@
                 </li>
                 <li>
                     <div class="dropdown">
-                        <a class="menu-big-viewport" href="/season/list"><button class="dropbtn">Season</button></a>
+                        <a class="menu-big-viewport" href="/season/list">
+                            <button class="dropbtn">Season</button>
+                        </a>
                         <button style="display: none" class="dropbtn menu-small-viewport">Season</button>
                         <div class="dropdown-content">
                             <a class="menu-small-viewport" href="/season/list">Show seasons</a>
@@ -47,7 +65,9 @@
                 </li>
                 <li>
                     <div class="dropdown">
-                        <a class="menu-big-viewport" href="/stats"><button class="dropbtn">Statistics</button></a>
+                        <a class="menu-big-viewport" href="/stats">
+                            <button class="dropbtn">Statistics</button>
+                        </a>
                         <button style="display: none" class="dropbtn menu-small-viewport">Statistics</button>
                         <div class="dropdown-content">
                             <a class="menu-small-viewport" href="/stats">Show statistics</a>
