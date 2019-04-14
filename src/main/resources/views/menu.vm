@@ -21,6 +21,7 @@
                         <div class="dropdown-content">
                             <a class="menu-small-viewport" href="/player/list">Show players</a>
                             <a href="/player/new">New Player</a>
+                            <a href="/player/uploadImage">Upload images</a>
                         </div>
                     </div>
                 </li>

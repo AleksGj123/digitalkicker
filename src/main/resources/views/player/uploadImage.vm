@@ -10,16 +10,16 @@
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group col-md-12">
+                <div class="form-group col-md-4">
                     <select class="form-control" id="player" name="player">
                         #foreach($player in $players)
-                            <option value="$player.id">$player.forename</option>
+                            <option value="$player.id">$player.forename "$player.nickname" $player.surname</option>
                         #end
                     </select>
                 </div>
             </div>
             <div class="form-group col-md-12">
-                <input type="submit" id="buttonUpload" value="Upload"/>
+                <button type="submit" id="buttonUpload" class="btn btn-primary">Upload</button>
             </div>
         </form>
     </div>

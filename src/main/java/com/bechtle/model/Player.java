@@ -68,6 +68,18 @@ public class Player {
         this.lokSafe = true;
     }
 
+    public Player(String forename, String surname, String email, String password, String passwordRepeat, String passwordHash, String biography, String nickname, Boolean lokSafe) {
+        this.forename = forename;
+        this.surname = surname;
+        this.email = email;
+        this.password = password;
+        this.passwordRepeat = passwordRepeat;
+        this.passwordHash = passwordHash;
+        this.biography = biography;
+        this.nickname = nickname;
+        this.lokSafe = lokSafe;
+    }
+
     public Player() {
     }
 
