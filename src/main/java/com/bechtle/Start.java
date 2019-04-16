@@ -5,14 +5,15 @@ import com.bechtle.util.WebSocketUpdateHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPubSub;
+import redis.clients.jedis.exceptions.JedisConnectionException;
 import spark.ModelAndView;
 import spark.template.velocity.VelocityTemplateEngine;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import java.io.File;
 import java.util.HashMap;
 
 import static spark.Spark.*;
@@ -143,14 +144,29 @@ public class Start {
             get("", StatisticsController::getStats, velocityTemplateEngine);
         });
 
-        Jedis jSubscriber = new Jedis();
-
-        jSubscriber.psubscribe(new JedisPubSub() {
+        JedisPool jedisPool = new JedisPool();
+        JedisPubSub jedisListener = new JedisPubSub() {
             @Override
             public void onPMessage(String pattern, String channel, String message) {
                 super.onPMessage(pattern, channel, message);
                 WebSocketUpdateHandler.broadcastMessage(channel, message);
             }
-        }, "event.*");
+        };
+
+        while (true) {
+            try {
+                Jedis jedis = jedisPool.getResource();
+                jedis.psubscribe(jedisListener, "event.*");
+            } catch (JedisConnectionException ex) {
+                // sleep for 5 secs in case of an exception (network?)
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        // no code
     }
 }

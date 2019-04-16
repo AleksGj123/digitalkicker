@@ -2,10 +2,35 @@
 
 <script>
     $(function () {
-        var webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/update");
-        webSocket.onmessage = function (msg) {
-            updateMatch(msg);
-        };
+        var webSocket;
+        function connectToSocket() {
+            webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/update");
+            webSocket.onmessage = function (msg) {
+                updateMatch(msg);
+            };
+
+            webSocket.onclose = function () {
+                console.log("websockets connection closed:");
+                console.log(webSocket);
+                console.log("reconnecting websocket in 5 seconds");
+                setTimeout(function() {
+                    connectToSocket();
+                }, 3000);
+            }
+
+            webSocket.onError = function (err) {
+                console.log("some error at websocket: " + err);
+                conosle.log(webSocket);
+                webSocket.close();
+            }
+        }
+
+        connectToSocket();
+
+        window.yourws = webSocket;
+        console.log(webSocket);
+
+        webSocket.on
 
         //webSocket.onclose = function () { alert("WebSocket connection closed") };
 
@@ -115,6 +140,8 @@
         }
 
         updateStatus("$match.status", "$matchtype");
+
+        console.log($match.id);
     });
 </script>
 
