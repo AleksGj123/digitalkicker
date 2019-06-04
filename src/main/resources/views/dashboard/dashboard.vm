@@ -2,7 +2,27 @@
 
 <script>
     $(function () {
+        var mouseTimer = null, cursorVisible = true;
+
+        function disappearCursor() {
+            mouseTimer = null;
+            document.body.style.cursor = "none";
+            cursorVisible = false;
+        }
+
+        document.onmousemove = function () {
+            if (mouseTimer) {
+                window.clearTimeout(mouseTimer);
+            }
+            if (!cursorVisible) {
+                document.body.style.cursor = "default";
+                cursorVisible = true;
+            }
+            mouseTimer = window.setTimeout(disappearCursor, 500);
+        };
+
         var webSocket;
+
         function connectToSocket() {
             webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/update");
             webSocket.onmessage = function (msg) {
@@ -13,7 +33,7 @@
                 console.log("websockets connection closed:");
                 console.log(webSocket);
                 console.log("reconnecting websocket in 5 seconds");
-                setTimeout(function() {
+                setTimeout(function () {
                     connectToSocket();
                 }, 3000);
             }
