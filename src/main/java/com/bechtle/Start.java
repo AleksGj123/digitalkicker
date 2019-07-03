@@ -14,6 +14,7 @@ import spark.template.velocity.VelocityTemplateEngine;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.io.File;
 import java.util.HashMap;
 
 import static spark.Spark.*;
@@ -32,7 +33,12 @@ public class Start {
         System.out.println("Ich bins");
         System.setProperty("hibernate.dialect.storage_engine", "myisam");
         port(4444);
+
+        File uploadDir = new File("upload");
+        uploadDir.mkdir(); // create the upload directory if it doesn't exist
+
         staticFiles.location("/static");
+        staticFiles.externalLocation("upload");
 
         webSocket("/update", WebSocketUpdateHandler.class);
 

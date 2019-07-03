@@ -169,7 +169,8 @@ public class PlayerController {
     }
 
     public static ModelAndView postUploadImage(Request request, Response response) {
-        File uploadDir = new File("target/classes/static/uploads");
+//        File uploadDir = new File("target/classes/static/uploads");
+        File uploadDir = new File("upload");
         uploadDir.mkdir(); // create the upload directory if it doesn't exist
 
         try {

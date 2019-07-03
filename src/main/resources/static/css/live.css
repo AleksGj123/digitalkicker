@@ -48,13 +48,15 @@
     margin: auto;
     display: block;
     z-index: 0;
-    transform: rotate(-90deg);
+    transform: rotate(90deg);
     margin-top: 60px;
 }
 
 .avatar {
     max-width: 200px;
     max-height: 200px;
+    width: 200px;
+    height: 200px;
     border-radius: 50%;
 }
 
@@ -68,16 +70,19 @@
 }
 
 .team.black {
+    right: 0;
+    padding-left: 400px;
+    padding-right: 100px;
+}
+
+.team.white {
     left: 0;
     text-align: right;
     padding-right: 400px;
     padding-left: 100px;
 }
 
-.team.white {
-    right: 0;
-    padding-left: 400px;
-    padding-right: 100px;
+.team.white .live-player .name {
     color: #202020;
 }
 
@@ -91,6 +96,7 @@
 .live-player .name {
     font-size: 2em;
     font-family: 'Fjalla One', sans-serif;
+    color: #ccc;
 }
 
 .name .nick {
@@ -115,7 +121,8 @@
     height: 100%;
     padding-left: 50%;
     overflow: hidden;
-    background-image: linear-gradient(to top right, #101010, #202020);
+    /*background-image: linear-gradient(to top right, #101010, #202020);*/
+    background-image: linear-gradient(to top right, #707070, #e0e0e0);
 }
 
 .background-container .white-tile {
@@ -124,18 +131,21 @@
     margin-top: -10%;
     background-color: #a0a0a0;
     transform: rotate(10deg);
-    background-image: linear-gradient(to top right, #707070, #e0e0e0);
+    /*background-image: linear-gradient(to top right, #707070, #e0e0e0);*/
+    background-image: linear-gradient(to top right, #101010, #202020);
 }
 
 .result .background-container {
     background-image: none;
-    background-color: #101010;
+    /*background-color: #101010;*/
+    background-color: #c0c0c0;
     opacity: 0.9;
 }
 
 .result .background-container .white-tile {
     background-image: none;
-    background-color: #c0c0c0;
+    /*background-color: #c0c0c0;*/
+    background-color: #101010;
     margin-top: 0;
     height: 180%;
     margin-top: -8%;
@@ -152,11 +162,13 @@
 }
 
 .goals-black {
-    color: #c0c0c0;
+    /*color: #c0c0c0;*/
+    color: #202020;
 }
 
 .goals-white {
-    color: #202020;
+    /*color: #202020;*/
+    color: #c0c0c0;
 }
 
 @keyframes blink {

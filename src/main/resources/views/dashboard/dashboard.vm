@@ -79,7 +79,7 @@
         }
 
         function updatePlayer(id, player) {
-            $("#" + id + " .avatar").attr("src", "/uploads/" + player.id + ".jpg");
+            $("#" + id + " .avatar").attr("src", "" + player.id + ".jpg");
             if (playerExists(player)) {
                 $("#" + id + " .avatar").removeClass("invisible");
             } else {
@@ -162,6 +162,37 @@
         updateStatus("$match.status", "$matchtype");
 
         console.log($match.id);
+
+        window.onkeydown = function (e) {
+            var code = e.keyCode ? e.keyCode : e.which;
+            if (code === 37) {
+                postEvent("event.control", "previous");
+            } else if (code === 39) {
+                postEvent("event.control", "next");
+            } else if (code === 13) {
+                postEvent("event.control", "button_ok");
+            } else if (code === 8) {
+                postEvent("event.control", "button_cancel");
+            } else if (code === 49) {
+                postEvent("event.current", "team_1_raise");
+            } else if (code === 81) {
+                postEvent("event.current", "team_1_lower");
+            } else if (code === 50) {
+                postEvent("event.current", "team_2_raise");
+            } else if (code === 87) {
+                postEvent("event.current", "team_2_lower");
+            }
+        };
+
+        function postEvent(channel, message) {
+            $.ajax({
+                url: '/dashboard/controller',
+                type: 'PUT',
+                data: "channel=" + channel + "&message=" + message,
+                success: function (data) {
+                }
+            });
+        }
     });
 </script>
 
@@ -185,68 +216,11 @@
             <div class="white-tile"></div>
         </div>
         <div class="text">
-            <span id="goalsTeam2" class="goals-black">$match.goalsTeam2</span> <span class="highlight-text">:</span> <span id="goalsTeam1"
-                                                                                                                           class="goals-white">$match.goalsTeam1</span>
+            <span id="goalsTeam1" class="goals-black">$match.goalsTeam1</span> <span class="highlight-text">:</span> <span id="goalsTeam2"
+                                                                                                                           class="goals-white">$match.goalsTeam2</span>
         </div>
     </div>
-    <div class="team black">
-        <div class="live-player" id="kt2">
-            #if($match.keeperTeam2)
-                <img class="avatar" src="/uploads/${match.keeperTeam2.id}.jpg"
-                     onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
-                <div class="name">
-                    <span class="fore">$match.keeperTeam2.forename</span>
-                    <span class="nick">$match.keeperTeam2.nickname</span>
-                    <span class="sur">$match.keeperTeam2.surname</span>
-                </div>
-            #else
-                <img class="avatar invisible" src="/images/player.jpg" onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
-                <div class="name">
-                    <span class="fore"></span>
-                    <span class="nick invisible"></span>
-                    <span class="sur"></span>
-                </div>
-            #end
-        </div>
-        <div class="live-player" id="st2">
-            #if($match.strikerTeam2)
-                <img class="avatar" src="/uploads/${match.strikerTeam2.id}.jpg"
-                     onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
-                <div class="name">
-                    <span class="fore">$match.strikerTeam2.forename</span>
-                    <span class="nick">$match.strikerTeam2.nickname</span>
-                    <span class="sur">$match.strikerTeam2.surname</span>
-                </div>
-            #else
-                <img class="avatar invisible" src="/images/player.jpg" onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
-                <div class="name">
-                    <span class="fore"></span>
-                    <span class="nick invisible"></span>
-                    <span class="sur"></span>
-                </div>
-            #end
-        </div>
-    </div>
-    <img class="live-background" src="/images/table.png"/>
     <div class="team white">
-        <div class="live-player" id="st1">
-            #if($match.strikerTeam1)
-                <img class="avatar" src="/uploads/${match.strikerTeam1.id}.jpg"
-                     onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
-                <div class="name">
-                    <span class="fore">$match.strikerTeam1.forename</span>
-                    <span class="nick">$match.strikerTeam1.nickname</span>
-                    <span class="sur">$match.strikerTeam1.surname</span>
-                </div>
-            #else
-                <img class="avatar invisible" src="/images/player.jpg" onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
-                <div class="name">
-                    <span class="fore"></span>
-                    <span class="nick invisible"></span>
-                    <span class="sur"></span>
-                </div>
-            #end
-        </div>
         <div class="live-player" id="kt1">
             #if($match.keeperTeam1)
                 <img class="avatar" src="/uploads/${match.keeperTeam1.id}.jpg"
@@ -265,7 +239,63 @@
                 </div>
             #end
         </div>
-
+        <div class="live-player" id="st1">
+            #if($match.strikerTeam1)
+                <img class="avatar" src="/uploads/${match.strikerTeam1.id}.jpg"
+                     onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
+                <div class="name">
+                    <span class="fore">$match.strikerTeam1.forename</span>
+                    <span class="nick">$match.strikerTeam1.nickname</span>
+                    <span class="sur">$match.strikerTeam1.surname</span>
+                </div>
+            #else
+                <img class="avatar invisible" src="/images/player.jpg" onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
+                <div class="name">
+                    <span class="fore"></span>
+                    <span class="nick invisible"></span>
+                    <span class="sur"></span>
+                </div>
+            #end
+        </div>
+    </div>
+    <img class="live-background" src="/images/table.png"/>
+    <div class="team black">
+        <div class="live-player" id="st2">
+            #if($match.strikerTeam2)
+                <img class="avatar" src="/uploads/${match.strikerTeam2.id}.jpg"
+                     onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
+                <div class="name">
+                    <span class="fore">$match.strikerTeam2.forename</span>
+                    <span class="nick">$match.strikerTeam2.nickname</span>
+                    <span class="sur">$match.strikerTeam2.surname</span>
+                </div>
+            #else
+                <img class="avatar invisible" src="/images/player.jpg" onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
+                <div class="name">
+                    <span class="fore"></span>
+                    <span class="nick invisible"></span>
+                    <span class="sur"></span>
+                </div>
+            #end
+        </div>
+        <div class="live-player" id="kt2">
+            #if($match.keeperTeam2)
+                <img class="avatar" src="/uploads/${match.keeperTeam2.id}.jpg"
+                     onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
+                <div class="name">
+                    <span class="fore">$match.keeperTeam2.forename</span>
+                    <span class="nick">$match.keeperTeam2.nickname</span>
+                    <span class="sur">$match.keeperTeam2.surname</span>
+                </div>
+            #else
+                <img class="avatar invisible" src="/images/player.jpg" onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
+                <div class="name">
+                    <span class="fore"></span>
+                    <span class="nick invisible"></span>
+                    <span class="sur"></span>
+                </div>
+            #end
+        </div>
     </div>
 </div>
 #end
