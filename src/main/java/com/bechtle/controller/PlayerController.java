@@ -183,7 +183,7 @@ public class PlayerController {
                 Files.delete(tempFile);
             } else {
                 Path finalFile = Paths.get(uploadDir.toString()
-                        , request.queryParams("player") + ".jpg");
+                        , request.queryParams("player") + ".pic");
                 Files.copy(tempFile, finalFile, StandardCopyOption.REPLACE_EXISTING);
                 Files.delete(tempFile);
             }

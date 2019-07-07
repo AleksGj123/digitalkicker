@@ -154,6 +154,10 @@ public class Player {
         this.lokSafe = lokSafe;
     }
 
+    public String getWholeName() {
+        return forename + " " + surname;
+    }
+
     /*
     public void setMatches(List<Match> matches) {
         this.matches = matches;

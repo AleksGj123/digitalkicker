@@ -140,7 +140,7 @@ public class WebSocketUpdateHandler {
         Player isThereAnyPlayer = getPlayerOfCurrentSlot(currentMatch);
         if (isThereAnyPlayer == null) {
             isThereAnyPlayer = playerService.getPlayers().stream()
-                    .sorted(Comparator.comparing(Player::getForename))
+                    .sorted(Comparator.comparing(Player::getWholeName))
                     .findFirst()
                     .get();
             saveNextFreeSlot(currentMatch, isThereAnyPlayer, em);
@@ -152,11 +152,11 @@ public class WebSocketUpdateHandler {
             case WebSocketMessages.BTN_NXT:
                 // iter player next
                 List<Player> sortedPlayers = selectablePlayers.stream()
-                        .sorted(Comparator.comparing(Player::getForename))
+                        .sorted(Comparator.comparing(Player::getWholeName))
                         .collect(Collectors.toList());
 
                 final Optional<Player> nextPlayerOpt = sortedPlayers.stream()
-                        .filter(player -> player.getForename().compareTo(currentPlayerToChange.getForename()) > 0)
+                        .filter(player -> player.getWholeName().compareTo(currentPlayerToChange.getWholeName()) > 0)
                         .findFirst();
 
                 final Player baseNextPlayer = sortedPlayers.size() > 0 ? sortedPlayers.get(0) : currentPlayerToChange;
@@ -169,11 +169,11 @@ public class WebSocketUpdateHandler {
             case WebSocketMessages.BTN_PRVS:
                 // iter player previous
                 List<Player> reverseSortedPlayers = selectablePlayers.stream()
-                        .sorted(Comparator.comparing(Player::getForename).reversed())
+                        .sorted(Comparator.comparing(Player::getWholeName).reversed())
                         .collect(Collectors.toList());
 
                 final Optional<Player> previousPlayerOpt = reverseSortedPlayers.stream()
-                        .filter(player -> player.getForename().compareTo(currentPlayerToChange.getForename()) < 0)
+                        .filter(player -> player.getWholeName().compareTo(currentPlayerToChange.getWholeName()) < 0)
                         .findFirst();
 
                 final Player basePreviousPlayer = reverseSortedPlayers.size() > 0 ? reverseSortedPlayers.get(0) : currentPlayerToChange;
@@ -192,7 +192,7 @@ public class WebSocketUpdateHandler {
                     em.getTransaction().commit();
                 } else {
                     final Player startPlayer = playerService.getSelectablePlayers(currentMatch).stream()
-                            .sorted(Comparator.comparing(Player::getForename))
+                            .sorted(Comparator.comparing(Player::getWholeName))
                             .findFirst()
                             .get();
 
@@ -379,7 +379,7 @@ public class WebSocketUpdateHandler {
         final PlayerService playerService = new PlayerService(em);
 
         final Player startPlayer = playerService.getPlayers().stream()
-                .sorted(Comparator.comparing(Player::getForename))
+                .sorted(Comparator.comparing(Player::getWholeName))
                 .findFirst()
                 .get();
 

@@ -79,7 +79,7 @@
         }
 
         function updatePlayer(id, player) {
-            $("#" + id + " .avatar").attr("src", "" + player.id + ".jpg");
+            $("#" + id + " .avatar").attr("src", "" + player.id + ".pic");
             if (playerExists(player)) {
                 $("#" + id + " .avatar").removeClass("invisible");
             } else {
@@ -223,7 +223,7 @@
     <div class="team white">
         <div class="live-player" id="kt1">
             #if($match.keeperTeam1)
-                <img class="avatar" src="/uploads/${match.keeperTeam1.id}.jpg"
+                <img class="avatar" src="/${match.keeperTeam1.id}.pic"
                      onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
                 <div class="name">
                     <span class="fore">$match.keeperTeam1.forename</span>
@@ -241,7 +241,7 @@
         </div>
         <div class="live-player" id="st1">
             #if($match.strikerTeam1)
-                <img class="avatar" src="/uploads/${match.strikerTeam1.id}.jpg"
+                <img class="avatar" src="/${match.strikerTeam1.id}.pic"
                      onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
                 <div class="name">
                     <span class="fore">$match.strikerTeam1.forename</span>
@@ -262,7 +262,7 @@
     <div class="team black">
         <div class="live-player" id="st2">
             #if($match.strikerTeam2)
-                <img class="avatar" src="/uploads/${match.strikerTeam2.id}.jpg"
+                <img class="avatar" src="/${match.strikerTeam2.id}.pic"
                      onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
                 <div class="name">
                     <span class="fore">$match.strikerTeam2.forename</span>
@@ -280,7 +280,7 @@
         </div>
         <div class="live-player" id="kt2">
             #if($match.keeperTeam2)
-                <img class="avatar" src="/uploads/${match.keeperTeam2.id}.jpg"
+                <img class="avatar" src="/${match.keeperTeam2.id}.pic"
                      onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
                 <div class="name">
                     <span class="fore">$match.keeperTeam2.forename</span>
