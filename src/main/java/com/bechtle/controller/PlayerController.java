@@ -156,13 +156,18 @@ public class PlayerController {
         return player;
     }
 
+    /*
+     * ###########################################################
+     * ################ UPLOADING PLAYER PICTURES ################
+     * ###########################################################
+     */
     public static ModelAndView getUploadImage(Request request, Response response) {
         final EntityManager em = request.attribute("em");
         final PlayerService playerService = new PlayerService(em);
 
         final HashMap<String, List<Player>> playersMap = new HashMap<>();
         List<Player> players = playerService.getPlayers();
-        players.sort(Comparator.comparing(Player::getForename));
+        players.sort(Comparator.comparing(Player::getWholeName));
 
         playersMap.put("players", players);
         return new ModelAndView(playersMap, "views/player/uploadImage.vm");
@@ -194,11 +199,12 @@ public class PlayerController {
         final EntityManager em = request.attribute("em");
         final PlayerService playerService = new PlayerService(em);
 
-        final HashMap<String, List<Player>> playersMap = new HashMap<>();
+        final HashMap<String, Object> playersMap = new HashMap<>();
         List<Player> players = playerService.getPlayers();
-        players.sort(Comparator.comparing(Player::getForename));
+        players.sort(Comparator.comparing(Player::getWholeName));
 
         playersMap.put("players", players);
+        playersMap.put("selected", request.queryParams("player"));
 
         return new ModelAndView(playersMap, "views/player/uploadImage.vm");
     }

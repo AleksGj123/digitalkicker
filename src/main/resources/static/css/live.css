@@ -2,10 +2,27 @@
     display: none;
 }
 
+.fade {
+    transition: opacity .3s ease-in-out;
+}
+
 .result {
     font-size: 4em;
     text-align: center;
     vertical-align: middle;
+    opacity: 0;
+}
+
+.started .result {
+    opacity: 1;
+}
+
+.prematch .result {
+    opacity: 0;
+}
+
+.cancel_request .result {
+    opacity: 0.5;
 }
 
 .live.result {
@@ -25,16 +42,58 @@
 
 .live-message {
     position: absolute;
-    left: 0;
+    width: 90%;
+    height: 145px;
+    left: 5%;
     right: 0;
-    top: 20px;
-    font-size: 4em;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    font-size: 5em;
     text-align: center;
     z-index: 10;
+    background: rgba(80, 80, 80, 0.7);
+    border-bottom-left-radius: 50px;
+    border-bottom-right-radius: 50px;
 }
 
 .live-message img {
     max-width: 300px;
+    display: none;
+}
+
+.started.REGULAR .live-message #REGULAR {
+    display: inline;
+}
+
+.started.DEATH_MATCH_BO3 .live-message #DEATH_MATCH_BO3 {
+    display: inline;
+}
+
+.started.DEATH_MATCH .live-message #DEATH_MATCH {
+    display: inline;
+}
+
+@keyframes blink {
+    from {
+        opacity: 1.0;
+    }
+    to {
+        opacity: 0.2;
+    }
+}
+
+.prematch .live-message {
+    animation-name: blink;
+    animation-iteration-count: infinite;
+    animation-timing-function: cubic-bezier(1.0, 0, 0, 1.0);
+    animation-duration: 800ms;
+}
+
+.cancel_request .live-message {
+    animation-name: blink;
+    animation-iteration-count: infinite;
+    animation-timing-function: cubic-bezier(1.0, 0, 0, 1.0);
+    animation-duration: 800ms;
 }
 
 .message {
@@ -122,8 +181,15 @@
     padding-left: 50%;
     overflow: hidden;
     /*background-image: linear-gradient(to top right, #101010, #202020);*/
-    background-image: linear-gradient(to top right, #707070, #e0e0e0);
+    background-image: linear-gradient(to top right, #d0d0d0, #606060);
 }
+
+.container {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
 
 .background-container .white-tile {
     width: 120%;
@@ -132,14 +198,14 @@
     background-color: #a0a0a0;
     transform: rotate(10deg);
     /*background-image: linear-gradient(to top right, #707070, #e0e0e0);*/
-    background-image: linear-gradient(to top right, #101010, #202020);
+    background-image: linear-gradient(to top right, #272727, #000000);
 }
 
 .result .background-container {
     background-image: none;
     /*background-color: #101010;*/
     background-color: #c0c0c0;
-    opacity: 0.9;
+    opacity: 0.95;
 }
 
 .result .background-container .white-tile {
@@ -164,25 +230,11 @@
 .goals-black {
     /*color: #c0c0c0;*/
     color: #202020;
+    opacity: 1;
 }
 
 .goals-white {
     /*color: #202020;*/
     color: #c0c0c0;
-}
-
-@keyframes blink {
-    from {
-        opacity: 1.0;
-    }
-    to {
-        opacity: 0.2;
-    }
-}
-
-.blink {
-    animation-name: blink;
-    animation-iteration-count: infinite;
-    animation-timing-function: cubic-bezier(1.0, 0, 0, 1.0);
-    animation-duration: 800ms;
+    opacity: 1;
 }

@@ -20,14 +20,14 @@
         <form action="/player/uploadImage" method="post" enctype="multipart/form-data">
             <div class="form-row">
                 <div class="form-group col-md-12">
-                    <input type='file' name='uploaded_file' accept='.jpg,.jpeg,.gif,.png'>
+                    <input type='file' name='uploaded_file' accept='.jpg,.jpeg,.gif,.png,.webp'>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <select class="form-control" id="player" name="player">
                         #foreach($player in $players)
-                            <option value="$player.id">$player.forename "$player.nickname" $player.surname</option>
+                            <option value="$player.id" #if($player.id == $selected)selected#{end}>$player.forename "$player.nickname" $player.surname</option>
                         #end
                     </select>
                 </div>
@@ -39,7 +39,7 @@
 
     </div>
     <div class="row">
-        <img class="avatar" src="/${players.get(0).id}.pic"
+        <img class="avatar" src="/#if($selected)$selected#{else}$players.get(0).id#{end}.pic"
              onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
     </div>
 </div>
