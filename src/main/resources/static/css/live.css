@@ -13,7 +13,9 @@
     opacity: 0;
 }
 
-.started .result {
+.started .result,
+.rematch_yes .result,
+.rematch_no .result {
     opacity: 1;
 }
 
@@ -43,11 +45,11 @@
 .live-message {
     position: absolute;
     width: 90%;
-    height: 145px;
+    height: 125px;
     left: 5%;
     right: 0;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     font-size: 5em;
     text-align: center;
     z-index: 10;
@@ -233,8 +235,22 @@
     opacity: 1;
 }
 
+.rematch_yes .goals-black {
+    opacity: 0.1;
+}
+.rematch_no .goals-black {
+    opacity: 1;
+}
+
 .goals-white {
     /*color: #202020;*/
     color: #c0c0c0;
     opacity: 1;
+}
+
+.rematch_yes .goals-white {
+    opacity: 1;
+}
+.rematch_no .goals-white {
+    opacity: 0.1;
 }

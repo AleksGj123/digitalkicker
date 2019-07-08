@@ -26,7 +26,13 @@ public class MatchService extends Service {
     }
 
     public Optional<Match> getCurrentMatch() {
-        final List<Match> activeMatches = em.createQuery("select m from Matches as m where m.status != 1").getResultList();
+        final List<Match> activeMatches = em.createQuery("select m from Matches as m where m.status != 1 order by m.id asc").getResultList();
+        Optional<Match> first = activeMatches.stream().findFirst();
+        return first;
+    }
+
+    public Optional<Match> getLastRegularMatch() {
+        final List<Match> activeMatches = em.createQuery("select m from Matches as m where m.matchtype = 'R' order by m.id desc").getResultList();
         Optional<Match> first = activeMatches.stream().findFirst();
         return first;
     }
@@ -165,6 +171,7 @@ public class MatchService extends Service {
         final Match match = em.find(Match.class, matchId);
         final int goalsTeam1 = match.getGoalsTeam1();
         final int goalsTeam2 = match.getGoalsTeam2();
+        final Status previousStatus = match.getStatus();
 
         Optional<Match> followUpMatch = Optional.empty();
 
@@ -181,9 +188,17 @@ public class MatchService extends Service {
                     match.setStatus(Status.FINISHED);
                     // -- check if Deathmatch is necessary --
                     if (goalsTeam1 == 0) {
-                        followUpMatch = Optional.of(createFollowUpGame(match, match.getKeeperTeam1(), match.getStrikerTeam1()));
+                        followUpMatch = Optional.of(createFollowUpGame(
+                                match.getSeason(),
+                                match.getKeeperTeam1(),
+                                match.getStrikerTeam1()
+                        ));
                     } else if (goalsTeam2 == 0) {
-                        followUpMatch = Optional.of(createFollowUpGame(match, match.getKeeperTeam2(), match.getStrikerTeam2()));
+                        followUpMatch = Optional.of(createFollowUpGame(
+                                match.getSeason(),
+                                match.getKeeperTeam2(),
+                                match.getStrikerTeam2()
+                        ));
                     }
                 }
                 break;
@@ -204,11 +219,11 @@ public class MatchService extends Service {
         return playersLockSafe;
     }
 
-    private Match createFollowUpGame(Match match, Player player1, Player player2) {
+    private Match createFollowUpGame(Season season, Player player1, Player player2) {
         if (this.teamIsLokSafe(player1, player2)) {
-            return createMatch(player1, player2, DEATH_MATCH_BO3, match.getSeason());
+            return createMatch(player1, player2, DEATH_MATCH_BO3, season);
         } else {
-            return createMatch(player1, player2, DEATH_MATCH, match.getSeason());
+            return createMatch(player1, player2, DEATH_MATCH, season);
         }
     }
 

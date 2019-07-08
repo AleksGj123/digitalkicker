@@ -127,6 +127,10 @@ public class WebSocketUpdateHandler {
             case CANCEL_REQUEST:
                 processCancelRequest(message, currentMatch, em);
                 break;
+            case REMATCH_YES:
+            case REMATCH_NO:
+                processRematch(message, currentMatch, em);
+                break;
             default:
                 break;
         }
@@ -216,10 +220,18 @@ public class WebSocketUpdateHandler {
 
         switch (message) {
             case WebSocketMessages.BTN_OK:
-
                 if (matchIsFinishable(currentMatch)) {
                     final Optional<Match> followUp = matchService.finishMatch(currentMatch.getId());
-                    sendDataToClient(followUp.orElseGet(() -> createPrematch(em)));
+                    if (followUp.isPresent()) {
+                        sendDataToClient(followUp.get());
+                    } else {
+                        currentMatch.setStatus(Status.REMATCH_NO);
+                        // in any case update the match
+                        em.getTransaction().begin();
+                        em.merge(currentMatch);
+                        em.getTransaction().commit();
+                        sendDataToClient(currentMatch);
+                    }
                 }
                 break;
 
@@ -239,8 +251,51 @@ public class WebSocketUpdateHandler {
         }
     }
 
-    private static void processCancelRequest(String message, Match currentMatch, EntityManager em) {
+    private static void processRematch(String message, Match currentMatch, EntityManager em) {
         final MatchService matchService = new MatchService(em);
+
+        switch (message) {
+            case WebSocketMessages.BTN_NXT:
+            case WebSocketMessages.BTN_PRVS:
+                if (Status.REMATCH_YES.equals(currentMatch.getStatus())) {
+                    currentMatch.setStatus(Status.REMATCH_NO);
+                } else {
+                    currentMatch.setStatus(Status.REMATCH_YES);
+                }
+                // in any case update the match
+                em.getTransaction().begin();
+                em.merge(currentMatch);
+                em.getTransaction().commit();
+                sendDataToClient(currentMatch);
+                break;
+
+            case WebSocketMessages.BTN_OK:
+                if (Status.REMATCH_YES.equals(currentMatch.getStatus())) {
+                    final Optional<Match> followUp = matchService.finishMatch(currentMatch.getId());
+                    sendDataToClient(followUp.orElseGet(() -> createRematch(em)));
+                } else {
+                    final Optional<Match> followUp = matchService.finishMatch(currentMatch.getId());
+                    sendDataToClient(followUp.orElseGet(() -> createPrematch(em)));
+                }
+                break;
+
+            case WebSocketMessages.BTN_CANCEL:
+                if (Matchtype.REGULAR.equals(currentMatch.getMatchtype())) {
+                    currentMatch.setStatus(Status.STARTED);
+                    // in any case update the match
+                    em.getTransaction().begin();
+                    em.merge(currentMatch);
+                    em.getTransaction().commit();
+                    sendDataToClient(currentMatch);
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    private static void processCancelRequest(String message, Match currentMatch, EntityManager em) {
         switch (message) {
             case WebSocketMessages.BTN_OK:
                 currentMatch.setStatus(Status.PREMATCH);
@@ -384,6 +439,19 @@ public class WebSocketUpdateHandler {
                 .get();
 
         return matchService.createPreMatch(startPlayer, Matchtype.REGULAR, getCurrentSeason(em));
+    }
+
+    private static Match createRematch(EntityManager em) {
+        final MatchService matchService = new MatchService(em);
+        final Optional<Match> lastRegularMatchOption = matchService.getLastRegularMatch();
+
+        return lastRegularMatchOption.map(lastReqularMatch -> matchService.createMatch(
+                lastReqularMatch.getKeeperTeam1(),
+                lastReqularMatch.getStrikerTeam1(),
+                lastReqularMatch.getKeeperTeam2(),
+                lastReqularMatch.getStrikerTeam2(),
+                getCurrentSeason(em)
+        )).orElseGet(() -> createPrematch(em));
     }
 
     private static Season getCurrentSeason(EntityManager em) {

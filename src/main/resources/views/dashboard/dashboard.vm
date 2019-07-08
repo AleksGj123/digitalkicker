@@ -109,12 +109,16 @@
                     $("#messages span").text("Cancel match? Press OK to cancel");
                     break;
                 case "rematch_no":
-                    $("#goalsTeam1").text("No").css("opacity", 1);
-                    $("#goalsTeam2").text("Yes").css("opacity", 0.1);
+                    setFullOpacity();
+                    $("#messages span").text("Rematch?");
+                    $("#goalsTeam1").text("No");
+                    $("#goalsTeam2").text("Yes");
                     break;
                 case "rematch_yes":
-                    $("#goalsTeam1").text("No").css("opacity", 0.1);
-                    $("#goalsTeam2").text("Yes").css("opacity", 1);
+                    setFullOpacity();
+                    $("#messages span").text("Rematch?");
+                    $("#goalsTeam1").text("No");
+                    $("#goalsTeam2").text("Yes");
                     break;
                 default:
             }
