@@ -77,7 +77,7 @@ public class WebSocketUpdateHandler {
                 int g2 = currentMatch.getGoalsTeam2();
                 switch (message) {
                     case WebSocketMessages.GOAL_1_UP:
-                        if (g1 < getMaxGoalCount(currentMatch) && g2 < getMaxGoalCount(currentMatch)) {
+                        if (g1 < getSingleMaxGoalCount(currentMatch) && (g1 + g2) < getSumMaxGoalCount(currentMatch)) {
                             g1++;
                         }
                         break;
@@ -87,7 +87,7 @@ public class WebSocketUpdateHandler {
                         }
                         break;
                     case WebSocketMessages.GOAL_2_UP:
-                        if (g1 < getMaxGoalCount(currentMatch) && g2 < getMaxGoalCount(currentMatch)) {
+                        if (g2 < getSingleMaxGoalCount(currentMatch) && (g1 + g2) < getSumMaxGoalCount(currentMatch)) {
                             g2++;
                         }
                         break;
@@ -326,8 +326,8 @@ public class WebSocketUpdateHandler {
         int g1 = match.getGoalsTeam1();
         int g2 = match.getGoalsTeam2();
         return Status.STARTED.equals(match.getStatus())
-                && (g1 >= getMaxGoalCount(match)
-                || g2 >= getMaxGoalCount(match));
+                && (g1 >= getSingleMaxGoalCount(match)
+                || g2 >= getSingleMaxGoalCount(match));
 
     }
 
@@ -464,10 +464,21 @@ public class WebSocketUpdateHandler {
         return currentSeason;
     }
 
-    private static int getMaxGoalCount(Match match) {
+    private static int getSingleMaxGoalCount(Match match) {
         switch (match.getMatchtype()) {
             case REGULAR:
                 return 5;
+            case DEATH_MATCH_BO3:
+                return 2;
+            default:
+                return 1;
+        }
+    }
+
+    private static int getSumMaxGoalCount(Match match) {
+        switch (match.getMatchtype()) {
+            case REGULAR:
+                return 9;
             case DEATH_MATCH_BO3:
                 return 2;
             default:
