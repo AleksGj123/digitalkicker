@@ -112,13 +112,17 @@
                     setFullOpacity();
                     $("#messages span").text("Rematch?");
                     $("#goalsTeam1").text("No");
+                    $("#goalsTeam1").addClass("text-glow")
                     $("#goalsTeam2").text("Yes");
+                    $("#goalsTeam2").removeClass("text-glow")
                     break;
                 case "rematch_yes":
                     setFullOpacity();
                     $("#messages span").text("Rematch?");
                     $("#goalsTeam1").text("No");
+                    $("#goalsTeam1").removeClass("text-glow")
                     $("#goalsTeam2").text("Yes");
+                    $("#goalsTeam2").addClass("text-glow")
                     break;
                 default:
             }
@@ -126,33 +130,33 @@
         }
 
         function setFullOpacity() {
-            $("#kt1").css("opacity",  1.0);
-            $("#st1").css("opacity",  1.0);
-            $("#kt2").css("opacity",  1.0);
-            $("#st2").css("opacity",  1.0);
+            $("#kt1").css("opacity",  1.0).find("img").removeClass("box-glow");
+            $("#st1").css("opacity",  1.0).find("img").removeClass("box-glow");
+            $("#kt2").css("opacity",  1.0).find("img").removeClass("box-glow");
+            $("#st2").css("opacity",  1.0).find("img").removeClass("box-glow");
         }
 
         function calculateOpacity() {
             if (!$("#kt2 .avatar").hasClass("invisible")) {
-                $("#kt2").css("opacity", 1.0);
-                $("#st2").css("opacity",  0.3);
-                $("#st1").css("opacity",  0.3);
-                $("#kt1").css("opacity",  0.3);
+                $("#kt2").css("opacity", 1.0).find("img").addClass("box-glow");
+                $("#st2").css("opacity",  0.3).find("img").removeClass("box-glow");
+                $("#st1").css("opacity",  0.3).find("img").removeClass("box-glow");
+                $("#kt1").css("opacity",  0.3).find("img").removeClass("box-glow");
             } else if (!$("#st2 .avatar").hasClass("invisible")) {
-                $("#kt2").css("opacity",  1.0);
-                $("#st2").css("opacity",  1.0);
-                $("#st1").css("opacity",  0.3);
-                $("#kt1").css("opacity",  0.3);
+                $("#kt2").css("opacity",  1.0).find("img").removeClass("box-glow");
+                $("#st2").css("opacity",  1.0).find("img").addClass("box-glow");
+                $("#st1").css("opacity",  0.3).find("img").removeClass("box-glow");
+                $("#kt1").css("opacity",  0.3).find("img").removeClass("box-glow");
             } else if (!$("#st1 .avatar").hasClass("invisible")) {
-                $("#kt2").css("opacity",  1.0);
-                $("#st2").css("opacity",  1.0);
-                $("#st1").css("opacity",  1.0);
-                $("#kt1").css("opacity",  0.3);
+                $("#kt2").css("opacity",  1.0).find("img").removeClass("box-glow");
+                $("#st2").css("opacity",  1.0).find("img").removeClass("box-glow");
+                $("#st1").css("opacity",  1.0).find("img").addClass("box-glow");
+                $("#kt1").css("opacity",  0.3).find("img").removeClass("box-glow");
             } else {
-                $("#kt2").css("opacity",  1.0);
-                $("#st2").css("opacity",  1.0);
-                $("#st1").css("opacity",  1.0);
-                $("#kt1").css("opacity",  1.0);
+                $("#kt2").css("opacity",  1.0).find("img").removeClass("box-glow");
+                $("#st2").css("opacity",  1.0).find("img").removeClass("box-glow");
+                $("#st1").css("opacity",  1.0).find("img").removeClass("box-glow");
+                $("#kt1").css("opacity",  1.0).find("img").addClass("box-glow");
             }
         }
 

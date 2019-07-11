@@ -75,6 +75,44 @@
     display: inline;
 }
 
+@keyframes text-glow {
+    0% {
+        text-shadow: 0px 0px 3px gold;
+    }
+    50% {
+        text-shadow: 0px 0px 30px gold;
+    }
+    100% {
+        text-shadow: 0px 0px 3px gold;
+    }
+}
+
+.text-glow {
+    animation-name: text-glow;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease;
+    animation-duration: 800ms;
+}
+
+@keyframes box-glow {
+    0% {
+        box-shadow: 0px 0px 3px gold;
+    }
+    50% {
+        box-shadow: 0px 0px 30px gold;
+    }
+    100% {
+        box-shadow: 0px 0px 3px gold;
+    }
+}
+
+.box-glow {
+    animation-name: box-glow;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease;
+    animation-duration: 800ms;
+}
+
 @keyframes blink {
     from {
         opacity: 1.0;
