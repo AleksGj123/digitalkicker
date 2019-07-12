@@ -232,7 +232,7 @@
 
 .background-container .white-tile {
     width: 120%;
-    height: 120%;
+    height: 122%;
     margin-top: -10%;
     background-color: #a0a0a0;
     transform: rotate(10deg);
@@ -252,7 +252,7 @@
     /*background-color: #c0c0c0;*/
     background-color: #1a1a1a;
     margin-top: 0;
-    height: 180%;
+    height: 200%;
     margin-top: -8%;
 }
 
