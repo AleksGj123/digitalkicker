@@ -161,6 +161,7 @@
         Keylistner to be able to control game by the browsers keyboard input
          */
         window.onkeydown = function (e) {
+            console.log(e)
             var code = e.keyCode ? e.keyCode : e.which;
             if (code === 37) {
                 postEvent("event.control", "previous");
@@ -178,6 +179,8 @@
                 postEvent("event.current", "team_2_raise");
             } else if (code === 87) {
                 postEvent("event.current", "team_2_lower");
+            } else if ("abcdefghijklmnopqrstuvwxyz".indexOf(e.key) != -1) {
+                postEvent("event.control", e.key);
             }
         };
 

@@ -139,6 +139,12 @@ public class WebSocketUpdateHandler {
     private static void processPrematch(String message, Match currentMatch, EntityManager em) {
         final PlayerService playerService = new PlayerService(em);
         final List<Player> selectablePlayers = playerService.getSelectablePlayers(currentMatch);
+        List<Player> sortedPlayers = selectablePlayers.stream()
+                .sorted(Comparator.comparing(Player::getWholeName))
+                .collect(Collectors.toList());
+        List<Player> reverseSortedPlayers = selectablePlayers.stream()
+                .sorted(Comparator.comparing(Player::getWholeName).reversed())
+                .collect(Collectors.toList());
 
         // get Player to change, fail safe so look for first one and create if it isn't already created
         Player isThereAnyPlayer = getPlayerOfCurrentSlot(currentMatch);
@@ -155,10 +161,6 @@ public class WebSocketUpdateHandler {
         switch (message) {
             case WebSocketMessages.BTN_NXT:
                 // iter player next
-                List<Player> sortedPlayers = selectablePlayers.stream()
-                        .sorted(Comparator.comparing(Player::getWholeName))
-                        .collect(Collectors.toList());
-
                 final Optional<Player> nextPlayerOpt = sortedPlayers.stream()
                         .filter(player -> player.getWholeName().compareTo(currentPlayerToChange.getWholeName()) > 0)
                         .findFirst();
@@ -172,10 +174,6 @@ public class WebSocketUpdateHandler {
 
             case WebSocketMessages.BTN_PRVS:
                 // iter player previous
-                List<Player> reverseSortedPlayers = selectablePlayers.stream()
-                        .sorted(Comparator.comparing(Player::getWholeName).reversed())
-                        .collect(Collectors.toList());
-
                 final Optional<Player> previousPlayerOpt = reverseSortedPlayers.stream()
                         .filter(player -> player.getWholeName().compareTo(currentPlayerToChange.getWholeName()) < 0)
                         .findFirst();
@@ -209,6 +207,21 @@ public class WebSocketUpdateHandler {
                 break;
 
             default:
+                if ("abcdefghijklmnopqrstuvwxyz".contains(message)) {
+                    final List<Player> allPlayers = selectablePlayers.subList(0, selectablePlayers.size());
+                    allPlayers.add(currentPlayerToChange);
+
+                    // iter player next
+                    final Optional<Player> searchPlayerOpt = allPlayers.stream()
+                            .sorted(Comparator.comparing(Player::getWholeName))
+                            .filter(player -> player.getWholeName().toLowerCase().startsWith(message))
+                            .findFirst();
+
+                    final Player searchPlayer = searchPlayerOpt.orElse(currentPlayerToChange);
+
+                    // set new current player
+                    saveCurrentSlot(currentMatch, searchPlayer, em);
+                }
                 break;
         }
 
