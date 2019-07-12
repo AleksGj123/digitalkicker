@@ -78,12 +78,15 @@
 @keyframes text-glow {
     0% {
         text-shadow: 0px 0px 3px gold;
+        opacity: 0.8;
     }
     50% {
         text-shadow: 0px 0px 30px gold;
+        opacity: 1;
     }
     100% {
         text-shadow: 0px 0px 3px gold;
+        opacity: 0.8;
     }
 }
 
@@ -122,14 +125,10 @@
     }
 }
 
-.prematch .live-message {
-    animation-name: blink;
-    animation-iteration-count: infinite;
-    animation-timing-function: cubic-bezier(1.0, 0, 0, 1.0);
-    animation-duration: 800ms;
-}
-
-.cancel_request .live-message {
+.prematch .live-message,
+.cancel_request .live-message,
+.rematch_yes .live-message,
+.rematch_no .live-message {
     animation-name: blink;
     animation-iteration-count: infinite;
     animation-timing-function: cubic-bezier(1.0, 0, 0, 1.0);
@@ -244,14 +243,14 @@
 .result .background-container {
     background-image: none;
     /*background-color: #101010;*/
-    background-color: #c0c0c0;
+    background-color: #bababa;
     opacity: 0.95;
 }
 
 .result .background-container .white-tile {
     background-image: none;
     /*background-color: #c0c0c0;*/
-    background-color: #101010;
+    background-color: #1a1a1a;
     margin-top: 0;
     height: 180%;
     margin-top: -8%;
@@ -271,6 +270,9 @@
     /*color: #c0c0c0;*/
     color: #202020;
     opacity: 1;
+    display: inline-block;
+    width: 40%;
+    text-align: right;
 }
 
 .rematch_yes .goals-black {
@@ -278,16 +280,27 @@
 }
 .rematch_no .goals-black {
     opacity: 1;
+    animation-name: text-glow;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease;
+    animation-duration: 800ms;
 }
 
 .goals-white {
     /*color: #202020;*/
     color: #c0c0c0;
     opacity: 1;
+    display: inline-block;
+    width: 40%;
+    text-align: left;
 }
 
 .rematch_yes .goals-white {
     opacity: 1;
+    animation-name: text-glow;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease;
+    animation-duration: 800ms;
 }
 .rematch_no .goals-white {
     opacity: 0.1;

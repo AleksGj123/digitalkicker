@@ -60,15 +60,12 @@
             var status = data.status;
             var matchtype = data.matchtype;
 
-            $("#goalsTeam1").text(g1);
-            $("#goalsTeam2").text(g2);
-
             updatePlayer("kt1", kt1);
             updatePlayer("st1", st1);
             updatePlayer("kt2", kt2);
             updatePlayer("st2", st2);
 
-            updateStatus(status, matchtype);
+            updateStatus(status, matchtype, g1, g2);
         }
 
         function updatePlayer(id, player) {
@@ -92,7 +89,7 @@
             return player && (player.forename || player.surname || player.nickname)
         }
 
-        function updateStatus(status, matchtype) {
+        function updateStatus(status, matchtype, g1, g2) {
             $("#main-container").removeClass();
             $("#main-container").addClass("container " + status + " " + matchtype);
 
@@ -100,6 +97,8 @@
                 case "started":
                     setFullOpacity();
                     $("#messages span").text("");
+                    $("#goalsTeam1").text(g1);
+                    $("#goalsTeam2").text(g2);
                     break;
                 case "prematch":
                     calculateOpacity()
@@ -112,17 +111,13 @@
                     setFullOpacity();
                     $("#messages span").text("Rematch?");
                     $("#goalsTeam1").text("No");
-                    $("#goalsTeam1").addClass("text-glow")
                     $("#goalsTeam2").text("Yes");
-                    $("#goalsTeam2").removeClass("text-glow")
                     break;
                 case "rematch_yes":
                     setFullOpacity();
                     $("#messages span").text("Rematch?");
                     $("#goalsTeam1").text("No");
-                    $("#goalsTeam1").removeClass("text-glow")
                     $("#goalsTeam2").text("Yes");
-                    $("#goalsTeam2").addClass("text-glow")
                     break;
                 default:
             }
