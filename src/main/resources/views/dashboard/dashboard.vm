@@ -69,7 +69,7 @@
         }
 
         function updatePlayer(id, player) {
-            $("#" + id + " .avatar").attr("src", "" + player.id + ".pic");
+            $("#" + id + " .avatar img").attr("src", "" + player.id + ".pic");
             if (playerExists(player)) {
                 $("#" + id + " .avatar").removeClass("invisible");
             } else {
@@ -125,33 +125,33 @@
         }
 
         function setFullOpacity() {
-            $("#kt1").css("opacity",  1.0).find("img").removeClass("box-glow");
-            $("#st1").css("opacity",  1.0).find("img").removeClass("box-glow");
-            $("#kt2").css("opacity",  1.0).find("img").removeClass("box-glow");
-            $("#st2").css("opacity",  1.0).find("img").removeClass("box-glow");
+            $("#kt1").css("opacity", 1.0).find("img").removeClass("box-glow");
+            $("#st1").css("opacity", 1.0).find("img").removeClass("box-glow");
+            $("#kt2").css("opacity", 1.0).find("img").removeClass("box-glow");
+            $("#st2").css("opacity", 1.0).find("img").removeClass("box-glow");
         }
 
         function calculateOpacity() {
             if (!$("#kt2 .avatar").hasClass("invisible")) {
                 $("#kt2").css("opacity", 1.0).find("img").addClass("box-glow");
-                $("#st2").css("opacity",  0.3).find("img").removeClass("box-glow");
-                $("#st1").css("opacity",  0.3).find("img").removeClass("box-glow");
-                $("#kt1").css("opacity",  0.3).find("img").removeClass("box-glow");
+                $("#st2").css("opacity", 0.3).find("img").removeClass("box-glow");
+                $("#st1").css("opacity", 0.3).find("img").removeClass("box-glow");
+                $("#kt1").css("opacity", 0.3).find("img").removeClass("box-glow");
             } else if (!$("#st2 .avatar").hasClass("invisible")) {
-                $("#kt2").css("opacity",  1.0).find("img").removeClass("box-glow");
-                $("#st2").css("opacity",  1.0).find("img").addClass("box-glow");
-                $("#st1").css("opacity",  0.3).find("img").removeClass("box-glow");
-                $("#kt1").css("opacity",  0.3).find("img").removeClass("box-glow");
+                $("#kt2").css("opacity", 1.0).find("img").removeClass("box-glow");
+                $("#st2").css("opacity", 1.0).find("img").addClass("box-glow");
+                $("#st1").css("opacity", 0.3).find("img").removeClass("box-glow");
+                $("#kt1").css("opacity", 0.3).find("img").removeClass("box-glow");
             } else if (!$("#st1 .avatar").hasClass("invisible")) {
-                $("#kt2").css("opacity",  1.0).find("img").removeClass("box-glow");
-                $("#st2").css("opacity",  1.0).find("img").removeClass("box-glow");
-                $("#st1").css("opacity",  1.0).find("img").addClass("box-glow");
-                $("#kt1").css("opacity",  0.3).find("img").removeClass("box-glow");
+                $("#kt2").css("opacity", 1.0).find("img").removeClass("box-glow");
+                $("#st2").css("opacity", 1.0).find("img").removeClass("box-glow");
+                $("#st1").css("opacity", 1.0).find("img").addClass("box-glow");
+                $("#kt1").css("opacity", 0.3).find("img").removeClass("box-glow");
             } else {
-                $("#kt2").css("opacity",  1.0).find("img").removeClass("box-glow");
-                $("#st2").css("opacity",  1.0).find("img").removeClass("box-glow");
-                $("#st1").css("opacity",  1.0).find("img").removeClass("box-glow");
-                $("#kt1").css("opacity",  1.0).find("img").addClass("box-glow");
+                $("#kt2").css("opacity", 1.0).find("img").removeClass("box-glow");
+                $("#st2").css("opacity", 1.0).find("img").removeClass("box-glow");
+                $("#st1").css("opacity", 1.0).find("img").removeClass("box-glow");
+                $("#kt1").css("opacity", 1.0).find("img").addClass("box-glow");
             }
         }
 
@@ -211,90 +211,107 @@
         <img id="DEATH_MATCH"
              src="/images/creatematchimages/deathmatch.png">
     </div>
-    <div id="match-result" class="live result fade"">
-        <div class="background-container">
-            <div class="white-tile"></div>
-        </div>
-        <div class="text goals">
-            <span id="goalsTeam1" class="goals-black fade">$match.goalsTeam1</span> <span class="highlight-text">:</span> <span id="goalsTeam2" class="goals-white fade">$match.goalsTeam2</span>
-        </div>
+    <div id="match-result" class="live result fade"
+    ">
+    <div class="background-container">
+        <div class="white-tile"></div>
     </div>
-    <div class="team white">
-        <div class="live-player fade" id="kt1">
-            #if($match.keeperTeam1)
-                <img class="avatar" src="/${match.keeperTeam1.id}.pic"
-                     onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
-                <div class="name">
-                    <span class="fore">$match.keeperTeam1.forename</span>
-                    <span class="nick">$match.keeperTeam1.nickname</span>
-                    <span class="sur">$match.keeperTeam1.surname</span>
-                </div>
-            #else
-                <img class="avatar invisible" src="/images/player.jpg" onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
-                <div class="name">
-                    <span class="fore"></span>
-                    <span class="nick invisible"></span>
-                    <span class="sur"></span>
-                </div>
-            #end
-        </div>
-        <div class="live-player fade" id="st1">
-            #if($match.strikerTeam1)
-                <img class="avatar" src="/${match.strikerTeam1.id}.pic"
-                     onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
-                <div class="name">
-                    <span class="fore">$match.strikerTeam1.forename</span>
-                    <span class="nick">$match.strikerTeam1.nickname</span>
-                    <span class="sur">$match.strikerTeam1.surname</span>
-                </div>
-            #else
-                <img class="avatar invisible" src="/images/player.jpg" onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
-                <div class="name">
-                    <span class="fore"></span>
-                    <span class="nick invisible"></span>
-                    <span class="sur"></span>
-                </div>
-            #end
-        </div>
+    <div class="text goals">
+        <span id="goalsTeam1" class="goals-black fade">$match.goalsTeam1</span> <span class="highlight-text">:</span> <span id="goalsTeam2"
+                                                                                                                            class="goals-white fade">$match.goalsTeam2</span>
     </div>
-    <img class="live-background" src="/images/table.png"/>
-    <div class="team black">
-        <div class="live-player fade" id="st2">
-            #if($match.strikerTeam2)
-                <img class="avatar" src="/${match.strikerTeam2.id}.pic"
+</div>
+<div class="team white">
+    <div class="live-player fade" id="kt1">
+        #if($match.keeperTeam1)
+            <div class="avatar">
+                <img src="/${match.keeperTeam1.id}.pic"
                      onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
-                <div class="name">
-                    <span class="fore">$match.strikerTeam2.forename</span>
-                    <span class="nick">$match.strikerTeam2.nickname</span>
-                    <span class="sur">$match.strikerTeam2.surname</span>
-                </div>
-            #else
-                <img class="avatar invisible" src="/images/player.jpg" onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
-                <div class="name">
-                    <span class="fore"></span>
-                    <span class="nick invisible"></span>
-                    <span class="sur"></span>
-                </div>
-            #end
-        </div>
-        <div class="live-player fade" id="kt2">
-            #if($match.keeperTeam2)
-                <img class="avatar" src="/${match.keeperTeam2.id}.pic"
+            </div>
+            <div class="name">
+                <span class="fore">$match.keeperTeam1.forename</span>
+                <span class="nick">$match.keeperTeam1.nickname</span>
+                <span class="sur">$match.keeperTeam1.surname</span>
+            </div>
+        #else
+            <div class="avatar invisible">
+                <img src="/images/player.jpg" onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
+            </div>
+            <div class="name">
+                <span class="fore"></span>
+                <span class="nick invisible"></span>
+                <span class="sur"></span>
+            </div>
+        #end
+    </div>
+    <div class="live-player fade" id="st1">
+        #if($match.strikerTeam1)
+            <div class="avatar">
+                <img src="/${match.strikerTeam1.id}.pic"
                      onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
-                <div class="name">
-                    <span class="fore">$match.keeperTeam2.forename</span>
-                    <span class="nick">$match.keeperTeam2.nickname</span>
-                    <span class="sur">$match.keeperTeam2.surname</span>
-                </div>
-            #else
-                <img class="avatar invisible" src="/images/player.jpg" onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
-                <div class="name">
-                    <span class="fore"></span>
-                    <span class="nick invisible"></span>
-                    <span class="sur"></span>
-                </div>
-            #end
-        </div>
+            </div>
+            <div class="name">
+                <span class="fore">$match.strikerTeam1.forename</span>
+                <span class="nick">$match.strikerTeam1.nickname</span>
+                <span class="sur">$match.strikerTeam1.surname</span>
+            </div>
+        #else
+            <div class="avatar invisible">
+                <img src="/images/player.jpg" onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
+            </div>
+            <div class="name">
+                <span class="fore"></span>
+                <span class="nick invisible"></span>
+                <span class="sur"></span>
+            </div>
+        #end
+    </div>
+</div>
+<img class="live-background" src="/images/table.png"/>
+<div class="team black">
+    <div class="live-player fade" id="st2">
+        #if($match.strikerTeam2)
+            <div class="avatar">
+                <img src="/${match.strikerTeam2.id}.pic"
+                     onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
+            </div>
+            <div class="name">
+                <span class="fore">$match.strikerTeam2.forename</span>
+                <span class="nick">$match.strikerTeam2.nickname</span>
+                <span class="sur">$match.strikerTeam2.surname</span>
+            </div>
+        #else
+            <div class="avatar invisible">
+                <img src="/images/player.jpg" onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
+            </div>
+            <div class="name">
+                <span class="fore"></span>
+                <span class="nick invisible"></span>
+                <span class="sur"></span>
+            </div>
+        #end
+    </div>
+    <div class="live-player fade" id="kt2">
+        #if($match.keeperTeam2)
+            <div class="avatar">
+                <img src="/${match.keeperTeam2.id}.pic"
+                     onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
+            </div>
+            <div class="name">
+                <span class="fore">$match.keeperTeam2.forename</span>
+                <span class="nick">$match.keeperTeam2.nickname</span>
+                <span class="sur">$match.keeperTeam2.surname</span>
+            </div>
+        #else
+            <div class="avatar invisible">
+                <img src="/images/player.jpg" onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
+            </div>
+            <div class="name">
+                <span class="fore"></span>
+                <span class="nick invisible"></span>
+                <span class="sur"></span>
+            </div>
+        #end
     </div>
 </div>
 #end

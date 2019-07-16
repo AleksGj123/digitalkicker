@@ -10,7 +10,7 @@
 
 
         function updatePlayer(id) {
-            $(".avatar").attr("src", "/" + id + ".pic");
+            $(".avatar img").attr("src", "/" + id + ".pic");
         }
     });
 </script>
@@ -39,8 +39,10 @@
 
     </div>
     <div class="row">
-        <img class="avatar" src="/#if($selected)$selected#{else}$players.get(0).id#{end}.pic"
-             onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
+        <div class="avatar">
+            <img src="/#if($selected)$selected#{else}$players.get(0).id#{end}.pic"
+                 onerror="if (this.src != '/images/player.jpg') this.src = '/images/player.jpg';"/>
+        </div>
     </div>
 </div>
 #end

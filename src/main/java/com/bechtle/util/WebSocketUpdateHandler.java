@@ -211,13 +211,18 @@ public class WebSocketUpdateHandler {
                     final List<Player> allPlayers = selectablePlayers.subList(0, selectablePlayers.size());
                     allPlayers.add(currentPlayerToChange);
 
-                    // iter player next
-                    final Optional<Player> searchPlayerOpt = allPlayers.stream()
+                    final List<Player> sortedSearchPlayers = allPlayers.stream()
                             .sorted(Comparator.comparing(Player::getWholeName))
                             .filter(player -> player.getWholeName().toLowerCase().startsWith(message))
+                            .collect(Collectors.toList());
+
+                    // iter player next
+                    final Optional<Player> searchNextPlayerOpt = sortedSearchPlayers.stream()
+                            .filter(player -> player.getWholeName().compareTo(currentPlayerToChange.getWholeName()) > 0)
                             .findFirst();
 
-                    final Player searchPlayer = searchPlayerOpt.orElse(currentPlayerToChange);
+                    final Player baseSearchPlayer = sortedSearchPlayers.size() > 0 ? sortedSearchPlayers.get(0) : currentPlayerToChange;
+                    final Player searchPlayer = searchNextPlayerOpt.orElse(baseSearchPlayer);
 
                     // set new current player
                     saveCurrentSlot(currentMatch, searchPlayer, em);
