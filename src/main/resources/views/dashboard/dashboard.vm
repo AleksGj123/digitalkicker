@@ -125,33 +125,33 @@
         }
 
         function setFullOpacity() {
-            $("#kt1").css("opacity", 1.0).find("img").removeClass("box-glow");
-            $("#st1").css("opacity", 1.0).find("img").removeClass("box-glow");
-            $("#kt2").css("opacity", 1.0).find("img").removeClass("box-glow");
-            $("#st2").css("opacity", 1.0).find("img").removeClass("box-glow");
+            $("#kt1").css("opacity", 1.0).find(".avatar").removeClass("box-glow");
+            $("#st1").css("opacity", 1.0).find(".avatar").removeClass("box-glow");
+            $("#kt2").css("opacity", 1.0).find(".avatar").removeClass("box-glow");
+            $("#st2").css("opacity", 1.0).find(".avatar").removeClass("box-glow");
         }
 
         function calculateOpacity() {
             if (!$("#kt2 .avatar").hasClass("invisible")) {
-                $("#kt2").css("opacity", 1.0).find("img").addClass("box-glow");
-                $("#st2").css("opacity", 0.3).find("img").removeClass("box-glow");
-                $("#st1").css("opacity", 0.3).find("img").removeClass("box-glow");
-                $("#kt1").css("opacity", 0.3).find("img").removeClass("box-glow");
+                $("#kt2").css("opacity", 1.0).find(".avatar").addClass("box-glow");
+                $("#st2").css("opacity", 0.3).find(".avatar").removeClass("box-glow");
+                $("#st1").css("opacity", 0.3).find(".avatar").removeClass("box-glow");
+                $("#kt1").css("opacity", 0.3).find(".avatar").removeClass("box-glow");
             } else if (!$("#st2 .avatar").hasClass("invisible")) {
-                $("#kt2").css("opacity", 1.0).find("img").removeClass("box-glow");
-                $("#st2").css("opacity", 1.0).find("img").addClass("box-glow");
-                $("#st1").css("opacity", 0.3).find("img").removeClass("box-glow");
-                $("#kt1").css("opacity", 0.3).find("img").removeClass("box-glow");
+                $("#kt2").css("opacity", 1.0).find(".avatar").removeClass("box-glow");
+                $("#st2").css("opacity", 1.0).find(".avatar").addClass("box-glow");
+                $("#st1").css("opacity", 0.3).find(".avatar").removeClass("box-glow");
+                $("#kt1").css("opacity", 0.3).find(".avatar").removeClass("box-glow");
             } else if (!$("#st1 .avatar").hasClass("invisible")) {
-                $("#kt2").css("opacity", 1.0).find("img").removeClass("box-glow");
-                $("#st2").css("opacity", 1.0).find("img").removeClass("box-glow");
-                $("#st1").css("opacity", 1.0).find("img").addClass("box-glow");
-                $("#kt1").css("opacity", 0.3).find("img").removeClass("box-glow");
+                $("#kt2").css("opacity", 1.0).find(".avatar").removeClass("box-glow");
+                $("#st2").css("opacity", 1.0).find(".avatar").removeClass("box-glow");
+                $("#st1").css("opacity", 1.0).find(".avatar").addClass("box-glow");
+                $("#kt1").css("opacity", 0.3).find(".avatar").removeClass("box-glow");
             } else {
-                $("#kt2").css("opacity", 1.0).find("img").removeClass("box-glow");
-                $("#st2").css("opacity", 1.0).find("img").removeClass("box-glow");
-                $("#st1").css("opacity", 1.0).find("img").removeClass("box-glow");
-                $("#kt1").css("opacity", 1.0).find("img").addClass("box-glow");
+                $("#kt2").css("opacity", 1.0).find(".avatar").removeClass("box-glow");
+                $("#st2").css("opacity", 1.0).find(".avatar").removeClass("box-glow");
+                $("#st1").css("opacity", 1.0).find(".avatar").removeClass("box-glow");
+                $("#kt1").css("opacity", 1.0).find(".avatar").addClass("box-glow");
             }
         }
 
