@@ -2,7 +2,8 @@ $(document).ready(function () {
 
     //Disable overlay for modal
     $('.modal').modal({
-        backdrop: false
+        backdrop: false,
+        show: false
     });
 
     //Hide modal for playerselection "INIT"

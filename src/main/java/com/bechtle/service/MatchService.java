@@ -21,12 +21,12 @@ public class MatchService extends Service {
     }
 
     public List<Match> getAllMatches() {
-        final List<Match> allMatches = em.createQuery("select m from Matches as m").getResultList();
+        final List<Match> allMatches = em.createQuery("select m from Matches as m order by m.id desc").getResultList();
         return allMatches;
     }
 
     public Optional<Match> getCurrentMatch() {
-        final List<Match> activeMatches = em.createQuery("select m from Matches as m where m.status != 1 order by m.id asc").getResultList();
+        final List<Match> activeMatches = em.createQuery("select m from Matches as m where m.status != 1 order by m.id desc").getResultList();
         Optional<Match> first = activeMatches.stream().findFirst();
         return first;
     }

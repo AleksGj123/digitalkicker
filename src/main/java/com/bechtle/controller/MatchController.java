@@ -19,7 +19,7 @@ public class MatchController {
 //    private static final SeasonService seasonService = new SeasonService();
 //    private static final PlayerService playerService = new PlayerService();
 
-    public static ModelAndView showPlayer(Request request, Response response){
+    public static ModelAndView showMatch(Request request, Response response){
         final String matchId = request.params(":id");
 
         final EntityManager em = request.attribute("em");
@@ -32,7 +32,6 @@ public class MatchController {
         return new ModelAndView(map, "views/match/show_match.vm");
     }
 
-
     public static ModelAndView listMatches(Request request, Response response){
         final EntityManager em = request.attribute("em");
         final MatchService matchService = new MatchService(em);
@@ -41,6 +40,22 @@ public class MatchController {
 
         final List<Match> filteredMatches = allMatches.stream()
                 .filter(match -> match.getStatus() == Status.FINISHED)
+                .collect(Collectors.toList());
+
+        final HashMap<String, List<Match>> matchesMap = new HashMap<>();
+        matchesMap.put("matches", filteredMatches);
+
+        return new ModelAndView(matchesMap, "views/match/matches.vm");
+    }
+
+    public static ModelAndView listUnfinishedMatches(Request request, Response response){
+        final EntityManager em = request.attribute("em");
+        final MatchService matchService = new MatchService(em);
+
+        final List<Match> allMatches = matchService.getAllMatches();
+
+        final List<Match> filteredMatches = allMatches.stream()
+                .filter(match -> match.getStatus() != Status.FINISHED)
                 .collect(Collectors.toList());
 
         final HashMap<String, List<Match>> matchesMap = new HashMap<>();

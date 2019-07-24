@@ -77,8 +77,9 @@ public class Start {
             put("/instant", MatchController::instantFinish);
             delete("/:id", MatchController::deleteMatch);
             get("/list", MatchController::listMatches, velocityTemplateEngine);
+            get("/unfinished", MatchController::listUnfinishedMatches, velocityTemplateEngine);
             get("/new", MatchController::showNewMatchFrom, velocityTemplateEngine);
-            get("/:id", MatchController::showPlayer, velocityTemplateEngine);
+            get("/:id", MatchController::showMatch, velocityTemplateEngine);
             /*delete("/remove",  (req, res) -> {
                 return "";
             });*/

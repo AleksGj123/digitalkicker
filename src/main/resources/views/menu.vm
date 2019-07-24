@@ -48,6 +48,7 @@
                         <div class="dropdown-content">
                             <a class="menu-small-viewport" href="/match/list">Show matches</a>
                             <a href="/match/new">New Match</a>
+                            <a href="/match/unfinished">Unfinished Matches</a>
                         </div>
                     </div>
                 </li>
