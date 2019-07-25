@@ -185,6 +185,32 @@ public class WebSocketUpdateHandler {
                 saveCurrentSlot(currentMatch, previousPlayer, em);
                 break;
 
+            case WebSocketMessages.BTN_UP:
+                // iter player next
+                final Optional<Player> upPlayerOpt = sortedPlayers.stream()
+                        .filter(player -> player.getWholeName().toLowerCase().charAt(0) > currentPlayerToChange.getWholeName().toLowerCase().charAt(0))
+                        .findFirst();
+
+                final Player baseUpPlayer = sortedPlayers.size() > 0 ? sortedPlayers.get(0) : currentPlayerToChange;
+                final Player upPlayer = upPlayerOpt.orElse(baseUpPlayer);
+
+                // set new current player
+                saveCurrentSlot(currentMatch, upPlayer, em);
+                break;
+
+            case WebSocketMessages.BTN_DOWN:
+                // iter player previous
+                final Optional<Player> downPlayerOpt = sortedPlayers.stream()
+                        .filter(player -> player.getWholeName().toLowerCase().charAt(0) < currentPlayerToChange.getWholeName().toLowerCase().charAt(0))
+                        .findFirst();
+
+                final Player baseDownPlayer = reverseSortedPlayers.size() > 0 ? reverseSortedPlayers.get(0) : currentPlayerToChange;
+                final Player downPlayer = downPlayerOpt.orElse(baseDownPlayer);
+
+                // set new current player
+                saveCurrentSlot(currentMatch, downPlayer, em);
+                break;
+
             case WebSocketMessages.BTN_OK:
                 if (allPlayersSet(currentMatch)) {
                     currentMatch.setStatus(Status.STARTED);

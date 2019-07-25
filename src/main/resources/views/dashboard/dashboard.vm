@@ -167,6 +167,10 @@
                 postEvent("event.control", "previous");
             } else if (code === 39) {
                 postEvent("event.control", "next");
+            } else if (code === 38) {
+                postEvent("event.control", "up");
+            } else if (code === 40) {
+                postEvent("event.control", "down");
             } else if (code === 13) {
                 postEvent("event.control", "button_ok");
             } else if (code === 8) {

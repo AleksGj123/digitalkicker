@@ -10,5 +10,7 @@ public class WebSocketMessages {
     public static final String BTN_CANCEL = "button_cancel";
     public static final String BTN_NXT = "next";
     public static final String BTN_PRVS = "previous";
+    public static final String BTN_UP = "up";
+    public static final String BTN_DOWN = "down";
 
 }
