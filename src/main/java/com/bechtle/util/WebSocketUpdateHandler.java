@@ -200,8 +200,9 @@ public class WebSocketUpdateHandler {
 
             case WebSocketMessages.BTN_DOWN:
                 // iter player previous
-                final Optional<Player> downPlayerOpt = sortedPlayers.stream()
+                final Optional<Player> downPlayerOpt = reverseSortedPlayers.stream()
                         .filter(player -> player.getWholeName().toLowerCase().charAt(0) < currentPlayerToChange.getWholeName().toLowerCase().charAt(0))
+                        .sorted(Comparator.comparing(Player::getWholeName))
                         .findFirst();
 
                 final Player baseDownPlayer = reverseSortedPlayers.size() > 0 ? reverseSortedPlayers.get(0) : currentPlayerToChange;
