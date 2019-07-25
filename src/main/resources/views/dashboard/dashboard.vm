@@ -59,13 +59,16 @@
 
             var status = data.status;
             var matchtype = data.matchtype;
+            var finishable = data.finishable;
+            console.log(finishable);
+            console.log(typeof finishable);
 
             updatePlayer("kt1", kt1);
             updatePlayer("st1", st1);
             updatePlayer("kt2", kt2);
             updatePlayer("st2", st2);
 
-            updateStatus(status, matchtype, g1, g2);
+            updateStatus(status, matchtype, g1, g2, finishable);
         }
 
         function updatePlayer(id, player) {
@@ -89,14 +92,21 @@
             return player && (player.forename || player.surname || player.nickname)
         }
 
-        function updateStatus(status, matchtype, g1, g2) {
+        function updateStatus(status, matchtype, g1, g2, finishable) {
             $("#main-container").removeClass();
             $("#main-container").addClass("container " + status + " " + matchtype);
+            if (finishable) {
+                $("#main-container").addClass("finishable");
+            }
 
             switch (status) {
                 case "started":
                     setFullOpacity();
-                    $("#messages span").text("");
+                    if (finishable) {
+                        $("#messages span").text("FINISH match?");
+                    } else {
+                        $("#messages span").text("");
+                    }
                     $("#goalsTeam1").text(g1);
                     $("#goalsTeam2").text(g2);
                     break;
@@ -105,7 +115,7 @@
                     $("#messages span").text("Select players");
                     break;
                 case "cancel_request":
-                    $("#messages span").text("Cancel match? Press OK to cancel");
+                    $("#messages span").text("CANCEL match? Press OK to cancel");
                     break;
                 case "rematch_no":
                     setFullOpacity();
@@ -161,7 +171,6 @@
         Keylistner to be able to control game by the browsers keyboard input
          */
         window.onkeydown = function (e) {
-            console.log(e)
             var code = e.keyCode ? e.keyCode : e.which;
             if (code === 37) {
                 postEvent("event.control", "previous");
@@ -272,6 +281,9 @@
     </div>
 </div>
 <img class="live-background" src="/images/table.png"/>
+<div class="manual_wrapper">
+    <div id="manual" class="fade"></div>
+</div>
 <div class="team black">
     <div class="live-player fade" id="st2">
         #if($match.strikerTeam2)

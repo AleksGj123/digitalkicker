@@ -200,8 +200,12 @@ public class WebSocketUpdateHandler {
 
             case WebSocketMessages.BTN_DOWN:
                 // iter player previous
-                final Optional<Player> downPlayerOpt = reverseSortedPlayers.stream()
+                final List<Player> downPreFilteredPlayers = reverseSortedPlayers.stream()
                         .filter(player -> player.getWholeName().toLowerCase().charAt(0) < currentPlayerToChange.getWholeName().toLowerCase().charAt(0))
+                        .collect(Collectors.toList());
+                final Player anyDownPlayer = downPreFilteredPlayers.stream().findFirst().orElse(currentPlayerToChange);
+                Optional<Player> downPlayerOpt = downPreFilteredPlayers.stream()
+                        .filter(player -> player.getWholeName().toLowerCase().charAt(0) == anyDownPlayer.getWholeName().toLowerCase().charAt(0))
                         .sorted(Comparator.comparing(Player::getWholeName))
                         .findFirst();
 
@@ -402,6 +406,7 @@ public class WebSocketUpdateHandler {
                                 .put("strikerTeam2", createPlayerJson(st2))
                                 .put("status", currentMatch.getStatus().toString())
                                 .put("matchtype", currentMatch.getMatchtype().name())
+                                .put("finishable", matchIsFinishable(currentMatch))
                         )
                 );
             } catch (Exception e) {

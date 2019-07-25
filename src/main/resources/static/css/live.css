@@ -75,6 +75,12 @@
     display: inline;
 }
 
+.started.finishable .live-message #REGULAR,
+.started.finishable .live-message #DEATH_MATCH_BO3,
+.started.finishable .live-message #DEATH_MATCH {
+    display: none;
+}
+
 @keyframes text-glow {
     0% {
         text-shadow: 0px 0px 3px gold;
@@ -146,6 +152,51 @@
     z-index: 0;
     transform: rotate(90deg);
     margin-top: 60px;
+}
+
+.manual_wrapper {
+    position: absolute;
+    width: 100%;
+    height: 288px;
+    left: 0;
+    bottom: 64px;
+}
+
+#manual {
+    width: 327px;
+    height: 288px;
+    margin: 0 auto;
+    border-radius: 50px;
+    background-color: rgba(80, 80, 80, 0.8);
+    opacity: 0;
+}
+
+.prematch #manual {
+    background-image: url("/images/joystick_full.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 1;
+}
+.rematch_no #manual,
+.rematch_yes #manual {
+    background-image: url("/images/joystick_small.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 1;
+}
+
+.cancel_request #manual {
+    background-image: url("/images/joystick_yesno.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 1;
+}
+
+.started.finishable #manual {
+    background-image: url("/images/joystick_yes.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 1;
 }
 
 .avatar {
