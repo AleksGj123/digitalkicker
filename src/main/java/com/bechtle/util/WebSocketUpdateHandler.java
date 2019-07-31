@@ -5,6 +5,8 @@ import com.bechtle.model.*;
 import com.bechtle.service.MatchService;
 import com.bechtle.service.PlayerService;
 import com.bechtle.service.SeasonService;
+import io.socket.client.IO;
+import io.socket.client.Socket;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
@@ -14,10 +16,7 @@ import org.json.JSONObject;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 
@@ -79,21 +78,25 @@ public class WebSocketUpdateHandler {
                     case WebSocketMessages.GOAL_1_UP:
                         if (g1 < getSingleMaxGoalCount(currentMatch) && (g1 + g2) < getSumMaxGoalCount(currentMatch)) {
                             g1++;
+                            checkPlayDrei(g1, g2);
                         }
                         break;
                     case WebSocketMessages.GOAL_1_DOWN:
                         if (g1 > 0) {
                             g1--;
+                            checkPlayDrei(g1, g2);
                         }
                         break;
                     case WebSocketMessages.GOAL_2_UP:
                         if (g2 < getSingleMaxGoalCount(currentMatch) && (g1 + g2) < getSumMaxGoalCount(currentMatch)) {
                             g2++;
+                            checkPlayDrei(g1, g2);
                         }
                         break;
                     case WebSocketMessages.GOAL_2_DOWN:
                         if (g2 > 0) {
                             g2--;
+                            checkPlayDrei(g1, g2);
                         }
                         break;
                     default:
@@ -109,6 +112,12 @@ public class WebSocketUpdateHandler {
 
             default:
                 break;
+        }
+    }
+
+    private static void checkPlayDrei(int g1, int g2) {
+        if ((g1 + g2) == 4 && (g1 == 0 || g2 == 0)) {
+            playFile("003");
         }
     }
 
@@ -185,7 +194,7 @@ public class WebSocketUpdateHandler {
                 saveCurrentSlot(currentMatch, previousPlayer, em);
                 break;
 
-            case WebSocketMessages.BTN_UP:
+            case WebSocketMessages.BTN_DOWN:
                 // iter player next
                 final Optional<Player> upPlayerOpt = sortedPlayers.stream()
                         .filter(player -> player.getWholeName().toLowerCase().charAt(0) > currentPlayerToChange.getWholeName().toLowerCase().charAt(0))
@@ -198,7 +207,7 @@ public class WebSocketUpdateHandler {
                 saveCurrentSlot(currentMatch, upPlayer, em);
                 break;
 
-            case WebSocketMessages.BTN_DOWN:
+            case WebSocketMessages.BTN_UP:
                 // iter player previous
                 final List<Player> downPreFilteredPlayers = reverseSortedPlayers.stream()
                         .filter(player -> player.getWholeName().toLowerCase().charAt(0) < currentPlayerToChange.getWholeName().toLowerCase().charAt(0))
@@ -272,6 +281,8 @@ public class WebSocketUpdateHandler {
                 if (matchIsFinishable(currentMatch)) {
                     final Optional<Match> followUp = matchService.finishMatch(currentMatch.getId());
                     if (followUp.isPresent()) {
+                        // deathmatch will follow
+                        playFile("0");
                         sendDataToClient(followUp.get());
                     } else {
                         currentMatch.setStatus(Status.REMATCH_NO);
@@ -533,6 +544,42 @@ public class WebSocketUpdateHandler {
                 return 2;
             default:
                 return 1;
+        }
+    }
+
+    private static void playFile(String number) {
+        final Map<String, String> videoMap = new HashMap<>();
+        switch (number) {
+            case "0":
+                videoMap.put("fullname", "0 Lok.mp4");
+                videoMap.put("number", "0");
+                videoMap.put("previewImageUrl", "/previews/0 Lok.png");
+                videoMap.put("animatedPreviewUrl", "/previews/0 Lok.gif");
+                break;
+            case "003":
+                videoMap.put("fullname", "003 drei.mp4");
+                videoMap.put("number", "003");
+                videoMap.put("previewImageUrl", "/previews/003 drei.png");
+                videoMap.put("animatedPreviewUrl", "previews/003 drei.gif");
+                break;
+            default:
+                break;
+        }
+
+        try {
+            final Socket socket = IO.socket("http://10.1.50.160:9001");
+            socket.on(Socket.EVENT_CONNECT, args -> {
+                JSONObject obj = new JSONObject();
+                obj.put("fullname", videoMap.get("fullname"));
+                obj.put("number", videoMap.get("number"));
+                obj.put("previewImageUrl", videoMap.get("previewImageUrl"));
+                obj.put("animatedPreviewUrl", videoMap.get("animatedPreviewUrl"));
+
+                socket.emit("queue-add", obj);
+                socket.disconnect();
+            });
+            socket.connect();
+        } catch (Exception ex) {
         }
     }
 }
