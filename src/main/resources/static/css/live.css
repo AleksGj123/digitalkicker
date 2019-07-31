@@ -6,6 +6,28 @@
     transition: opacity .3s ease-in-out;
 }
 
+.can-blur {
+    filter: blur(0px);
+    transition: filter .3s ease-in-out;
+}
+
+.prematch .background-container .white-tile.can-blur,
+.prematch .live-background.can-blur,
+.finishable .background-container .white-tile.can-blur,
+.finishable .live-background.can-blur,
+.cancel_request .background-container .white-tile.can-blur,
+.cancel_request .live-background.can-blur,
+.cancel_request .team.can-blur,
+.cancel_request .result.can-blur,
+.rematch_yes .background-container .white-tile.can-blur,
+.rematch_yes .live-background.can-blur,
+.rematch_yes .team.can-blur,
+.rematch_no .background-container .white-tile.can-blur,
+.rematch_no .live-background.can-blur,
+.rematch_no .team.can-blur {
+    filter: blur(5px);
+}
+
 .result {
     font-size: 4em;
     text-align: center;
