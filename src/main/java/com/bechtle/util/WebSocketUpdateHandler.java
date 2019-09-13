@@ -78,7 +78,7 @@ public class WebSocketUpdateHandler {
                     case WebSocketMessages.GOAL_1_UP:
                         if (g1 < getSingleMaxGoalCount(currentMatch) && (g1 + g2) < getSumMaxGoalCount(currentMatch)) {
                             g1++;
-                            checkPlaySound(g1, g2);
+                            checkPlaySound(currentMatch, g1, g2);
                         }
                         break;
                     case WebSocketMessages.GOAL_1_DOWN:
@@ -89,7 +89,7 @@ public class WebSocketUpdateHandler {
                     case WebSocketMessages.GOAL_2_UP:
                         if (g2 < getSingleMaxGoalCount(currentMatch) && (g1 + g2) < getSumMaxGoalCount(currentMatch)) {
                             g2++;
-                            checkPlaySound(g1, g2);
+                            checkPlaySound(currentMatch, g1, g2);
                         }
                         break;
                     case WebSocketMessages.GOAL_2_DOWN:
@@ -113,10 +113,10 @@ public class WebSocketUpdateHandler {
         }
     }
 
-    private static void checkPlaySound(int g1, int g2) {
+    private static void checkPlaySound(Match currentMatch, int g1, int g2) {
         if ((g1 + g2) == 4 && (g1 == 0 || g2 == 0)) {
             playFile("003");
-        } else if ((g1 + g2) == 5 && (g1 == 1 || g2 == 1)) {
+        } else if ((g1 + g2) == 5 && (g1 == 1 && currentMatch.getGoalsTeam1() == 0 || g2 == 1 && currentMatch.getGoalsTeam2() == 0)) {
             playFile("01");
         }
     }
