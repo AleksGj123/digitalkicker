@@ -78,25 +78,23 @@ public class WebSocketUpdateHandler {
                     case WebSocketMessages.GOAL_1_UP:
                         if (g1 < getSingleMaxGoalCount(currentMatch) && (g1 + g2) < getSumMaxGoalCount(currentMatch)) {
                             g1++;
-                            checkPlayDrei(g1, g2);
+                            checkPlaySound(g1, g2);
                         }
                         break;
                     case WebSocketMessages.GOAL_1_DOWN:
                         if (g1 > 0) {
                             g1--;
-                            checkPlayDrei(g1, g2);
                         }
                         break;
                     case WebSocketMessages.GOAL_2_UP:
                         if (g2 < getSingleMaxGoalCount(currentMatch) && (g1 + g2) < getSumMaxGoalCount(currentMatch)) {
                             g2++;
-                            checkPlayDrei(g1, g2);
+                            checkPlaySound(g1, g2);
                         }
                         break;
                     case WebSocketMessages.GOAL_2_DOWN:
                         if (g2 > 0) {
                             g2--;
-                            checkPlayDrei(g1, g2);
                         }
                         break;
                     default:
@@ -115,9 +113,11 @@ public class WebSocketUpdateHandler {
         }
     }
 
-    private static void checkPlayDrei(int g1, int g2) {
+    private static void checkPlaySound(int g1, int g2) {
         if ((g1 + g2) == 4 && (g1 == 0 || g2 == 0)) {
             playFile("003");
+        } else if ((g1 + g2) == 5 && (g1 == 1 || g2 == 1)) {
+            playFile("01");
         }
     }
 
@@ -549,12 +549,19 @@ public class WebSocketUpdateHandler {
 
     private static void playFile(String number) {
         final Map<String, String> videoMap = new HashMap<>();
+        //42["queue-add",{"fullname":"01 gerettet.mp4","number":"01","previewImageUrl":"/previews/01 gerettet.png","animatedPreviewUrl":"/previews/01 gerettet.gif"}]
         switch (number) {
             case "0":
                 videoMap.put("fullname", "0 Lok.mp4");
                 videoMap.put("number", "0");
                 videoMap.put("previewImageUrl", "/previews/0 Lok.png");
                 videoMap.put("animatedPreviewUrl", "/previews/0 Lok.gif");
+                break;
+            case "01":
+                videoMap.put("fullname", "01 gerettet.mp4");
+                videoMap.put("number", "01");
+                videoMap.put("previewImageUrl", "/previews/01 gerettet.png");
+                videoMap.put("animatedPreviewUrl", "/previews/01 gerettet.gif");
                 break;
             case "003":
                 videoMap.put("fullname", "003 drei.mp4");
