@@ -149,6 +149,7 @@ public class Start {
         // statistics
         path("/stats", () -> {
             get("", StatisticsController::getStats, velocityTemplateEngine);
+            post("", StatisticsController::getStats, velocityTemplateEngine);
         });
 
         JedisPool jedisPool = new JedisPool();

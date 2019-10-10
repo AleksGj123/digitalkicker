@@ -3,6 +3,7 @@ package com.bechtle.service;
 import com.bechtle.model.Match;
 import com.bechtle.model.Matchtype;
 import com.bechtle.model.Player;
+import com.bechtle.model.Season;
 import com.bechtle.util.Constants;
 import net.formio.FormData;
 import net.formio.FormMapping;
@@ -146,41 +147,6 @@ public class PlayerService extends Service {
         final ArrayList<ConstraintViolationMessage> constraintViolationMessages = new ArrayList<>();
         constraintViolationMessages.add(violationMessage);
         return constraintViolationMessages;
-    }
-
-
-    public List<Match> getLostDeathmachtesForPlayer(Player player) {
-
-        return em.createQuery("select m from Matches as m where m.matchtype in :matchTypes" +
-                " and (" +
-                "(m.keeperTeam1 = :playerId and m.goalsTeam1 < m.goalsTeam2)" +
-                " or (m.keeperTeam2 = :playerId and m.goalsTeam1 > m.goalsTeam2)" +
-                ")")
-                .setParameter("matchTypes", new HashSet<>(Arrays.asList(Matchtype.DEATH_MATCH, Matchtype.DEATH_MATCH_BO3)))
-                .setParameter("playerId", player)
-                .getResultList();
-    }
-
-    private boolean playerHasLost(Match match, long playerId) {
-        final long idPlayer1 = match.getKeeperTeam1().getId();
-
-        final int goalsTeam1 = match.getGoalsTeam1();
-        final int goalsTeam2 = match.getGoalsTeam2();
-
-        // player was in team 1
-        if (playerId == idPlayer1) {
-            return goalsTeam1 < goalsTeam2;
-        } else {
-            return goalsTeam1 > goalsTeam2;
-        }
-    }
-
-    public long getNumberOfPlayedGamesForPlayer(Player player) {
-        return (Long) em.createQuery("select count(m) from Matches as m where m.matchtype = :matchType" +
-                " and (m.keeperTeam1 = :playerId or m.strikerTeam1 = :playerId or m.keeperTeam2 = :playerId or m.strikerTeam2 = :playerId)")
-                .setParameter("matchType", Matchtype.REGULAR)
-                .setParameter("playerId", player)
-                .getSingleResult();
     }
 
     public void updatePlayer(Player player) {
