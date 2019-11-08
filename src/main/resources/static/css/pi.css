@@ -1,0 +1,214 @@
+.pi .fade {
+    trasition: none;
+}
+
+#board-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.pi#main-container {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    position: absolute;
+}
+
+#board-container iframe {
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    border: none;
+}
+
+.pi.cancel_request .result {
+    opacity: 1;
+}
+
+.pi .live-message {
+    z-index: 0;
+    width: 100%;
+    left: 0;
+    background: gold;
+    transition: transform 1s ease;
+    border-radius: 0;
+    transform: translateY(-100%);
+}
+
+.pi.started .live-message,
+.pi.cancel_request .live-message {
+    transform: translateY(0);
+}
+
+.pi.prematch .live-message,
+.pi.cancel_request .live-message,
+.pi.rematch_yes .live-message,
+.pi.rematch_no .live-message {
+animation: none;
+}
+
+.pi.cancel_request.REGULAR .live-message #REGULAR,
+.pi.finishable.REGULAR .live-message #REGULAR {
+display: inline;
+}
+
+.pi.cancel_request.DEATH_MATCH_BO3 .live-message #DEATH_MATCH_BO3,
+.pi.finishable.DEATH_MATCH_BO3 .live-message #DEATH_MATCH_BO3 {
+display: inline;
+}
+
+.pi.cancel_request.DEATH_MATCH .live-message #DEATH_MATCH,
+.pi.finishable.DEATH_MATCH .live-message #DEATH_MATCH {
+display: inline;
+}
+
+.pi .live-player {
+position: absolute;
+width: 60vh;
+height: 60vh;
+background: rgb(80, 80, 80);
+border-radius: 60vw;
+padding: 0;
+display: flex;
+align-items: center;
+justify-content: center;
+transition: transform 1s ease;
+}
+
+.pi .live-player#kt2,
+.pi .live-player#st2 {
+background-color: #1a1a1a;
+}
+
+.pi .live-player#kt2 {
+top: 0;
+left: 0;
+margin: -30vh 0 0 -30vh;
+padding: 30vh 5vh 5vh 30vh;
+transform: rotate(42deg);
+transform-origin: top right;
+}
+
+.pi .live-player#st2 {
+bottom: 0;
+left: 0;
+margin: 0 0 -30vh -30vh;
+padding: 5vh 5vh 30vh 30vh;
+transform: rotate(-42deg);
+transform-origin: bottom right;
+}
+
+.pi .live-player#kt1,
+.pi .live-player#st1 {
+background-color: #bababa;
+}
+
+.pi .live-player#st1 {
+top: 0;
+right: 0;
+margin: -30vh -30vh 0 0;
+padding: 30vh 30vh 5vh 5vh;
+transform: rotate(-42deg);
+transform-origin: top left;
+}
+
+.pi .live-player#kt1 {
+bottom: 0;
+right: 0;
+margin: 0 -30vh -30vh 0;
+padding: 5vh 30vh 30vh 5vh;
+transform: rotate(42deg);
+transform-origin: bottom left;
+}
+
+.pi.started.REGULAR .live-player#st1,
+.pi.cancel_request.REGULAR .live-player#st1,
+.pi.started.REGULAR .live-player#kt1,
+.pi.cancel_request.REGULAR .live-player#kt1,
+.pi.started.REGULAR .live-player#st2,
+.pi.cancel_request.REGULAR .live-player#st2,
+.pi.started.REGULAR .live-player#kt2,
+.pi.cancel_request.REGULAR .live-player#kt2 {
+transform: rotate(0deg);
+}
+
+.pi.started.DEATH_MATCH .live-player#kt1,
+.pi.cancel_request.DEATH_MATCH .live-player#kt1,
+.pi.started.DEATH_MATCH_BO3 .live-player#kt1,
+.pi.cancel_request.DEATH_MATCH_BO3 .live-player#kt1,
+.pi.started.DEATH_MATCH .live-player#kt2,
+.pi.cancel_request.DEATH_MATCH .live-player#kt2,
+.pi.started.DEATH_MATCH_BO3 .live-player#kt2,
+.pi.cancel_request.DEATH_MATCH_BO3 .live-player#kt2 {
+    transform: rotate(0deg);
+}
+
+.pi .live-player .name {
+font-size: 2.5em;
+font-family: 'Fjalla One', sans-serif;
+color: #202020;
+}
+
+.pi .live-player#kt2 .name,
+.pi .live-player#st2 .name {
+color: #ccc;
+}
+
+.pi .background-container {
+background-image: none;
+background-color: #000000;
+}
+
+.pi .background-container .white-tile {
+background-image: none;
+background-color: #a0a0a0;
+}
+
+.pi .result .background-container {
+background-image: none;
+background-color: #1a1a1a;
+opacity: 0.9;
+}
+
+.pi .result .background-container .white-tile {
+background-image: none;
+background-color: #bababa;
+}
+
+.pi .result,
+.pi.rematch_yes .result,
+.pi.rematch_no .result,
+.pi .prematch .result {
+    width: 110%;
+    left: -5%;
+    transition: transform 1s ease, opacity 1s ease;
+    opacity: 0;
+    transform: translateX(5%);
+}
+
+.pi.started .result,
+.pi.cancel_request .result {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.pi .goals-black {
+color: #c0c0c0;
+}
+
+.pi .goals-white {
+color: #202020;
+}
+
+.pi.rematch_yes .goals-white,
+.pi.rematch_yes .goals-black,
+.pi.rematch_no .goals-white,
+.pi.rematch_no .goals-black {
+opacity: 1;
+animation: none;
+}

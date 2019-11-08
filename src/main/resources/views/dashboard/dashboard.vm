@@ -24,28 +24,33 @@
         var webSocket;
 
         function connectToSocket() {
-            webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/update");
-            webSocket.onmessage = function (msg) {
-                updateMatch(msg);
-            };
+            if (!webSocket) {
+                webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/update");
+                webSocket.onmessage = function (msg) {
+                    updateMatch(msg);
+                };
 
-            webSocket.onclose = function () {
-                console.log("websockets connection closed:");
-                console.log(webSocket);
-                console.log("reconnecting websocket in 5 seconds");
-                setTimeout(function () {
-                    connectToSocket();
-                }, 3000);
-            }
+                webSocket.onclose = function () {
+                    console.log("websockets connection closed:");
+                    console.log(webSocket);
+                    console.log("reconnecting websocket in max 3 seconds");
+                    webSocket = null;
+                }
 
-            webSocket.onError = function (err) {
-                console.log("some error at websocket: " + err);
-                conosle.log(webSocket);
-                webSocket.close();
+                webSocket.onError = function (err) {
+                    console.log("some error at websocket: " + err);
+                    conosle.log(webSocket);
+                    webSocket.close();
+                    webSocket = null;
+                }
             }
         }
 
         connectToSocket();
+        setInterval(function () {
+            console.log("reconnect timer");
+            connectToSocket();
+        }, 3000);
 
         function updateMatch(msg) {
             var data = JSON.parse(msg.data);
@@ -219,7 +224,7 @@
         <div class="white-tile can-blur"></div>
     </div>
 
-    <div id="messages" class="live-message text-center highlight-text">
+    <div id="messages" class="live-message text-center">
         <span></span>
         <img id="REGULAR"
              src="/images/creatematchimages/default.png">

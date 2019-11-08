@@ -22,6 +22,7 @@
 /*.rematch_yes .background-container .white-tile.can-blur,*/
 /*.rematch_yes .live-background.can-blur,*/
 /*.rematch_yes .team.can-blur,*/
+/*.rematch_yes .team.can-blur,*/
 /*.rematch_no .background-container .white-tile.can-blur,*/
 /*.rematch_no .live-background.can-blur,*/
 /*.rematch_no .team.can-blur {*/
@@ -66,18 +67,17 @@
 
 .live-message {
     position: absolute;
-    width: 90%;
+    width: 100%;
     height: 125px;
-    left: 5%;
+    left: 0;
     right: 0;
     padding-top: 10px;
     padding-bottom: 10px;
     font-size: 5em;
     text-align: center;
     z-index: 10;
-    background: rgba(80, 80, 80, 0.7);
-    border-bottom-left-radius: 50px;
-    border-bottom-right-radius: 50px;
+    background: rgba(255, 215, 0, 0.8);
+    color: #202020;
 }
 
 .live-message img {
@@ -296,6 +296,7 @@
     height: 100%;
     padding-left: 50%;
     overflow: hidden;
+    background-color: #a0a0a0;
     /*background-image: linear-gradient(to top right, #101010, #202020);*/
     background-image: linear-gradient(to top right, #d0d0d0, #606060);
 }
@@ -306,12 +307,11 @@
     overflow: hidden;
 }
 
-
 .background-container .white-tile {
     width: 120%;
     height: 122%;
     margin-top: -10%;
-    background-color: #a0a0a0;
+    background-color: #000000;
     transform: rotate(10deg);
     /*background-image: linear-gradient(to top right, #707070, #e0e0e0);*/
     background-image: linear-gradient(to top right, #272727, #000000);

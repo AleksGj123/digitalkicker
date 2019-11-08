@@ -92,6 +92,10 @@ public class Start {
             put("/controller", DashboardController::putControl);
 
         });
+        path("/piboard", () -> {
+            get("", DashboardController::showPiboard, velocityTemplateEngine);
+
+        });
 
         // seasons
         path("/season", () -> {

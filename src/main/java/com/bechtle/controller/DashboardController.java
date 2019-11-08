@@ -20,7 +20,15 @@ import java.util.Optional;
 
 public class DashboardController {
 
-    public static ModelAndView showDashboard(Request request, Response Request) {
+    public static ModelAndView showDashboard(Request request, Response response) {
+        return showBoard(request, response, "views/dashboard/dashboard.vm");
+    }
+
+    public static ModelAndView showPiboard(Request request, Response response) {
+        return showBoard(request, response, "views/dashboard/piboard.vm");
+    }
+
+    private static ModelAndView showBoard(Request request, Response response, String viewName) {
         final EntityManager em = request.attribute("em");
         final MatchService matchService = new MatchService(em);
 
@@ -31,7 +39,7 @@ public class DashboardController {
         map.put("match", currentMatch);
         map.put("matchtype", currentMatch.getMatchtype().name());
 
-        return new ModelAndView(map, "views/dashboard/dashboard.vm");
+        return new ModelAndView(map, viewName);
     }
 
     private static Match createPrematch(EntityManager em) {

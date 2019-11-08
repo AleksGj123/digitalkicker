@@ -541,7 +541,7 @@ public class WebSocketUpdateHandler {
             case REGULAR:
                 return 9;
             case DEATH_MATCH_BO3:
-                return 2;
+                return 3;
             default:
                 return 1;
         }
