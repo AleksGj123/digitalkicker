@@ -39,6 +39,9 @@ public class Player {
 
     private Boolean lokSafe;
 
+    @Column(columnDefinition = "boolean default true")
+    private Boolean active = true;
+
     // field for NFC Card ID
     //private String nfcId;
 
@@ -156,6 +159,14 @@ public class Player {
 
     public String getWholeName() {
         return forename + " " + surname;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     /*

@@ -15,6 +15,7 @@ public class Constants {
     public static final String SEASONS = "seasons";
 
     public static final String LOKSAFE = "loksafe";
+    public static final String ACTIVE = "active";
 
     public static final String MATCH_TYPES = "matchTypes";
 }

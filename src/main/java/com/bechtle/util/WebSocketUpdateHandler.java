@@ -119,6 +119,18 @@ public class WebSocketUpdateHandler {
         } else if ((g1 + g2) == 5 && (g1 == 1 && currentMatch.getGoalsTeam1() == 0 || g2 == 1 && currentMatch.getGoalsTeam2() == 0)) {
             playFile("01");
         }
+
+        final Set<Long> motherAndDaughter = new HashSet<>(Arrays.asList(2l, 8l));
+
+        // check sheriff baby shark
+        boolean team1Matches = motherAndDaughter.contains(new Long(currentMatch.getKeeperTeam1().getId())) &&
+                motherAndDaughter.contains(new Long(currentMatch.getStrikerTeam1().getId()));
+        boolean team2Matches = motherAndDaughter.contains(new Long(currentMatch.getKeeperTeam2().getId())) &&
+                motherAndDaughter.contains(new Long(currentMatch.getStrikerTeam2().getId()));
+        if (g1 > currentMatch.getGoalsTeam1() && team1Matches ||
+                g2 > currentMatch.getGoalsTeam2() && team2Matches) {
+            playFile("855");
+        }
     }
 
     private static void processEventControl(String message, EntityManager em) {
@@ -158,7 +170,7 @@ public class WebSocketUpdateHandler {
         // get Player to change, fail safe so look for first one and create if it isn't already created
         Player isThereAnyPlayer = getPlayerOfCurrentSlot(currentMatch);
         if (isThereAnyPlayer == null) {
-            isThereAnyPlayer = playerService.getPlayers().stream()
+            isThereAnyPlayer = playerService.getActivePlayers().stream()
                     .sorted(Comparator.comparing(Player::getWholeName))
                     .findFirst()
                     .get();
@@ -494,7 +506,7 @@ public class WebSocketUpdateHandler {
         final MatchService matchService = new MatchService(em);
         final PlayerService playerService = new PlayerService(em);
 
-        final Player startPlayer = playerService.getPlayers().stream()
+        final Player startPlayer = playerService.getActivePlayers().stream()
                 .sorted(Comparator.comparing(Player::getWholeName))
                 .findFirst()
                 .get();
@@ -568,6 +580,12 @@ public class WebSocketUpdateHandler {
                 videoMap.put("number", "003");
                 videoMap.put("previewImageUrl", "/previews/003 drei.png");
                 videoMap.put("animatedPreviewUrl", "previews/003 drei.gif");
+                break;
+            case "855":
+                videoMap.put("fullname", "855-huckepack.mp4");
+                videoMap.put("number", "855");
+                videoMap.put("previewImageUrl", "/previews/855-huckepack.png");
+                videoMap.put("animatedPreviewUrl", "previews/855-huckepack.gif");
                 break;
             default:
                 break;

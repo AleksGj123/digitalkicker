@@ -81,6 +81,21 @@
             </div>
         </div>
 
+        <div class="form-group col-md-12">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox"
+                           id="$fields.active.name"
+                           name="$fields.active.name"
+                        #if($active)
+                           checked
+                        #end
+                           value="true"
+                    > Active
+                </label>
+            </div>
+        </div>
+
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="$fields.password.name">Password</label>

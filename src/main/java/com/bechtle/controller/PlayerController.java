@@ -69,6 +69,7 @@ public class PlayerController {
         final FormMapping<Player> filledForm = playerForm.fill(formData);
         map.put(Constants.PLAYER_FORM, filledForm);
         map.put(Constants.LOKSAFE, player.getLokSafe());
+        map.put(Constants.ACTIVE, player.getActive());
         map.put(Constants.PLAYER, player);
 
         return new ModelAndView(map, "views/player/edit_player.vm");
@@ -88,6 +89,7 @@ public class PlayerController {
         final FormMapping<Player> filledForm = playerForm.fill(formData);
         map.put(Constants.PLAYER_FORM, filledForm);
         map.put(Constants.LOKSAFE, player.getLokSafe());
+        map.put(Constants.ACTIVE, player.getActive());
         map.put(Constants.PLAYER, player);
 
         return new ModelAndView(map, "views/player/edit_player.vm");
@@ -151,6 +153,7 @@ public class PlayerController {
             player.setLokSafe(requestPlayer.getLokSafe());
             player.setPassword(requestPlayer.getPassword());
             player.setPasswordRepeat(requestPlayer.getPasswordRepeat());
+            player.setActive(requestPlayer.getActive());
         }
 
         return player;

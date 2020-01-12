@@ -27,6 +27,40 @@
     </div>
 </div>
 
+<div class="container playoff-ranking">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Playoff Ranking</h2>
+            <p>Players to fight for the "Lok Of The Year $currentSeason.name". PlayoffPoints are calculated by the absolute lok possibilty.</p>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Ranking</th>
+                    <th>Forename</th>
+                    <th>Nickname</th>
+                    <th>Surname</th>
+                    <th>Playoff-Points</th>
+                </tr>
+                </thead>
+                <tbody>
+                    #foreach($lok in $lokOfTheYear)
+                        #if( $velocityCount > 4 )
+                            #break
+                        #end
+                    <tr>
+                        <td>$velocityCount</td>
+                        <td>$lok.key.forename</td>
+                        <td>$lok.key.nickname</td>
+                        <td>$lok.key.surname</td>
+                        <td>$doubleFormat.format($lok.value)</td>
+                    </tr>
+                    #end
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
 <div class="container">
     <div class="row">
         <div class="col-md-6">
@@ -257,8 +291,8 @@
                 </thead>
                 <tbody>
                     #foreach($stats in $versatility)
-                    #set ($strikerValue = (($stats.value + 1.0) / 0.02))
-                    #set ($keeperValue = 100.0 - $strikerValue)
+                        #set ($strikerValue = (($stats.value + 1.0) / 0.02))
+                        #set ($keeperValue = 100.0 - $strikerValue)
                     <tr>
                         <td>$stats.key.forename</td>
                         <td>$stats.key.nickname</td>
@@ -301,7 +335,8 @@
     <div class="row">
         <div class="col-md-6">
             <h3>Most winning team</h3>
-            <p>Shows the total amount of wins for each pair of players. Position of the player doesn't matter. Each team has to complete at least $minimumMatches matches.</p>
+            <p>Shows the relative amount of wins for each pair of players. Position of the player doesn't matter. Each team has to complete at
+                least $minimumMatches matches.</p>
             <table class="table table-striped">
                 <thead>
                 <tr>
@@ -324,23 +359,25 @@
             </table>
         </div>
         <div class="col-md-6">
-            <h3>Best Lok conductors</h3>
-            <p>Shows the total amount of Loks to be distributed by the team. Position of the player doesn't matter.</p>
+            <h3>Best Lok conductor (single)</h3>
+            <p>Shows the relative amount of Loks to be distributed by the player.</p>
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th>Player A</th>
-                    <th>Player B</th>
+                    <th>Forename</th>
+                    <th>Nickname</th>
+                    <th>Surname</th>
                     <th>Loks distributed</th>
                 </tr>
                 </thead>
                 <tbody>
-                    #foreach($buddies in $bestLokConductors)
-                        #if( $buddies.value > 0 )
+                    #foreach($stats in $bestLokConductorSingle)
+                        #if( $stats.value > 0 )
                         <tr>
-                            <td>$buddies.key.firstPlayer.forename $buddies.key.firstPlayer.surname</td>
-                            <td>$buddies.key.secondPlayer.forename $buddies.key.secondPlayer.surname</td>
-                            <td>$buddies.value</td>
+                            <td>$stats.key.forename</td>
+                            <td>$stats.key.nickname</td>
+                            <td>$stats.key.surname</td>
+                            <td>$percentageFormat.format($stats.value)</td>
                         </tr>
                         #end
                     #end
@@ -375,6 +412,34 @@
                 </tbody>
             </table>
         </div>
+        <div class="col-md-6">
+            <h3>Best Lok conductors (team)</h3>
+            <p>Shows the total amount of Loks to be distributed by the team. Position of the player doesn't matter.</p>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Player A</th>
+                    <th>Player B</th>
+                    <th>Loks distributed</th>
+                </tr>
+                </thead>
+                <tbody>
+                    #foreach($buddies in $bestLokConductors)
+                        #if( $buddies.value > 0 )
+                        <tr>
+                            <td>$buddies.key.firstPlayer.forename $buddies.key.firstPlayer.surname</td>
+                            <td>$buddies.key.secondPlayer.forename $buddies.key.secondPlayer.surname</td>
+                            <td>$buddies.value</td>
+                        </tr>
+                        #end
+                    #end
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
         <div class="col-md-6">
             <h3>Kicker voodoo</h3>
             <p>Which side would you choose?</p>

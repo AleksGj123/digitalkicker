@@ -28,7 +28,7 @@ public class StatisticsController {
 
         final HashMap<String, Object> objectHashMap = new HashMap<>();
 
-        final List<Player> players = playerService.getPlayers();
+        final List<Player> players = playerService.getActivePlayers();
         final List<Season> allSeasons = seasonService.getAllSeasons();
 
         request.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
@@ -54,7 +54,10 @@ public class StatisticsController {
         final SortedMap<Player, Double> lokPossibility = new TreeMap<>(playerComparator);
         final SortedMap<Player, Double> wonDeatchmatches = new TreeMap<>(playerComparator);
         final SortedMap<Player, Double> versatility = new TreeMap<>(playerComparator);
+        final SortedMap<Player, Double> bestLokConductorSingle = new TreeMap<>(playerComparator);
         final SortedMap<Player, Double> colorful = new TreeMap<>(playerComparator);
+
+        final SortedMap<Player, Double> lokOfTheYear = new TreeMap<>(playerComparator);
 
         players.stream().forEach(player -> {
             final long numberOfPlayedGamesForPlayer = statisticsService.getNumberOfPlayedGamesForPlayer(player, currentSeason);
@@ -71,6 +74,7 @@ public class StatisticsController {
                 final long numberOfGoalsConcededAsKeeper = getNumberOfGoalsConcededAsKeeper(allMatchesForPlayer, player);
                 final double playersVersatility = getPlayersVersatility(allMatchesForPlayer, player);
                 final double playersColors = getPlayersColors(allMatchesForPlayer, player);
+                final long numberOfLoksConducted = getNumberOfLoksConducted(allMatchesForPlayer, player);
 
                 lokList.put(player, (long) lostDeathmachtesForPlayer.size());
                 deathmatchPossibility.put(player, 1.0 * deathmachtesForPlayer.size() / numberOfPlayedGamesForPlayer);
@@ -78,6 +82,7 @@ public class StatisticsController {
                 wonMatches.put(player, 1.0 * numberOfWonGamesForPlayer / numberOfPlayedGamesForPlayer);
                 bestStriker.put(player, 1.0 * numberOfGoalsShotTotal / numberOfPlayedGamesForPlayer);
                 versatility.put(player, playersVersatility);
+                bestLokConductorSingle.put(player, 1.0 * numberOfLoksConducted / numberOfPlayedGamesForPlayer);
                 colorful.put(player, playersColors);
 
                 if (!deathmachtesForPlayer.isEmpty()) {
@@ -87,15 +92,18 @@ public class StatisticsController {
                 if (numberOfPlayedGamesAsKeeper > MINIMUM_MATCHES_FOR_STATS) {
                     bestKeeper.put(player, 1.0 * numberOfGoalsConcededAsKeeper / numberOfPlayedGamesAsKeeper);
                 }
+
+                lokOfTheYear.put(player, lokPossibility.get(player) * 100);
             }
         });
 
         final List<Match> allMatches = currentSeason.getMatches();
 
         final SortedMap<PlayerPair, Double> mostWinningTeam = getMostWinningTeam(allMatches);
-        final SortedMap<PlayerPair, Long> bestLokConductors = getBestLokConductors(allMatches);
 
         final SortedMap<PlayerPair, Long> bestLokBuddies = getBestLokBuddies(allMatches);
+        final SortedMap<PlayerPair, Long> bestLokConductors = getBestLokConductors(allMatches);
+
         final SortedMap<String, Double> colors = getColors(allMatches);
 
         final NumberFormat percentageFormat = NumberFormat.getPercentInstance();
@@ -117,6 +125,8 @@ public class StatisticsController {
         objectHashMap.put("currentSeason", currentSeason);
 
         // games stats
+        objectHashMap.put("lokOfTheYear", entriesSortedByValues(lokOfTheYear, true));
+
         objectHashMap.put("numberOfGamesList", entriesSortedByValues(numberOfGamesList, true));
         objectHashMap.put("wonMatches", entriesSortedByValues(wonMatches, true));
 
@@ -133,11 +143,12 @@ public class StatisticsController {
         objectHashMap.put("colorful", entriesSortedByAbsValues(colorful));
 
         objectHashMap.put("mostWinningTeam", entriesSortedByValues(mostWinningTeam, true));
-        objectHashMap.put("bestLokConductors", entriesSortedByValues(bestLokConductors, true));
+        objectHashMap.put("bestLokConductorSingle", entriesSortedByValues(bestLokConductorSingle, true));
 
         objectHashMap.put("bestLokBuddies", entriesSortedByValues(bestLokBuddies, true));
-        objectHashMap.put("colors", entriesSortedByValues(colors, true));
+        objectHashMap.put("bestLokConductors", entriesSortedByValues(bestLokConductors, true));
 
+        objectHashMap.put("colors", entriesSortedByValues(colors, true));
 
         return new ModelAndView(objectHashMap, "views/statistics/statistics.vm");
     }
@@ -249,6 +260,22 @@ public class StatisticsController {
         });
 
         return mostWinningTeam;
+    }
+
+    private static long getNumberOfLoksConducted(List<Match> allMatchesForPlayer, Player player) {
+        return (long) allMatchesForPlayer.stream()
+                .filter(m -> (m.getGoalsTeam1() + m.getGoalsTeam2()) == 5) // only lok matches
+                .map(m -> {
+                    if (player.getId() == m.getKeeperTeam1().getId() ||
+                    player.getId() == m.getStrikerTeam1().getId()) {
+                        // player was in team 1
+                        return (m.getGoalsTeam1() == 5 ? 1 : 0);
+                    } else {
+                        // player was in team 2
+                        return (m.getGoalsTeam2() == 5 ? 1 : 0);
+                    }
+                })
+                .reduce(0, Integer::sum);
     }
 
     private static SortedMap<PlayerPair, Long> getBestLokConductors(List<Match> allMatches) {

@@ -46,6 +46,11 @@ public class PlayerService extends Service {
         return allPlayers;
     }
 
+    public List<Player> getActivePlayers() {
+        final List<Player> allPlayers = em.createQuery("select p from Player as p where p.active = true").getResultList();
+        return allPlayers;
+    }
+
 
     public List<Player> getSelectablePlayers(Match match) {
         final Set<Long> idSet = new HashSet<>();

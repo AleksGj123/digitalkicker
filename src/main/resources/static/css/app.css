@@ -33,3 +33,6 @@ body.background {
     padding: 40px 15px;
     text-align: center;
 }
+.playoff-ranking * {
+    color: gold;
+}

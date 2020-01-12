@@ -46,7 +46,7 @@ public class DashboardController {
         final MatchService matchService = new MatchService(em);
         final PlayerService playerService = new PlayerService(em);
 
-        final Player startPlayer = playerService.getPlayers().stream()
+        final Player startPlayer = playerService.getActivePlayers().stream()
                 .sorted(Comparator.comparing(Player::getId))
                 .findFirst()
                 .get();

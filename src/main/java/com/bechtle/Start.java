@@ -30,7 +30,6 @@ public class Start {
     public final static EntityManagerFactory factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
 
     public static void main(String[] args) {
-        System.out.println("Ich bins");
         System.setProperty("hibernate.dialect.storage_engine", "myisam");
         port(4444);
 
