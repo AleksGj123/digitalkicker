@@ -114,22 +114,25 @@ public class WebSocketUpdateHandler {
     }
 
     private static void checkPlaySound(Match currentMatch, int g1, int g2) {
-        if ((g1 + g2) == 4 && (g1 == 0 || g2 == 0)) {
-            playFile("003");
-        } else if ((g1 + g2) == 5 && (g1 == 1 && currentMatch.getGoalsTeam1() == 0 || g2 == 1 && currentMatch.getGoalsTeam2() == 0)) {
-            playFile("01");
-        }
+        // currently only for regular games
+        if (Matchtype.REGULAR.equals(currentMatch.getMatchtype())) {
+            if ((g1 + g2) == 4 && (g1 == 0 || g2 == 0)) {
+                playFile("003");
+            } else if ((g1 + g2) == 5 && (g1 == 1 && currentMatch.getGoalsTeam1() == 0 || g2 == 1 && currentMatch.getGoalsTeam2() == 0)) {
+                playFile("01");
+            }
 
-        final Set<Long> motherAndDaughter = new HashSet<>(Arrays.asList(2l, 8l));
+            final Set<Long> motherAndDaughter = new HashSet<>(Arrays.asList(2l, 8l));
 
-        // check sheriff baby shark
-        boolean team1Matches = motherAndDaughter.contains(new Long(currentMatch.getKeeperTeam1().getId())) &&
-                motherAndDaughter.contains(new Long(currentMatch.getStrikerTeam1().getId()));
-        boolean team2Matches = motherAndDaughter.contains(new Long(currentMatch.getKeeperTeam2().getId())) &&
-                motherAndDaughter.contains(new Long(currentMatch.getStrikerTeam2().getId()));
-        if (g1 > currentMatch.getGoalsTeam1() && team1Matches ||
-                g2 > currentMatch.getGoalsTeam2() && team2Matches) {
-            playFile("855");
+            // check sheriff baby shark
+            boolean team1Matches = motherAndDaughter.contains(new Long(currentMatch.getKeeperTeam1().getId())) &&
+                    motherAndDaughter.contains(new Long(currentMatch.getStrikerTeam1().getId()));
+            boolean team2Matches = motherAndDaughter.contains(new Long(currentMatch.getKeeperTeam2().getId())) &&
+                    motherAndDaughter.contains(new Long(currentMatch.getStrikerTeam2().getId()));
+            if (g1 > currentMatch.getGoalsTeam1() && team1Matches ||
+                    g2 > currentMatch.getGoalsTeam2() && team2Matches) {
+                playFile("855");
+            }
         }
     }
 
