@@ -1,0 +1,199 @@
+#@strippedLayout()
+
+<script>
+    $(function () {
+        var mouseTimer = null, cursorVisible = true;
+
+        function disappearCursor() {
+            mouseTimer = null;
+            document.body.style.cursor = "none";
+            cursorVisible = false;
+        }
+
+        document.onmousemove = function () {
+            if (mouseTimer) {
+                window.clearTimeout(mouseTimer);
+            }
+            if (!cursorVisible) {
+                document.body.style.cursor = "default";
+                cursorVisible = true;
+            }
+            mouseTimer = window.setTimeout(disappearCursor, 500);
+        };
+
+        var webSocket;
+
+        function connectToSocket() {
+            if (!webSocket) {
+                webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/update");
+                webSocket.onmessage = function (msg) {
+                    updateMatch(msg);
+                };
+
+                webSocket.onclose = function () {
+                    console.log("websockets connection closed:");
+                    console.log(webSocket);
+                    console.log("reconnecting websocket in max 3 seconds");
+                    webSocket = null;
+                }
+
+                webSocket.onError = function (err) {
+                    console.log("some error at websocket: " + err);
+                    conosle.log(webSocket);
+                    webSocket.close();
+                    webSocket = null;
+                }
+            }
+        }
+
+        connectToSocket();
+        setInterval(function () {
+            console.log("reconnect timer");
+            connectToSocket();
+        }, 3000);
+
+        function updateMatch(msg) {
+            var data = JSON.parse(msg.data);
+            var g1 = data.goalsTeam1;
+            var g2 = data.goalsTeam2;
+
+            var kt1 = data.keeperTeam1;
+            var st1 = data.strikerTeam1;
+            var kt2 = data.keeperTeam2;
+            var st2 = data.strikerTeam2;
+
+            var status = data.status;
+            var matchtype = data.matchtype;
+            var finishable = data.finishable;
+
+            updatePlayer("kt1", kt1);
+            updatePlayer("st1", st1);
+            updatePlayer("kt2", kt2);
+            updatePlayer("st2", st2);
+
+            updateStatus(status, matchtype, g1, g2, finishable);
+        }
+
+        function updatePlayer(id, player) {
+            $("#" + id + " .name .fore").text(player.forename);
+            $("#" + id + " .name .nick").text(player.nickname);
+            if (playerExists(player)) {
+                $("#" + id + " .name .nick").removeClass("invisible");
+            } else {
+                $("#" + id + " .name .nick").addClass("invisible");
+            }
+            $("#" + id + " .name .sur").text(player.surname);
+        }
+
+        function playerExists(player) {
+            return player && (player.forename || player.surname || player.nickname)
+        }
+
+        function updateStatus(status, matchtype, g1, g2, finishable) {
+            $("#main-container").removeClass();
+            $("#main-container").addClass("container pi " + status + " " + matchtype);
+            if (finishable) {
+                $("#main-container").addClass("finishable");
+            }
+
+            switch (status) {
+                case "started":
+                    $("#goalsTeam1").text(g1);
+                    $("#goalsTeam2").text(g2);
+                    break;
+                default:
+            }
+
+        }
+
+        updateStatus("$match.status", "$matchtype");
+    });
+</script>
+
+<div id="board-container">
+    <iframe src="http://10.1.50.160:3030/pi_trans"></iframe>
+</div>
+
+<div class="container pi" id="main-container">
+
+    <div id="messages" class="live-message text-center highlight-text">
+        <span></span>
+        <img id="REGULAR"
+             src="/images/creatematchimages/default.png">
+        <img id="DEATH_MATCH_BO3"
+             src="/images/creatematchimages/fluffy.png">
+        <img id="DEATH_MATCH"
+             src="/images/creatematchimages/deathmatch.png">
+    </div>
+
+    <div id="match-result" class="live result">
+        <div class="background-container">
+            <div class="white-tile"></div>
+        </div>
+        <div class="text goals">
+            <span id="goalsTeam2" class="goals-black fade">$match.goalsTeam2</span> <span class="highlight-text">:</span> <span id="goalsTeam1"
+                                                                                                                                class="goals-white fade">$match.goalsTeam1</span>
+        </div>
+    </div>
+
+    <div class="live-player" id="kt2">
+        #if($match.keeperTeam2)
+            <div class="name">
+                <span class="fore">$match.keeperTeam2.forename</span>
+                <span class="nick">$match.keeperTeam2.nickname</span>
+                <span class="sur">$match.keeperTeam2.surname</span>
+            </div>
+        #else
+            <div class="name">
+                <span class="fore"></span>
+                <span class="nick invisible"></span>
+                <span class="sur"></span>
+            </div>
+        #end
+    </div>
+    <div class="live-player" id="st2">
+        #if($match.strikerTeam2)
+            <div class="name">
+                <span class="fore">$match.strikerTeam2.forename</span>
+                <span class="nick">$match.strikerTeam2.nickname</span>
+                <span class="sur">$match.strikerTeam2.surname</span>
+            </div>
+        #else
+            <div class="name">
+                <span class="fore"></span>
+                <span class="nick invisible"></span>
+                <span class="sur"></span>
+            </div>
+        #end
+    </div>
+    <div class="live-player" id="st1">
+        #if($match.strikerTeam1)
+            <div class="name">
+                <span class="fore">$match.strikerTeam1.forename</span>
+                <span class="nick">$match.strikerTeam1.nickname</span>
+                <span class="sur">$match.strikerTeam1.surname</span>
+            </div>
+        #else
+            <div class="name">
+                <span class="fore"></span>
+                <span class="nick invisible"></span>
+                <span class="sur"></span>
+            </div>
+        #end
+    </div>
+    <div class="live-player" id="kt1">
+        #if($match.keeperTeam1)
+            <div class="name">
+                <span class="fore">$match.keeperTeam1.forename</span>
+                <span class="nick">$match.keeperTeam1.nickname</span>
+                <span class="sur">$match.keeperTeam1.surname</span>
+            </div>
+        #else
+            <div class="name">
+                <span class="fore"></span>
+                <span class="nick invisible"></span>
+                <span class="sur"></span>
+            </div>
+        #end
+    </div>
+#end

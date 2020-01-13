@@ -3,6 +3,7 @@ package com.bechtle.service;
 import com.bechtle.model.Match;
 import com.bechtle.model.Matchtype;
 import com.bechtle.model.Player;
+import com.bechtle.model.Season;
 import com.bechtle.util.Constants;
 import net.formio.FormData;
 import net.formio.FormMapping;
@@ -25,33 +26,59 @@ public class PlayerService extends Service {
         super(em);
     }
 
-    public boolean login(String email, String password){
+    public boolean login(String email, String password) {
         List<Player> foundPlayers = getPlayers().stream()
                 .filter(player -> player.getEmail().equals(email))
                 .collect(Collectors.toList());
 
-        if (foundPlayers.size() > 0){
+        if (foundPlayers.size() > 0) {
             String salt = BCrypt.gensalt(); // need to safe salt before and get it ...
             Player player = foundPlayers.get(0);
             String submittedPWHashed = BCrypt.hashpw(password, salt);
 
-            if(player.getPasswordHash().equals(submittedPWHashed)) return true;
+            if (player.getPasswordHash().equals(submittedPWHashed)) return true;
             else return false;
-        }
-        else return false;
+        } else return false;
     }
 
-    public List<Player> getPlayers(){
+    public List<Player> getPlayers() {
         final List<Player> allPlayers = em.createQuery("select p from Player as p").getResultList();
         return allPlayers;
     }
 
-    public Player getPlayer(Long id){
+    public List<Player> getActivePlayers() {
+        final List<Player> allPlayers = em.createQuery("select p from Player as p where p.active = true").getResultList();
+        return allPlayers;
+    }
+
+
+    public List<Player> getSelectablePlayers(Match match) {
+        final Set<Long> idSet = new HashSet<>();
+        if (match.getKeeperTeam1() != null) {
+            idSet.add(match.getKeeperTeam1().getId());
+        }
+        if (match.getStrikerTeam1() != null) {
+            idSet.add(match.getStrikerTeam1().getId());
+        }
+        if (match.getKeeperTeam2() != null) {
+            idSet.add(match.getKeeperTeam2().getId());
+        }
+        if (match.getStrikerTeam2() != null) {
+            idSet.add(match.getStrikerTeam2().getId());
+        }
+
+        return em.createQuery("select p from Player as p where p.id not in :idList")
+                .setParameter("idList", idSet)
+                .getResultList();
+    }
+
+
+    public Player getPlayer(Long id) {
         final Player playerForId = em.find(Player.class, id);
         return playerForId;
     }
 
-    public long createPlayer(Player newPlayer){
+    public long createPlayer(Player newPlayer) {
         em.getTransaction().begin();
 
         final String pw = newPlayer.getPassword();
@@ -64,7 +91,7 @@ public class PlayerService extends Service {
         return newPlayer.getId();
     }
 
-    public HashMap<String, Object> validatePlayer(final FormData<Player> formData){
+    public HashMap<String, Object> validatePlayer(final FormData<Player> formData) {
 
         FormMapping<Player> filledForm = playerForm.fill(formData);
 
@@ -73,14 +100,13 @@ public class PlayerService extends Service {
         final String password = player.getPassword();
         final String passwordRepeat = player.getPasswordRepeat();
 
-        if( (password!= null && passwordRepeat!= null) && !(password.equals(passwordRepeat)) ){
+        if ((password != null && passwordRepeat != null) && !(password.equals(passwordRepeat))) {
 
-            if (filledForm.getValidationResult().getFieldMessages().isEmpty()){
+            if (filledForm.getValidationResult().getFieldMessages().isEmpty()) {
                 final FormData<Player> playerFormData =
                         new FormData<>(formData.getData(), createValidationResultForSamePassword(formData));
                 filledForm = playerForm.fill(playerFormData);
-            }
-            else{
+            } else {
 
                 final Map<String, List<ConstraintViolationMessage>> fieldMessages = filledForm.getValidationResult().getFieldMessages();
                 final HashMap newFieldMessages = new HashMap(fieldMessages);
@@ -91,8 +117,7 @@ public class PlayerService extends Service {
                 filledForm = playerForm.fill(newPlayerFormData);
             }
 
-        }
-        else{
+        } else {
             filledForm = playerForm.fill(formData);
         }
 
@@ -104,7 +129,7 @@ public class PlayerService extends Service {
         return stringPlayerHashMap;
     }
 
-    private ValidationResult createValidationResultForSamePassword(FormData formData){
+    private ValidationResult createValidationResultForSamePassword(FormData formData) {
         final Map<String, List<ConstraintViolationMessage>> fieldMessages = new HashMap<>();
 
         fieldMessages.put("player-passwordRepeat", getConstraintViolationMessage());
@@ -113,69 +138,30 @@ public class PlayerService extends Service {
 
     }
 
-    private ArrayList<ConstraintViolationMessage> getConstraintViolationMessage(){
+    private ArrayList<ConstraintViolationMessage> getConstraintViolationMessage() {
         final LinkedHashMap<String, Serializable> msgArgs = new LinkedHashMap<>();
 
         msgArgs.put("groups", "");
         msgArgs.put("value", "{constraints.PasswordNotEqual.message}");
         msgArgs.put("hash", "");
 
-        final ConstraintViolationMessage violationMessage =  new ConstraintViolationMessage(Severity.ERROR,
-                "constraints.PasswordNotEqual.message", "constraints.PasswordNotEqual.message", msgArgs);;
+        final ConstraintViolationMessage violationMessage = new ConstraintViolationMessage(Severity.ERROR,
+                "constraints.PasswordNotEqual.message", "constraints.PasswordNotEqual.message", msgArgs);
+        ;
 
         final ArrayList<ConstraintViolationMessage> constraintViolationMessages = new ArrayList<>();
         constraintViolationMessages.add(violationMessage);
         return constraintViolationMessages;
     }
 
-
-    public List<Match> getLostDeathmachtesForPlayer(Player player){
-
-        final Set<Match> matches = player.getMatches();
-        final List<Match> lostDeatmatches = matches.stream()
-                .filter(match -> match.getMatchtype().equals(Matchtype.DEATH_MATCH))
-                .filter(match -> playerHasLost(match, player.getId()))
-                .collect(Collectors.toList());
-
-        final List<Match> lostDeatmatchesBo3 = matches.stream()
-                .filter(match -> match.getMatchtype().equals(Matchtype.DEATH_MATCH_BO3))
-                .filter(match -> playerHasLost(match, player.getId()))
-                .collect(Collectors.toList());
-
-        lostDeatmatches.addAll(lostDeatmatchesBo3);
-
-        return lostDeatmatches;
-    }
-
-    private boolean playerHasLost(Match match, long playerId){
-        final long idPlayer1 = match.getKeeperTeam1().getId();
-
-        final int goalsTeam1 = match.getGoalsTeam1();
-        final int goalsTeam2 = match.getGoalsTeam2();
-
-        // player was in team 1
-        if(playerId == idPlayer1){
-            return goalsTeam1 < goalsTeam2;
-        }
-        else {
-            return goalsTeam1 > goalsTeam2;
-        }
-    }
-
-    public int getNumberOfPlayedGamesForPlayer(Player player){
-        return player.getMatches().stream()
-                .filter(match -> match.getMatchtype() == Matchtype.REGULAR )
-                .collect(Collectors.toList()).size();
-    }
-
-    public void updatePlayer(Player player){
+    public void updatePlayer(Player player) {
         em.getTransaction().begin();
         //Player playerToUpdate = entityManager.find(Player.class, player.getId());
         em.merge(player);
         em.getTransaction().commit();
     }
 
-    public void deletePlayer(Player player){
+    public void deletePlayer(Player player) {
     }
 
 }

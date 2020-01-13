@@ -1,0 +1,103 @@
+#@mainLayout()
+
+<script>
+    $(function () {
+
+
+        $("#addGoalTeam1").click(function () {
+            postEvent("event.current", "team_1_raise");
+        });
+
+        $("#removeGoalTeam1").click(function () {
+            postEvent("event.current", "team_1_lower");
+        });
+
+        $("#addGoalTeam2").click(function () {
+            postEvent("event.current", "team_2_raise");
+        });
+
+        $("#removeGoalTeam2").click(function () {
+            postEvent("event.current", "team_2_lower");
+        });
+
+        $("#buttonNext").click(function () {
+            postEvent("event.control", "next");
+        });
+
+        $("#buttonPrevious").click(function () {
+            postEvent("event.control", "previous");
+        });
+
+        $("#buttonDown").click(function () {
+            postEvent("event.control", "down");
+        });
+
+        $("#buttonUp").click(function () {
+            postEvent("event.control", "up");
+        });
+
+        $("#buttonOk").click(function () {
+            postEvent("event.control", "button_ok");
+        });
+
+        $("#buttonCancel").click(function () {
+            postEvent("event.control", "button_cancel");
+        });
+
+        function postEvent(channel, message) {
+            $.ajax({
+                url: '/dashboard/controller',
+                type: 'PUT',
+                data: "channel=" + channel + "&message=" + message,
+                success: function (data) {
+                }
+            });
+        }
+
+    });
+</script>
+
+<div class="container container-aa">
+    <div class="row">
+        <div class="col-md-3 text-center">
+            <button id="addGoalTeam1" type="submit" class="btn btn-primary">+1 Goal Team 1</button>
+        </div>
+        <div class="col-md-3 text-center">
+            <button id="removeGoalTeam1" type="submit" class="btn btn-danger">-1 Goal Team 1</button>
+        </div>
+        <div class="col-md-3 text-center">
+            <button id="addGoalTeam2" type="submit" class="btn btn-primary">+1 Goal Team 2</button>
+        </div>
+        <div class="col-md-3 text-center">
+            <button id="removeGoalTeam2" type="submit" class="btn btn-danger">-1 Goal Team 2</button>
+        </div>
+    </div>
+</div>
+<div class="container container-aa">
+    <div class="row">
+        <div class="col-md-3 text-center">
+            <button id="buttonPrevious" type="submit" class="btn btn-default">&larr;</button>
+        </div>
+        <div class="col-md-3 text-center">
+            <button id="buttonNext" type="submit" class="btn btn-default">&rarr;</button>
+        </div>
+        <div class="col-md-3 text-center">
+            <button id="buttonDown" type="submit" class="btn btn-default">&darr;</button>
+        </div>
+        <div class="col-md-3 text-center">
+            <button id="buttonUp" type="submit" class="btn btn-default">&uarr;</button>
+        </div>
+    </div>
+</div>
+<div class="container container-aa">
+    <div class="row">
+        <div class="col-md-3 text-center">
+            <button id="buttonOk" type="submit" class="btn btn-primary">ok</button>
+        </div>
+        <div class="col-md-3 text-center">
+            <button id="buttonCancel" type="submit" class="btn btn-danger">cancel</button>
+        </div>
+    </div>
+</div>
+
+#end

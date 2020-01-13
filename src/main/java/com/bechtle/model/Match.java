@@ -23,25 +23,25 @@ public class Match {
     private int goalsTeam2;
 
     // a recorded Match contains max one loksafe player
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Player loksafePlayer;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Player keeperTeam1;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Player strikerTeam1;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Player keeperTeam2;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Player strikerTeam2;
 
     @Convert(converter = MatchtypeConverter.class)
     private Matchtype matchtype;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "season_id")
     private Season season;
 
@@ -66,6 +66,14 @@ public class Match {
         this.season = season;
         this.timestamp = new Date();
         this.status = Status.STARTED;
+    }
+
+    public Match(Player startPlayer, Matchtype matchtype, Season season) {
+        this.keeperTeam1 = startPlayer;
+        this.matchtype = matchtype;
+        this.season = season;
+        this.timestamp = new Date();
+        this.status = Status.PREMATCH;
     }
 
     public Match() {

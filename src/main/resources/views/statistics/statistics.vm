@@ -1,65 +1,462 @@
 #@mainLayout()
-<div class="container">
-    <h3>Lok List</h3>
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>Player forename</th>
-            <th>Player nickname</th>
-            <th>Player surname</th>
-            <th>--Loks--</th>
-        </tr>
-        </thead>
-        <tbody>
-            #foreach($playerLokStats in $lokList.entrySet())
-            <tr>
-                    <td>$playerLokStats.key.forename</td>
-                    <td>$playerLokStats.key.nickname</td>
-                    <td>$playerLokStats.key.surname</td>
-                    <td>$playerLokStats.value</td>
-            </tr>
-            #end
-        </tbody>
-    </table>
+<div class="container container-aa">
+    <div class="container container-a">
+        <form action="/stats" method="post" enctype="multipart/form-data">
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <select class="form-control" id="season" name="season">
+                        #foreach($season in $seasons)
+                            <option value="$season.id" #if($season.id == $currentSeason.id)selected#{end}>$season.name</option>
+                        #end
+                    </select>
+                </div>
+            </div>
+            <div class="form-group col-md-8">
+                <button type="submit" id="buttonUpload" class="btn btn-primary">Show</button>
+            </div>
+        </form>
+
+    </div>
 </div>
+
 <div class="container">
     <div class="row">
-        <div class="col-md-4">
-            <h3>Played matches</h3>
+        <div class="cold-md-12">
+            <h4>All statistics shown are related to the given season. You'll need at least $minimumMatches matches to enable player statistics.</h4>
+        </div>
+    </div>
+</div>
+
+<div class="container playoff-ranking">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Playoff Ranking</h2>
+            <p>Players to fight for the "Lok Of The Year $currentSeason.name". PlayoffPoints are calculated by the absolute lok possibilty.</p>
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th>Player forename</th>
-                    <th>played games </th>
+                    <th>Ranking</th>
+                    <th>Forename</th>
+                    <th>Nickname</th>
+                    <th>Surname</th>
+                    <th>Playoff-Points</th>
                 </tr>
                 </thead>
                 <tbody>
-                    #foreach($playerLokStats in $numberOfGamesList.entrySet())
+                    #foreach($lok in $lokOfTheYear)
+                        #if( $velocityCount > 4 )
+                            #break
+                        #end
                     <tr>
-                        <td>$playerLokStats.key.forename</td>
-                        <td>$playerLokStats.value</td>
+                        <td>$velocityCount</td>
+                        <td>$lok.key.forename</td>
+                        <td>$lok.key.nickname</td>
+                        <td>$lok.key.surname</td>
+                        <td>$doubleFormat.format($lok.value)</td>
                     </tr>
                     #end
                 </tbody>
             </table>
         </div>
-        <div class="col-md-8">
-            <h3>Some other stats??</h3>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Matches played</h3>
+            <p>Amount of matches (regular, no deathmatches) played for each player.</p>
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th>Player forename</th>
-                    <th>played games </th>
+                    <th>Forename</th>
+                    <th>Nickname</th>
+                    <th>Surname</th>
+                    <th>Matches</th>
                 </tr>
                 </thead>
                 <tbody>
-                #* #foreach($playerLokStats in $numberOfGamesList.entrySet())
+                    #foreach($stats in $numberOfGamesList)
+                    <tr>
+                        <td>$stats.key.forename</td>
+                        <td>$stats.key.nickname</td>
+                        <td>$stats.key.surname</td>
+                        #if ($stats.value > $minimumMatches)
+                            <td>$stats.value</td>
+                        #else
+                            <td>$stats.value (ignored)</td>
+                        #end
+                    </tr>
+                    #end
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <h3>Matches won</h3>
+            <p>Shows the ratio of won matches (regular, no deathmatches) for each player.</p>
+            <table class="table table-striped">
+                <thead>
                 <tr>
-                    <td>$playerLokStats.key.forename</td>
-                    <td>$playerLokStats.value</td>
-
+                    <th>Forename</th>
+                    <th>Nickname</th>
+                    <th>Surname</th>
+                    <th>Matches won</th>
                 </tr>
-                #end*#
+                </thead>
+                <tbody>
+                    #foreach($stats in $wonMatches)
+                    <tr>
+                        <td>$stats.key.forename</td>
+                        <td>$stats.key.nickname</td>
+                        <td>$stats.key.surname</td>
+                        <td>$percentageFormat.format($stats.value)</td>
+                    </tr>
+                    #end
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Loks earned</h3>
+            <p>Amount of loks earned.</p>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Forename</th>
+                    <th>Nickname</th>
+                    <th>Surname</th>
+                    <th>Loks</th>
+                </tr>
+                </thead>
+                <tbody>
+                    #foreach($stats in $lokList)
+                    <tr>
+                        <td>$stats.key.forename</td>
+                        <td>$stats.key.nickname</td>
+                        <td>$stats.key.surname</td>
+                        <td>$stats.value</td>
+                    </tr>
+                    #end
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <h3>Best deathmatcher</h3>
+            <p>Shows the ration of won deathmatches for each player. No deathmatches means no ratio.</p>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Forename</th>
+                    <th>Nickname</th>
+                    <th>Surname</th>
+                    <th>Deathmatches Won</th>
+                </tr>
+                </thead>
+                <tbody>
+                    #foreach($stats in $wonDeatchmatches)
+                    <tr>
+                        <td>$stats.key.forename</td>
+                        <td>$stats.key.nickname</td>
+                        <td>$stats.key.surname</td>
+                        <td>$percentageFormat.format($stats.value)</td>
+                    </tr>
+                    #end
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Absolute deathmatch possibilty</h3>
+            <p>Shows the ratio of deathmatches per match for each player.</p>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Forename</th>
+                    <th>Nickname</th>
+                    <th>Surname</th>
+                    <th>Possibility</th>
+                </tr>
+                </thead>
+                <tbody>
+                    #foreach($stats in $deathmatchPossibility)
+                    <tr>
+                        <td>$stats.key.forename</td>
+                        <td>$stats.key.nickname</td>
+                        <td>$stats.key.surname</td>
+                        <td>$percentageFormat.format($stats.value)</td>
+                    </tr>
+                    #end
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <h3>Absolute Lok possibilty</h3>
+            <p>Shows the ratio of loks per match for each player.</p>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Forename</th>
+                    <th>Nickname</th>
+                    <th>Surname</th>
+                    <th>Possibility</th>
+                </tr>
+                </thead>
+                <tbody>
+                    #foreach($stats in $lokPossibility)
+                    <tr>
+                        <td>$stats.key.forename</td>
+                        <td>$stats.key.nickname</td>
+                        <td>$stats.key.surname</td>
+                        <td>$percentageFormat.format($stats.value)</td>
+                    </tr>
+                    #end
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Goal magnet</h3>
+            <p>Shows the average amount of goals shot by the team each player was playing for. We don't know who shot the goals so this statistic won't charge
+                them to the striker but it will charge for both, striker and keeper.</p>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Forename</th>
+                    <th>Nickname</th>
+                    <th>Surname</th>
+                    <th>Avg. goals as team</th>
+                </tr>
+                </thead>
+                <tbody>
+                    #foreach($stats in $bestStriker)
+                    <tr>
+                        <td>$stats.key.forename</td>
+                        <td>$stats.key.nickname</td>
+                        <td>$stats.key.surname</td>
+                        <td>$doubleFormat.format($stats.value)</td>
+                    </tr>
+                    #end
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <h3>Best keeper</h3>
+            <p>Shows the average counter goals received by each player when playing as a keeper. Each player has to complete at least $minimumMatches matches as
+                a keeper.</p>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Forename</th>
+                    <th>Nickname</th>
+                    <th>Surname</th>
+                    <th>Avg. goals received</th>
+                </tr>
+                </thead>
+                <tbody>
+                    #foreach($stats in $bestKeeper)
+                    <tr>
+                        <td>$stats.key.forename</td>
+                        <td>$stats.key.nickname</td>
+                        <td>$stats.key.surname</td>
+                        <td>$doubleFormat.format($stats.value)</td>
+                    </tr>
+                    #end
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Most versatile player</h3>
+            <p>Shows the players keeper:striker ratio. A balanced ratio is interpreted as a more versatile player.</p>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Forename</th>
+                    <th>Nickname</th>
+                    <th>Surname</th>
+                    <th>keeper : striker</th>
+                </tr>
+                </thead>
+                <tbody>
+                    #foreach($stats in $versatility)
+                        #set ($strikerValue = (($stats.value + 1.0) / 0.02))
+                        #set ($keeperValue = 100.0 - $strikerValue)
+                    <tr>
+                        <td>$stats.key.forename</td>
+                        <td>$stats.key.nickname</td>
+                        <td>$stats.key.surname</td>
+                        <td>$ratioFormat.format($keeperValue) : $ratioFormat.format($strikerValue)</td>
+                    </tr>
+                    #end
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <h3>Most colorful player</h3>
+            <p>Shows the players white:black ratio. A balanced ratio is interpreted as a more colorful player.</p>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Forename</th>
+                    <th>Nickname</th>
+                    <th>Surname</th>
+                    <th>white : black</th>
+                </tr>
+                </thead>
+                <tbody>
+                    #foreach($stats in $colorful)
+                        #set ($strikerValue = (($stats.value + 1.0) / 0.02))
+                        #set ($keeperValue = 100.0 - $strikerValue)
+                    <tr>
+                        <td>$stats.key.forename</td>
+                        <td>$stats.key.nickname</td>
+                        <td>$stats.key.surname</td>
+                        <td>$ratioFormat.format($keeperValue) : $ratioFormat.format($strikerValue)</td>
+                    </tr>
+                    #end
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Most winning team</h3>
+            <p>Shows the relative amount of wins for each pair of players. Position of the player doesn't matter. Each team has to complete at
+                least $minimumMatches matches.</p>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Player A</th>
+                    <th>Player B</th>
+                    <th>Wins</th>
+                </tr>
+                </thead>
+                <tbody>
+                    #foreach($buddies in $mostWinningTeam)
+                        #if( $buddies.value > 0 )
+                        <tr>
+                            <td>$buddies.key.firstPlayer.forename $buddies.key.firstPlayer.surname</td>
+                            <td>$buddies.key.secondPlayer.forename $buddies.key.secondPlayer.surname</td>
+                            <td>$percentageFormat.format($buddies.value)</td>
+                        </tr>
+                        #end
+                    #end
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <h3>Best Lok conductor (single)</h3>
+            <p>Shows the relative amount of Loks to be distributed by the player.</p>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Forename</th>
+                    <th>Nickname</th>
+                    <th>Surname</th>
+                    <th>Loks distributed</th>
+                </tr>
+                </thead>
+                <tbody>
+                    #foreach($stats in $bestLokConductorSingle)
+                        #if( $stats.value > 0 )
+                        <tr>
+                            <td>$stats.key.forename</td>
+                            <td>$stats.key.nickname</td>
+                            <td>$stats.key.surname</td>
+                            <td>$percentageFormat.format($stats.value)</td>
+                        </tr>
+                        #end
+                    #end
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Best Lok buddies</h3>
+            <p>Shows the total amount of deathmatches for each pair of players. Position of the player doesn't matter.</p>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Player A</th>
+                    <th>Player B</th>
+                    <th>Deathmatches</th>
+                </tr>
+                </thead>
+                <tbody>
+                    #foreach($buddies in $bestLokBuddies)
+                        #if( $buddies.value > 0 )
+                        <tr>
+                            <td>$buddies.key.firstPlayer.forename $buddies.key.firstPlayer.surname</td>
+                            <td>$buddies.key.secondPlayer.forename $buddies.key.secondPlayer.surname</td>
+                            <td>$buddies.value</td>
+                        </tr>
+                        #end
+                    #end
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <h3>Best Lok conductors (team)</h3>
+            <p>Shows the total amount of Loks to be distributed by the team. Position of the player doesn't matter.</p>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Player A</th>
+                    <th>Player B</th>
+                    <th>Loks distributed</th>
+                </tr>
+                </thead>
+                <tbody>
+                    #foreach($buddies in $bestLokConductors)
+                        #if( $buddies.value > 0 )
+                        <tr>
+                            <td>$buddies.key.firstPlayer.forename $buddies.key.firstPlayer.surname</td>
+                            <td>$buddies.key.secondPlayer.forename $buddies.key.secondPlayer.surname</td>
+                            <td>$buddies.value</td>
+                        </tr>
+                        #end
+                    #end
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Kicker voodoo</h3>
+            <p>Which side would you choose?</p>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Color</th>
+                    <th>Possibility to win</th>
+                </tr>
+                </thead>
+                <tbody>
+                    #foreach($color in $colors)
+                    <tr>
+                        <td>$color.key</td>
+                        <td>$percentageFormat.format($color.value)</td>
+                    </tr>
+                    #end
                 </tbody>
             </table>
         </div>

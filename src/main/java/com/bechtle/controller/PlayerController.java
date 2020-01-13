@@ -6,12 +6,21 @@ import com.bechtle.util.Constants;
 import net.formio.FormData;
 import net.formio.FormMapping;
 import net.formio.Forms;
+import net.formio.RequestParams;
+import net.formio.servlet.ServletRequestParams;
 import net.formio.validation.ValidationResult;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
 
 import javax.persistence.EntityManager;
+import javax.servlet.MultipartConfigElement;
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +29,7 @@ public class PlayerController {
 
     private static final FormMapping<Player> playerForm = Forms.automatic(Player.class, "player").build();
 
-    public static ModelAndView listPlayers(Request request, Response response){
+    public static ModelAndView listPlayers(Request request, Response response) {
         final EntityManager em = request.attribute("em");
         final PlayerService playerService = new PlayerService(em);
 
@@ -32,7 +41,7 @@ public class PlayerController {
         return new ModelAndView(playersMap, "views/player/players.vm");
     }
 
-    public static ModelAndView loginPlayer(Request request, Response response){
+    public static ModelAndView loginPlayer(Request request, Response response) {
         String email = request.queryParams("email").trim();
         String password = request.queryParams("password");
         final EntityManager em = request.attribute("em");
@@ -40,30 +49,33 @@ public class PlayerController {
 
         boolean login = playerService.login(email, password);
 
-        if (login == true){
+        if (login == true) {
             request.session().attribute("loggedInEmail", email);
             // login successful
-        }
-        else{
+        } else {
             // login not successful
         }
 
         return new ModelAndView(new HashMap<>(), "views/player/edit_player.vm");
     }
 
-    public static ModelAndView getNewPlayerForm(Request request, Response response){
+    public static ModelAndView getNewPlayerForm(Request request, Response response) {
+        final EntityManager em = request.attribute("em");
+        final Player player = new Player();
+
         final HashMap<String, Object> map = new HashMap<>();
 
-        /*FormData<Player> formData = new FormData<>(new Player(), ValidationResult.empty);
-        FormMapping<Player> filledForm = playerForm.fill(formData);*/
+        final FormData<Player> formData = new FormData<>(player, ValidationResult.empty);
+        final FormMapping<Player> filledForm = playerForm.fill(formData);
+        map.put(Constants.PLAYER_FORM, filledForm);
+        map.put(Constants.LOKSAFE, player.getLokSafe());
+        map.put(Constants.ACTIVE, player.getActive());
+        map.put(Constants.PLAYER, player);
 
-        /*ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages");
-        map.put("messages", bundle);
-        map.put(Constants.PLAYER_FORM, filledForm);*/
-        return new ModelAndView(map, "views/player/new_player.vm");
+        return new ModelAndView(map, "views/player/edit_player.vm");
     }
 
-    public static ModelAndView showPlayer(Request request, Response response){
+    public static ModelAndView showPlayer(Request request, Response response) {
         final EntityManager em = request.attribute("em");
         final PlayerService playerService = new PlayerService(em);
 
@@ -77,58 +89,26 @@ public class PlayerController {
         final FormMapping<Player> filledForm = playerForm.fill(formData);
         map.put(Constants.PLAYER_FORM, filledForm);
         map.put(Constants.LOKSAFE, player.getLokSafe());
+        map.put(Constants.ACTIVE, player.getActive());
         map.put(Constants.PLAYER, player);
 
         return new ModelAndView(map, "views/player/edit_player.vm");
     }
 
-    public static ModelAndView createNewPlayer(Request request, Response response){
+    public static ModelAndView createNewPlayer(Request request, Response response) {
 
         final EntityManager em = request.attribute("em");
         final PlayerService playerService = new PlayerService(em);
 
-        final HashMap<String, Object> map  = new HashMap<>();
+        final Player player = getPlayerFromParams(request);
 
-        /*RequestParams params = new ServletRequestParams(request.raw());
-        FormData<Player> bind = playerForm.bind(params);
+        playerService.updatePlayer(player);
+        response.redirect("/player/list");
 
-        HashMap<String, Object> stringFormMappingHashMap = playerService.validatePlayer(playerForm.bind(params));
-        FormMapping<Player> playerFormMapping = (FormMapping<Player>) stringFormMappingHashMap.get(Constants.PLAYER_FORM);
-        if(playerForm.bind(params).isValid() && (playerFormMapping.getValidationResult().isEmpty()) ){
-            Player player = bind.getData();
-            String loksafe = request.queryParams("player-loksafe");
-            if(Boolean.TRUE.equals(Boolean.parseBoolean(loksafe))){
-                player.setLokSafe(true);
-            }
-            else {
-                player.setLokSafe(false);
-            }
-
-            response.redirect("/player/" + player.getId());
-        }
-
-        ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages");
-        stringFormMappingHashMap.put("messages", bundle);*/
-
-        final Player player = getPlayerFromParams(request, null);
-        final List<String> nullFields = player.getNullAndEmptyFields();
-        if (!nullFields.isEmpty()){
-            map.put(Constants.VALIDATION_EMPTY, nullFields);
-        }
-        if( !player.getPassword().equals(player.getPasswordRepeat()) ){
-            map.put(Constants.VALIDATION_NOT_EQUAL, true);
-        }
-        else{
-            playerService.createPlayer(player);
-            //response.redirect("/player/" + player.getId());
-            response.redirect("/player/list");
-        }
-        map.put(Constants.PLAYER, player);
-
-        return new ModelAndView(map, "views/player/new_player.vm");
+        return new ModelAndView(new HashMap<>(), "views/player/edit_player.vm");
     }
 
-    public static ModelAndView updatePlayer(Request request, Response response){
+    public static ModelAndView updatePlayer(Request request, Response response) {
         final EntityManager em = request.attribute("em");
         final PlayerService playerService = new PlayerService(em);
 
@@ -144,31 +124,91 @@ public class PlayerController {
     }
 
     // helper
-    private static Player getPlayerFromParams(Request request, Player player){
+    private static Player getPlayerFromParams(Request request) {
+        return getPlayerFromParams(request, null);
+    }
 
-        if(player == null){
+    private static Player getPlayerFromParams(Request request, Player player) {
+        FormData<Player> formData = null;
+        Player requestPlayer = null;
+
+        // Form was submitted (parameter with the name of submit button is present)
+        RequestParams params = new ServletRequestParams(request.raw());
+        formData = playerForm.bind(params);
+        if (formData.isValid()) {
+            // Store edited person and redirect to some "other" page:
+            requestPlayer = formData.getData(); // store this person...
+        }
+
+        if (player == null) {
             player = new Player();
         }
 
-        final String forename = request.queryParams("forename");
-        final String surname = request.queryParams("surname");
-        final String nickname = request.queryParams("nickname");
-        final String email = request.queryParams("email");
-        final String password = request.queryParams("password");
-        final String passwordRepeat = request.queryParams("passwordRepeat");
-        final String biography = request.queryParams("biography");
-        final boolean loksafe = Boolean.parseBoolean(request.queryParams("loksafe"));
-
-        player.setForename(forename);
-        player.setSurname(surname);
-        player.setNickname(nickname);
-        player.setEmail(email);
-        player.setBiography(biography);
-        player.setLokSafe(loksafe);
-        player.setPassword(password);
-        player.setPasswordRepeat(passwordRepeat);
+        if (requestPlayer != null) {
+            player.setForename(requestPlayer.getForename());
+            player.setSurname(requestPlayer.getSurname());
+            player.setNickname(requestPlayer.getNickname());
+            player.setEmail(requestPlayer.getEmail());
+            player.setBiography(requestPlayer.getBiography());
+            player.setLokSafe(requestPlayer.getLokSafe());
+            player.setPassword(requestPlayer.getPassword());
+            player.setPasswordRepeat(requestPlayer.getPasswordRepeat());
+            player.setActive(requestPlayer.getActive());
+        }
 
         return player;
     }
 
+    /*
+     * ###########################################################
+     * ################ UPLOADING PLAYER PICTURES ################
+     * ###########################################################
+     */
+    public static ModelAndView getUploadImage(Request request, Response response) {
+        final EntityManager em = request.attribute("em");
+        final PlayerService playerService = new PlayerService(em);
+
+        final HashMap<String, List<Player>> playersMap = new HashMap<>();
+        List<Player> players = playerService.getPlayers();
+        players.sort(Comparator.comparing(Player::getWholeName));
+
+        playersMap.put("players", players);
+        return new ModelAndView(playersMap, "views/player/uploadImage.vm");
+    }
+
+    public static ModelAndView postUploadImage(Request request, Response response) {
+//        File uploadDir = new File("target/classes/static/uploads");
+        File uploadDir = new File("upload");
+        uploadDir.mkdir(); // create the upload directory if it doesn't exist
+
+        try {
+            Path tempFile = Files.createTempFile(uploadDir.toPath(), "", "");
+            request.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
+            InputStream input = request.raw().getPart("uploaded_file").getInputStream(); //) { // getPart needs to use same "name" as input field in form
+            Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
+
+            if (Files.size(tempFile) == 0) {
+                Files.delete(tempFile);
+            } else {
+                Path finalFile = Paths.get(uploadDir.toString()
+                        , request.queryParams("player") + ".pic");
+                Files.copy(tempFile, finalFile, StandardCopyOption.REPLACE_EXISTING);
+                Files.delete(tempFile);
+            }
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+
+        final EntityManager em = request.attribute("em");
+        final PlayerService playerService = new PlayerService(em);
+
+        final HashMap<String, Object> playersMap = new HashMap<>();
+        List<Player> players = playerService.getPlayers();
+        players.sort(Comparator.comparing(Player::getWholeName));
+
+        playersMap.put("players", players);
+        playersMap.put("selected", request.queryParams("player"));
+
+        return new ModelAndView(playersMap, "views/player/uploadImage.vm");
+    }
 }

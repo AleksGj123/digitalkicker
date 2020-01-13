@@ -5,14 +5,16 @@ import com.bechtle.util.WebSocketUpdateHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPubSub;
+import redis.clients.jedis.exceptions.JedisConnectionException;
 import spark.ModelAndView;
-
 import spark.template.velocity.VelocityTemplateEngine;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.io.File;
 import java.util.HashMap;
 
 import static spark.Spark.*;
@@ -28,10 +30,14 @@ public class Start {
     public final static EntityManagerFactory factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
 
     public static void main(String[] args) {
-        System.out.println("Ich bins");
         System.setProperty("hibernate.dialect.storage_engine", "myisam");
         port(4444);
-        staticFileLocation("/static");
+
+        File uploadDir = new File("upload");
+        uploadDir.mkdir(); // create the upload directory if it doesn't exist
+
+        staticFiles.location("/static");
+        staticFiles.externalLocation("upload");
 
         webSocket("/update", WebSocketUpdateHandler.class);
 
@@ -42,14 +48,14 @@ public class Start {
         });
 
         after((request, response) -> {
-            EntityManager session = (EntityManager)request.attribute("em");
+            EntityManager session = (EntityManager) request.attribute("em");
             //logger.info("after -> close: " + session.hashCode());
             session.close();
 
         });
 
         internalServerError((request, response) -> {
-            EntityManager session = (EntityManager)request.attribute("em");
+            EntityManager session = (EntityManager) request.attribute("em");
             //logger.info("after -> close: " + session.hashCode());
             session.close();
             return "uuups";
@@ -69,13 +75,25 @@ public class Start {
             put("/finish", MatchController::finishMatch);
             put("/instant", MatchController::instantFinish);
             delete("/:id", MatchController::deleteMatch);
-            get("/dashboard", MatchController::showDashboard, velocityTemplateEngine);
             get("/list", MatchController::listMatches, velocityTemplateEngine);
+            get("/unfinished", MatchController::listUnfinishedMatches, velocityTemplateEngine);
             get("/new", MatchController::showNewMatchFrom, velocityTemplateEngine);
-            get("/:id", MatchController::showPlayer, velocityTemplateEngine);
+            get("/:id", MatchController::showMatch, velocityTemplateEngine);
             /*delete("/remove",  (req, res) -> {
                 return "";
             });*/
+        });
+
+        path("/dashboard", () -> {
+            before("/*", (q, a) -> System.out.println("Dashboard ..."));
+            get("", DashboardController::showDashboard, velocityTemplateEngine);
+            get("/controller", DashboardController::showController, velocityTemplateEngine);
+            put("/controller", DashboardController::putControl);
+
+        });
+        path("/piboard", () -> {
+            get("", DashboardController::showPiboard, velocityTemplateEngine);
+
         });
 
         // seasons
@@ -102,6 +120,8 @@ public class Start {
         path("/player", () -> {
             before("/*", (q, a) -> System.out.println("Player ..."));
 
+            get("/uploadImage", PlayerController::getUploadImage, velocityTemplateEngine);
+            post("/uploadImage", PlayerController::postUploadImage, velocityTemplateEngine);
             post("/new", PlayerController::createNewPlayer, velocityTemplateEngine);
             get("/list", PlayerController::listPlayers, velocityTemplateEngine);
             get("/new", PlayerController::getNewPlayerForm, velocityTemplateEngine);
@@ -121,11 +141,10 @@ public class Start {
 
         get("/onlyloggedin", (request, response) -> {
 
-            if(request.session().attribute("username") == null){
+            if (request.session().attribute("username") == null) {
                 response.redirect("/");
                 return "";
-            }
-            else {
+            } else {
                 return "yoo";
             }
         });
@@ -133,21 +152,32 @@ public class Start {
         // statistics
         path("/stats", () -> {
             get("", StatisticsController::getStats, velocityTemplateEngine);
+            post("", StatisticsController::getStats, velocityTemplateEngine);
         });
 
-        Jedis jSubscriber = new Jedis();
-
-        jSubscriber.psubscribe(new JedisPubSub() {
+        JedisPool jedisPool = new JedisPool();
+        JedisPubSub jedisListener = new JedisPubSub() {
             @Override
             public void onPMessage(String pattern, String channel, String message) {
                 super.onPMessage(pattern, channel, message);
-                if(channel.equals("event.goal")){
-                    WebSocketUpdateHandler.broadcastMessage("updateMatch", message);
-                }
-                else if(channel.equals("event.start")){
+                WebSocketUpdateHandler.broadcastMessage(channel, message);
+            }
+        };
 
+        while (true) {
+            try {
+                Jedis jedis = jedisPool.getResource();
+                jedis.psubscribe(jedisListener, "event.*");
+            } catch (JedisConnectionException ex) {
+                // sleep for 5 secs in case of an exception (network?)
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
-        }, "event.*");
+        }
+
+        // no code
     }
 }

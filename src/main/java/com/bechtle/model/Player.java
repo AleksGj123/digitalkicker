@@ -6,11 +6,7 @@ import net.formio.validation.constraints.NotEmpty;
 
 import javax.persistence.*;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
@@ -43,20 +39,11 @@ public class Player {
 
     private Boolean lokSafe;
 
+    @Column(columnDefinition = "boolean default true")
+    private Boolean active = true;
+
     // field for NFC Card ID
     //private String nfcId;
-
-
-    @ManyToMany
-    @JoinTable(
-            name="Player_Matches",
-            joinColumns=@JoinColumn(name="player_id", referencedColumnName="id", unique = false),
-            inverseJoinColumns=@JoinColumn(name="match_id", referencedColumnName="id", unique = false),
-            indexes = {
-                    @Index(name = "idx_player_matches_player_id", columnList = "player_id"),
-                    @Index(name = "idx_player_matches_match_id", columnList = "match_id")
-            })
-    private Set<Match> matches = new HashSet<>();
 
     // ---------------- constructors ------------------
 
@@ -70,6 +57,18 @@ public class Player {
         this.biography = biography;
         this.nickname = nickname;
         this.lokSafe = true;
+    }
+
+    public Player(String forename, String surname, String email, String password, String passwordRepeat, String passwordHash, String biography, String nickname, Boolean lokSafe) {
+        this.forename = forename;
+        this.surname = surname;
+        this.email = email;
+        this.password = password;
+        this.passwordRepeat = passwordRepeat;
+        this.passwordHash = passwordHash;
+        this.biography = biography;
+        this.nickname = nickname;
+        this.lokSafe = lokSafe;
     }
 
     public Player() {
@@ -158,13 +157,16 @@ public class Player {
         this.lokSafe = lokSafe;
     }
 
-    @Ignored
-    public Set<Match> getMatches() {
-        return matches;
+    public String getWholeName() {
+        return forename + " " + surname;
     }
 
-    public void addMatch(Match match){
-        matches.add(match);
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     /*
@@ -193,5 +195,18 @@ public class Player {
 
 
         return m;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Player player = (Player) o;
+        return id == player.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

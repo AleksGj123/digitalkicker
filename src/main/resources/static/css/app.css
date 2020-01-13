@@ -1,7 +1,9 @@
 body {
-    background-image: url("/images/chalkboard-background.jpg");
-    background-color: #404040;
+    background-color: #202020;
     color: #ccc !important;
+}
+body.background {
+    background-image: url("/images/chalkboard-background.jpg");
 }
 .content-container{
     padding-top: 56px;
@@ -30,4 +32,7 @@ body {
 .starter-template {
     padding: 40px 15px;
     text-align: center;
+}
+.playoff-ranking * {
+    color: gold;
 }

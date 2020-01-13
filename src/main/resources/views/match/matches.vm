@@ -5,7 +5,7 @@
     <div class="container">
 
         #foreach($match in $matches)
-            #if($match.getStatus().name() == "STARTED")
+            #if($match.getStatus().name() != "FINISHED")
                 <div class="col-md-6">
                     #if($match.matchtype.toString() == "regular")
                     <div class="panel panel-info">
@@ -13,7 +13,7 @@
                     <div class="panel panel-danger">
                     #end
                         <div class="panel-heading">
-                            <h3 class="panel-title">Current Match | $match.id | <b>$match.matchtype.toString()</b></h3>
+                            <a href="/match/$match.id"><h3 class="panel-title">Current Match | $match.id | <b>$match.matchtype.toString()</b></h3></a>
                         </div>
                         <div class="panel-body">
                             <div class="container">
